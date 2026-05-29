@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Try out bahasa Jerman",
+  title: "EL GERMANY",
   description: "lawan rasa takut kamu dengan try out",
 };
 
