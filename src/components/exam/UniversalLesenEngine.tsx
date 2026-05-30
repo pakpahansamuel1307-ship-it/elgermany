@@ -905,6 +905,78 @@ localStorage
 
                       )}
 
+                      {q.question_type ===
+"true_false" && (
+
+  <div className="grid grid-cols-2 gap-4">
+
+    {[
+      {
+        key:"true",
+        text:"Benar"
+      },
+
+      {
+        key:"false",
+        text:"Salah"
+      }
+
+    ].map(
+      option=>(
+
+        <button
+          key={
+            option.key
+          }
+
+          onClick={()=>{
+
+            handleAnswer(
+
+              q.id,
+
+              option.key
+            )
+          }}
+
+          className={`
+
+          p-4
+          rounded-2xl
+          font-bold
+
+          ${
+            answers[
+              q.id
+            ]
+            ===
+            option.key
+
+            ?
+
+            "bg-yellow-400 text-black"
+
+            :
+
+            "bg-white/10"
+          }
+
+          `}
+        >
+
+          {
+            option.text
+          }
+
+        </button>
+
+      )
+    )}
+
+  </div>
+
+)}
+
                     </div>
 
                   )
