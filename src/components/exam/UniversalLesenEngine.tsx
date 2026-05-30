@@ -32,6 +32,8 @@ type Question = {
   option_f:string
   option_g:string
   option_h:string
+  option_i:string
+  option_j:string
   option_0:string
 
   option_a_image:string
@@ -42,6 +44,8 @@ type Question = {
   option_f_image:string
   option_g_image:string
   option_h_image:string
+  option_i_image:string
+  option_j_image:string
   option_0_image:string
 
   correct_answer:string
@@ -703,6 +707,20 @@ localStorage
                       image:
                       q.option_h_image
                     },
+
+                    {
+  key:"I",
+  text:q.option_i,
+  image:
+  q.option_i_image
+},
+
+{
+  key:"J",
+  text:q.option_j,
+  image:
+  q.option_j_image
+},
 
                     {
                       key:"0",

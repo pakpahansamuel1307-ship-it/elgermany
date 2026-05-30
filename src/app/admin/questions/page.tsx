@@ -44,6 +44,8 @@ useState("")
     option_f:"",
     option_g:"",
     option_h:"",
+    option_i:"",
+    option_j:"",
     option_0:"",
 
     option_a_image:"",
@@ -54,6 +56,8 @@ option_e_image:"",
 option_f_image:"",
 option_g_image:"",
 option_h_image:"",
+option_i_image:"",
+option_j_image:"",
 option_0_image:"",
 
     correct_answer:"",
@@ -145,6 +149,12 @@ option_0_image:"",
         option_h:
         form.option_h,
 
+        option_i:
+        form.option_i,
+
+        option_j:
+        form.option_j,
+
         option_0:
         form.option_0,
 
@@ -171,6 +181,12 @@ form.option_g_image,
 
 option_h_image:
 form.option_h_image,
+
+option_i_image:
+form.option_i_image,
+
+option_j_image:
+form.option_j_image,
 
 option_0_image:
 form.option_0_image,
@@ -674,6 +690,30 @@ const isTrueFalse =
             className="bg-white/10 p-4 rounded-2xl"
           />
 
+          <input
+  placeholder="Option I"
+  value={form.option_i}
+  onChange={(e)=>
+    handleChange(
+      "option_i",
+      e.target.value
+    )
+  }
+  className="bg-white/10 p-4 rounded-2xl"
+/>
+
+<input
+  placeholder="Option J"
+  value={form.option_j}
+  onChange={(e)=>
+    handleChange(
+      "option_j",
+      e.target.value
+    )
+  }
+  className="bg-white/10 p-4 rounded-2xl"
+/>
+
           <input placeholder="Option 0 (tidak cocok)"
             value={form.option_0}
             onChange={(e)=>
@@ -888,6 +928,59 @@ const isTrueFalse =
   <img
     src={
       form.option_h_image
+    }
+
+    alt="preview"
+
+    className="w-full rounded-2xl max-h-[220px] object-contain bg-white/5 p-3"
+  />
+
+)}
+
+
+<input
+  placeholder="Option I Image URL"
+  value={form.option_i_image}
+  onChange={(e)=>
+    handleChange(
+      "option_i_image",
+      e.target.value
+    )
+  }
+  className="bg-white/10 p-4 rounded-2xl"
+/>
+
+{form.option_i_image && (
+
+  <img
+    src={
+      form.option_i_image
+    }
+
+    alt="preview"
+
+    className="w-full rounded-2xl max-h-[220px] object-contain bg-white/5 p-3"
+  />
+
+)}
+
+<input
+  placeholder="Option J Image URL"
+  value={form.option_j_image}
+  onChange={(e)=>
+    handleChange(
+      "option_j_image",
+      e.target.value
+    )
+  }
+  className="bg-white/10 p-4 rounded-2xl"
+/>
+
+{form.option_j_image && (
+
+  <img
+    src={
+      form.option_j_image
     }
 
     alt="preview"
