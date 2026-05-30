@@ -42,62 +42,93 @@ async ()=>{
   const user =
   data.user
 
-  if(user){
+  if(!user){
+
+    alert(
+      "User tidak ditemukan"
+    )
+
+    return
+  }
+
+  const {
+    data:
+    profile,
+    error:
+    profileCheckError
+  } =
+  await supabase
+  .from(
+    "profiles"
+  )
+  .select("*")
+  .eq(
+    "id",
+    user.id
+  )
+  .maybeSingle()
+
+  console.log(
+    "PROFILE CHECK",
+    profile
+  )
+
+  console.log(
+    "PROFILE CHECK ERROR",
+    profileCheckError
+  )
+
+  if(!profile){
 
     const {
       data:
-      existingProfile
+      insertedProfile,
+      error:
+      profileInsertError
     } =
     await supabase
     .from(
       "profiles"
     )
-    .select("id")
-    .eq(
-      "id",
-      user.id
+    .insert({
+
+      id:
+      user.id,
+
+      email:
+      user.email,
+
+      username:
+      user.email
+      ?.split("@")[0],
+
+      remaining_tryouts:
+      0
+
+    })
+    .select()
+
+    console.log(
+      "INSERTED PROFILE",
+      insertedProfile
     )
-    .maybeSingle()
 
-    if(!existingProfile){
+    console.log(
+      "PROFILE INSERT ERROR",
+      profileInsertError
+    )
 
-      const {
-        error:
-        profileError
-      } =
-      await supabase
-      .from(
-        "profiles"
+    if(profileInsertError){
+
+      alert(
+
+        "Gagal create profile: " +
+
+        profileInsertError.message
+
       )
-      .insert({
 
-        id:
-        user.id,
-
-        email:
-        user.email,
-
-        username:
-        user.email
-        ?.split("@")[0],
-
-        remaining_tryouts:
-        0
-
-      })
-
-      if(profileError){
-
-        console.log(
-          profileError
-        )
-
-        alert(
-          profileError.message
-        )
-
-        return
-      }
+      return
     }
   }
 
