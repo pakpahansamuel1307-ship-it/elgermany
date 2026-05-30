@@ -16,8 +16,8 @@ export default function RegisterPage(){
   setPassword] =
     useState("")
 
- const handleRegister =
- async () => {
+const handleRegister =
+async () => {
 
   try {
 
@@ -44,53 +44,44 @@ export default function RegisterPage(){
       return
     }
 
-    if (!data.user) {
+    const user =
+    data.user
 
-      alert(
-        "User tidak ditemukan"
-      )
+    if(user){
 
-      return
-    }
-
-    const {
-      error:
-      profileError
-    } =
-    await supabase
-      .from("profiles")
-     .insert({
-
-  id:
-  data.user.id,
-
-  email:
-  data.user.email,
-
-  username:
-  email
-  .split("@")[0],
-
-  remaining_tryouts:
-  0
-
-})
-
-    if(profileError){
-
-      console.log(
+      const {
+        error:
         profileError
-      )
+      } =
+      await supabase
+      .from("profiles")
+      .upsert({
 
-      alert(
-        profileError.message
-      )
+        id:
+        user.id,
 
-      return
+        email:
+        user.email,
+
+        username:
+        email
+        .split("@")[0],
+
+        remaining_tryouts:
+        0
+
+      })
+
+      if(profileError){
+
+        console.log(
+          profileError
+        )
+      }
     }
 
     alert(
-      "Register berhasil"
+      "Register berhasil, silakan login"
     )
 
     window.location.href =
