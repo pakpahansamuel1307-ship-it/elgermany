@@ -913,12 +913,12 @@ localStorage
     {[
       {
         key:"true",
-        text:"Benar"
+        text:"richtig"
       },
 
       {
         key:"false",
-        text:"Salah"
+        text:"falsch"
       }
 
     ].map(
