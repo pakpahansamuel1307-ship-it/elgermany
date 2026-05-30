@@ -16,31 +16,94 @@ export default function LoginPage(){
   setPassword] =
     useState("")
 
-  const handleLogin =
-  async ()=>{
+ const handleLogin =
+async ()=>{
+
+  const {
+    data,
+    error
+  } =
+  await supabase.auth
+  .signInWithPassword({
+
+    email,
+    password
+  })
+
+  if(error){
+
+    alert(
+      error.message
+    )
+
+    return
+  }
+
+  const user =
+  data.user
+
+  if(user){
 
     const {
-      error
+      data:
+      existingProfile
     } =
-    await supabase.auth
-    .signInWithPassword({
+    await supabase
+    .from(
+      "profiles"
+    )
+    .select("id")
+    .eq(
+      "id",
+      user.id
+    )
+    .maybeSingle()
 
-      email,
-      password
-    })
+    if(!existingProfile){
 
-    if(error){
-
-      alert(
-        error.message
+      const {
+        error:
+        profileError
+      } =
+      await supabase
+      .from(
+        "profiles"
       )
+      .insert({
 
-      return
+        id:
+        user.id,
+
+        email:
+        user.email,
+
+        username:
+        user.email
+        ?.split("@")[0],
+
+        remaining_tryouts:
+        0
+
+      })
+
+      if(profileError){
+
+        console.log(
+          profileError
+        )
+
+        alert(
+          profileError.message
+        )
+
+        return
+      }
     }
-
-    window.location.href =
-      "/dashboard"
   }
+
+  window.location.href =
+  "/dashboard"
+}
 
   const handleGoogleLogin =
 async ()=>{

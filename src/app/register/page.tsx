@@ -44,41 +44,8 @@ async () => {
       return
     }
 
-    const user =
-    data.user
 
-    if(user){
-
-      const {
-        error:
-        profileError
-      } =
-      await supabase
-      .from("profiles")
-      .upsert({
-
-        id:
-        user.id,
-
-        email:
-        user.email,
-
-        username:
-        email
-        .split("@")[0],
-
-        remaining_tryouts:
-        0
-
-      })
-
-      if(profileError){
-
-        console.log(
-          profileError
-        )
-      }
-    }
+    
 
     alert(
       "Register berhasil, silakan login"
