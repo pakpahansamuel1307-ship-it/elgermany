@@ -559,7 +559,7 @@ localStorage
 
               )}
 
-              <p className="mb-6 text-lg">
+              <p className="mb-6 text-lg whitespace-pre-line">
 
                 {
                   question

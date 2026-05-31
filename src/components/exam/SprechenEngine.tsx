@@ -26,6 +26,8 @@ type Question = {
   image_url:string
 
   image_url_2:string
+
+
 }
 
 type Props = {
@@ -80,16 +82,11 @@ SprechenEngine({
   useState(15 * 60)
 
   const [
-    remainingExam,
-    setRemainingExam
+    remainingTeilTime,
+    setRemainingTeilTime
   ] =
-  useState(15 * 60)
+  useState(5 * 60)
 
-  const [
-  b2AnswerTimer,
-  setB2AnswerTimer
-] =
-useState(180)
 
   const [
     currentTeil,
@@ -150,10 +147,10 @@ const [
 useState(0)
 
 const [
-  teilRoundLimit,
-  setTeilRoundLimit
+  dialogStarted,
+  setDialogStarted
 ] =
-useState(3)
+useState(false)
 
 const [
   conversationHistory,
@@ -293,25 +290,39 @@ useState("")
   // EXAM TIMER
   // ==================
 
-  useEffect(()=>{
+  
+
+ useEffect(()=>{
 
   if(
-    level !== "b2"
-    ||
-    currentTeil !== 1
-    ||
-    !recording
+    phase !==
+    "exam"
   ) return
 
   const timer =
   setInterval(()=>{
 
-    setB2AnswerTimer(
+    setRemainingTeilTime(
       prev=>{
 
         if(prev <= 1){
 
-          stopRecording()
+         if(
+  currentTeil < 3
+){
+
+  setCurrentTeil(
+    prev => prev + 1
+  )
+
+  setRemainingTeilTime(
+    5 * 60
+  )
+
+  return 5 * 60
+}
+
+          finishExam()
 
           return 0
         }
@@ -322,49 +333,17 @@ useState("")
 
   },1000)
 
-  return ()=>clearInterval(
-    timer
-  )
+  return ()=>{
 
-},[
-  level,
-  currentTeil,
-  recording
-])
-
-  useEffect(()=>{
-
-    if(
-      phase !==
-      "exam"
-    ) return
-
-    const timer =
-    setInterval(()=>{
-
-      setRemainingExam(
-        prev=>{
-
-          if(prev <= 1){
-
-            finishExam()
-
-            return 0
-          }
-
-          return prev - 1
-        }
-      )
-
-    },1000)
-
-    return ()=>clearInterval(
+    clearInterval(
       timer
     )
+  }
 
-  },[
-    phase
-  ])
+},[
+  phase,
+  currentTeil
+])
 
   // ==================
   // RECORD
@@ -421,6 +400,12 @@ useState("")
           }
         )
 
+        setAllTranscript(
+  prev =>
+  prev +
+  `\nTEIL ${currentTeil} MONOLOG`
+)
+
         const url =
         URL
         .createObjectURL(
@@ -437,15 +422,20 @@ useState("")
           })
         )
 
-        setCompletedTeil(
-          prev=>({
+        
+if(isMonolog){
 
-            ...prev,
+  setCompletedTeil(
+    prev=>({
 
-            [currentTeil]:
-            true
-          })
-        )
+      ...prev,
+
+      [currentTeil]:
+      true
+    })
+  )
+
+}
 
         stream
         .getTracks()
@@ -472,6 +462,97 @@ useState("")
     }
   }
 
+  async function startDialog(){
+
+    if(!isDialog){
+  return
+}
+
+  try{
+
+    setAiThinking(true)
+
+    const formData =
+    new FormData()
+
+    formData.append(
+      "level",
+      level
+    )
+
+    formData.append(
+      "teil",
+      String(currentTeil)
+    )
+
+    formData.append(
+      "questionType",
+      "dialog"
+    )
+
+    formData.append(
+      "theme",
+      currentQuestion?.question_text || ""
+    )
+
+    formData.append(
+      "task",
+      currentQuestion?.text_block || ""
+    )
+
+    
+
+    formData.append(
+      "history",
+      JSON.stringify([])
+    )
+
+    formData.append( 
+      "round",
+      "0"
+    
+    )
+
+    const response =
+    await fetch(
+      "/api/speaking-ai",
+      {
+        method:"POST",
+        body:formData
+      }
+    )
+
+    const data =
+    await response.json()
+
+    setAiThinking(false)
+
+    setAiMessage(
+      data.aiReply
+    )
+
+    const audio =
+    new Audio(
+      data.audio
+    )
+
+    setAiSpeaking(true)
+
+    audio.play()
+
+    audio.onended =
+    async ()=>{
+
+      setAiSpeaking(false)
+
+      await startRecording()
+    }
+
+  }catch(error){
+
+    console.log(error)
+  }
+}
 
 
   async function
@@ -481,52 +562,61 @@ stopRecording(){
   .current
   ?.stop()
 
-  // Teil 2 AI dialog
-if(
+ if(isMonolog){
 
-  // A1
-  (
-    level === "a1"
-    &&
-    (
-      currentTeil === 2
-      ||
-      currentTeil === 3
-    )
+  setAiThinking (false)
+  setAiSpeaking (false)
+
+  const blob =
+  new Blob(
+    chunks.current,
+    {
+      type:"audio/webm"
+    }
   )
 
-  ||
+  const formData =
+  new FormData()
 
-  // A2
-  (
-    level === "a2"
-    &&
-    (
-      currentTeil === 1
-      ||
-      currentTeil === 3
-    )
+  formData.append(
+    "audio",
+    blob,
+    "voice.webm"
   )
 
-  ||
-
-(
-  level === "b1"
-  &&
-  (
-    currentTeil === 1
-    ||
-    currentTeil === 3
+  const response =
+  await fetch(
+    "/api/transcribe",
+    {
+      method:"POST",
+      body:formData
+    }
   )
-)
 
-||
+  const data =
+  await response.json()
 
-(
-  level === "b2"
-)
+  setAllTranscript(
+    prev=>
 
-){
+    prev +
+
+    `\nTEIL ${currentTeil}:\n${data.transcript}\n`
+  )
+
+  setCompletedTeil(
+    prev=>({
+      ...prev,
+      [currentTeil]:true
+    })
+  )
+
+  return
+}
+
+
+
+  {
 
     setTimeout(async ()=>{
 
@@ -561,23 +651,31 @@ if(
 
         formData.append(
           "teil",
-          "2"
+          String(currentTeil)
         )
 
-        formData.append(
+       formData.append(
+  "questionType",
+  currentQuestion
+  ?.question_type
+  || "dialog"
+)
 
-          "theme",
+       formData.append(
 
-          teilQuestions?.[
-  dialogRound
-]?.text_block
-||
-teilQuestions?.[
-  0
-]?.text_block
+  "theme",
 
-          || ""
-        )
+  currentQuestion
+  ?.question_text
+
+  || ""
+
+)
+
+formData.append(
+  "task",
+  currentQuestion?.text_block || ""
+)
 
         formData.append(
 
@@ -586,6 +684,11 @@ teilQuestions?.[
           JSON.stringify(
             conversationHistory
           )
+        )
+
+        formData.append(
+          "round",
+          String(dialogRound)
         )
 
         const response =
@@ -647,7 +750,7 @@ teilQuestions?.[
       audio.play()
 
 audio.onended =
-()=>{
+async ()=>{
 
   setAiSpeaking(
     false
@@ -660,198 +763,23 @@ audio.onended =
     nextRound
   )
 
-  setConversationHistory(
-    prev=>[
+setConversationHistory(
+  prev=>[
+    ...prev,
 
-      ...prev,
+    {
+      role:"user",
+      content:data.transcript
+    },
 
-      {
-        role:
-        "assistant",
-
-        content:
-        data.aiReply
-      }
-    ]
-  )
-
-  // A1/A2
-  if(
-    level === "a1"
-    ||
-    level === "a2"
-  ){
-
-    if(
-      nextRound >=
-      teilRoundLimit
-    ){
-
-      setTimeout(()=>{
-
-        if(
-          currentTeil < 3
-        ){
-
-          setCurrentTeil(
-            prev =>
-            prev + 1
-          )
-
-          setDialogRound(
-            0
-          )
-
-          setAiMessage(
-            ""
-          )
-
-        }else{
-
-          finishExam()
-        }
-
-      },1000)
+    {
+      role:"assistant",
+      content:data.aiReply
     }
-  }
+  ]
+)
 
-  // B1
-  if(level === "b1"){
-
-    if(
-      currentTeil === 3
-    ){
-
-      finishExam()
-    }
-  }
-
-// B1 presentasi
-if(
-  level === "b1"
-  &&
-  currentTeil === 2
-){
-
-  setTimeout(async ()=>{
-
-    try{
-
-      setAiThinking(
-        true
-      )
-
-      const formData =
-      new FormData()
-
-      formData.append(
-        "level",
-        "b1"
-      )
-
-      formData.append(
-        "teil",
-        "3"
-      )
-
-      formData.append(
-
-        "theme",
-
-        teilQuestions?.[
-          0
-        ]?.text_block
-        || ""
-      )
-
-      formData.append(
-
-        "history",
-
-        JSON.stringify([])
-      )
-
-      const response =
-      await fetch(
-
-        "/api/speaking-ai",
-
-        {
-
-          method:"POST",
-
-          body:
-          formData
-        }
-      )
-
-      const data =
-      await response
-      .json()
-
-      setAiThinking(
-        false
-      )
-
-      const audio =
-      new Audio(
-        data.audio
-      )
-
-      setAiSpeaking(
-        true
-      )
-
-      audio.play()
-
-      audio.onended =
-      ()=>{
-
-        setAiSpeaking(
-          false
-        )
-
-        setCurrentTeil(
-          3
-        )
-      }
-
-    }catch(error){
-
-      console.log(
-        error
-      )
-    }
-
-  },500)
-
-  return
-}
-
-  // B2
-if(level === "b2"){
-
-  // setelah pertanyaan
-  if(
-    currentTeil === 1
-  ){
-
-    startRecording()
-
-    return
-  }
-
-  // diskusi selesai
-  if(
-    currentTeil === 2
-    &&
-    nextRound >=
-    teilRoundLimit
-  ){
-
-    finishExam()
-  }
-}
+  await startRecording()
 }
 
       }catch(error){
@@ -866,20 +794,32 @@ if(level === "b2"){
   }
 }
 
-  function
-  nextTeil(){
+  function nextTeil(){
 
-    if(currentTeil < 3){
+  const maxTeil =
+  Math.max(
+    ...questions.map(
+      q => q.teil
+    )
+  )
 
-      setCurrentTeil(
-        prev=>prev+1
-      )
+  if(
+    currentTeil < maxTeil
+  ){
 
-      return
-    }
+    setCurrentTeil(
+      prev => prev + 1
+    )
 
-    finishExam()
+    setRemainingTeilTime(
+      5 * 60
+    )
+
+    return
   }
+
+  finishExam()
+}
 
   async function
 finishExam(){
@@ -915,21 +855,34 @@ allTranscript
           "application/json"
         },
 
-        body:
-        JSON.stringify({
+       body:
+JSON.stringify({
 
-          level,
+  level,
 
-          transcript,
+  transcript,
 
-          speakingData:{
+  questions:
 
-            currentTeil,
+  questions.map(
+    q=>({
 
-            round:
-            dialogRound
-          }
-        })
+      teil:q.teil,
+
+      question:q.question_text,
+
+      info:q.text_block
+    })
+  ),
+
+  speakingData:{
+
+    currentTeil,
+
+    round:
+    dialogRound
+  }
+})
       }
     )
 
@@ -1019,93 +972,55 @@ allTranscript
       currentTeil
     )
 
-    useEffect(()=>{
+    const currentQuestion =
+teilQuestions?.[0]
 
-  // A1
-  if(level === "a1"){
 
-    if(currentTeil === 2){
 
-      setTeilRoundLimit(
-        3
-      )
-    }
+useEffect(()=>{
 
-    if(currentTeil === 3){
+  setDialogRound(
+    0
+  )
 
-      setTeilRoundLimit(
-        3
-      )
-    }
-  }
+  setConversationHistory(
+    []
+  )
 
-  // A2
-  if(level === "a2"){
+  setAiMessage(
+    ""
+  )
 
-    if(currentTeil === 1){
+  setAiThinking(
+    false
+  )
 
-      setTeilRoundLimit(
-        4
-      )
-    }
+  setAiSpeaking(
+    false
+  )
 
-    if(currentTeil === 3){
-
-      setTeilRoundLimit(
-        4
-      )
-    }
-  }
-
- // B1
-if(level === "b1"){
-
-  if(currentTeil === 1){
-
-    setTeilRoundLimit(
-      999
-    )
-  }
-
-  if(currentTeil === 2){
-
-    setTeilRoundLimit(
-      1
-    )
-  }
-
-  if(currentTeil === 3){
-
-    setTeilRoundLimit(
-      1
-    )
-  }
-}
-
-  // B2
-if(level === "b2"){
-
-  // Presentasi
-  if(currentTeil === 1){
-
-    setTeilRoundLimit(
-      1
-    )
-  }
-
-  // Diskusi
-  if(currentTeil === 2){
-
-    setTeilRoundLimit(
-      999
-    )
-  }
-}
+  setDialogStarted(false)
 
 },[
-  level,
   currentTeil
 ])
+
+const questionType =
+
+String(
+  currentQuestion
+  ?.question_type
+  || ""
+)
+.toLowerCase()
+.trim()
+
+const isDialog =
+questionType === "dialog"
+
+const isMonolog =
+questionType === "monolog"
+  
 
   if(loading){
 
@@ -1162,7 +1077,7 @@ if(level === "b2"){
 
             {
               formatTime(
-                remainingExam
+                remainingTeilTime
               )
             }
 
@@ -1172,27 +1087,7 @@ if(level === "b2"){
 
       </div>
 
-      {level === "b2"
-&&
-currentTeil === 1
-&&
-recording && (
-
-  <div className="bg-blue-500 text-white rounded-3xl p-4 text-center font-bold mt-4">
-
-    Antwortzeit:
-
-    {" "}
-
-    {
-      formatTime(
-        b2AnswerTimer
-      )
-    }
-
-  </div>
-
-)}
+      
 
       {/* QUESTIONS */}
 
@@ -1230,7 +1125,7 @@ recording && (
 
         </h2>
 
-        <p className="mb-6 text-lg">
+        <p className="mb-6 text-lg whitespace-pre-line">
 
           {
             question
@@ -1251,7 +1146,11 @@ recording && (
 
           </div>
 
+          
+
         )}
+
+
 
         {question
         .image_url && (
@@ -1274,6 +1173,24 @@ recording && (
 
 </div>
 
+{phase === "preparation" && (
+
+  <button
+
+    onClick={()=>{
+      setPhase("exam")
+    }}
+
+    className="mt-8 w-full bg-green-500 text-white py-5 rounded-3xl font-bold text-xl"
+
+  >
+
+    Akhiri Persiapan
+
+  </button>
+
+)}
+
       {/* RECORD */}
 
       {phase ===
@@ -1285,7 +1202,7 @@ recording && (
 
 <>
 
-{aiThinking && (
+{aiThinking && isDialog && (
 
   <div className="bg-white/5 border border-white/10 rounded-3xl p-5 mb-6 text-center">
 
@@ -1309,16 +1226,28 @@ recording && (
 
         disabled={ aiSpeaking }
 
-          onClick={()=>
-            recording
-            ?
+       onClick={()=>{
 
-            stopRecording()
+  if(recording){
 
-            :
+    stopRecording()
 
-            startRecording()
-          }
+    return
+  }
+
+  if(
+    isDialog &&
+    dialogRound === 0 &&
+    !aiMessage
+  ){
+
+    startDialog()
+
+    return
+  }
+
+  startRecording()
+}}
 
           className="mt-8 w-full bg-yellow-400 text-black rounded-3xl py-5 font-bold text-xl"
         >
@@ -1332,15 +1261,36 @@ recording && (
 
   :
 
-  recording
+ recording
+
+?
+
+(
+  isDialog
 
   ?
 
-  "Stop & Submit"
+  "Akhiri Dialog"
 
   :
 
-  "🎤 Mulai Rekaman"
+  "Akhiri Monolog"
+)
+
+:
+(
+  isDialog
+  ?
+  (
+    dialogRound === 0
+    ?
+    "Start Dialog"
+    :
+    "🎤 Sedang Mendengarkan..."
+  )
+  :
+  "Start Monolog"
+)
 }
 
         </button>
@@ -1350,37 +1300,70 @@ recording && (
       {/* PREVIEW */}
 
       {recordings[
-        currentTeil
-      ] && (
+  currentTeil
+] &&
 
-        <div className="mt-8">
+isMonolog && (
 
-          <audio
-            controls
-            src={
-              recordings[
-                currentTeil
-              ]
-            }
+  <div className="mt-8">
 
-            className="w-full"
-          />
+    <audio
+      controls
+      src={
+        recordings[
+          currentTeil
+        ]
+      }
+      className="w-full"
+    />
 
-          <button
+    <button
 
-            onClick={
-              nextTeil
-            }
+      onClick={
+        nextTeil
+      }
 
-            className="mt-5 w-full bg-green-500 text-white py-4 rounded-3xl font-bold"
-          >
+      className="mt-5 w-full bg-green-500 text-white py-4 rounded-3xl font-bold"
 
-            Lanjut Teil
-          </button>
+    >
 
-        </div>
+      Lanjut Teil
 
-      )}
+    </button>
+
+  </div>
+
+)}
+
+{phase === "exam" && (
+
+  <div className="mt-8">
+
+    <button
+
+      onClick={()=>{
+
+        if(
+          confirm(
+            "Yakin ingin lanjut ke Teil berikutnya?"
+          )
+        ){
+
+          nextTeil()
+        }
+      }}
+
+      className="w-full bg-green-500 text-white py-4 rounded-3xl font-bold"
+
+    >
+
+      Lanjut Teil Berikutnya →
+
+    </button>
+
+  </div>
+
+)}
 
     </div>
   )

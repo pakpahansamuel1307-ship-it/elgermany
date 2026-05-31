@@ -613,6 +613,18 @@ if(
 
                 )
 
+                const sprechenFeedback =
+
+localStorage.getItem(
+  "sprechenFeedback"
+) || ""
+
+const schreibenFeedback =
+
+localStorage.getItem(
+  "schreibenFeedback"
+) || ""
+
                 await supabase
 
 .from(
@@ -678,29 +690,40 @@ await supabase
   true
 })
 
-                await supabase
+               await supabase
 
-                .from(
-                  "tryout_attempts"
-                )
+.from(
+  "tryout_attempts"
+)
 
-                .insert({
+.insert({
 
-                  user_id:
-                  user.id,
+  user_id:
+  user.id,
 
-                  tryout_title:
-                  `Goethe ${String(level).toUpperCase()} Set ${examSet}`,
+  tryout_title:
+  `Goethe ${String(level).toUpperCase()} Set ${examSet}`,
 
-                  module_type:
-                  "full",
+  module_type:
+  "full",
 
-                  level:
-                  String(level),
+  level:
+  String(level),
 
-                  score:
-                  finalScore
-                })
+  score:
+  finalScore,
+
+  ai_feedback:
+  JSON.stringify({
+
+    schreiben:
+    schreibenFeedback,
+
+    sprechen:
+    sprechenFeedback
+
+  })
+})
 
                 await supabase
 

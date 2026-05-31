@@ -15,10 +15,11 @@ export async function POST(
     await req.json()
 
     const {
-      level,
-      transcript,
-      speakingData
-    } = body
+  level,
+  transcript,
+  speakingData,
+  questions = []
+} = body
 
     const prompt = `
 Kamu adalah kombinasi:
@@ -35,6 +36,13 @@ ${level}
 DATA SPEAKING:
 ${JSON.stringify(
   speakingData
+)}
+
+SOAL UJIAN:
+${JSON.stringify(
+  questions,
+  null,
+  2
 )}
 
 TRANSKRIP PESERTA:

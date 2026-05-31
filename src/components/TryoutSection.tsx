@@ -357,16 +357,22 @@ attempts.map(
 
      {item.ai_feedback && (()=>{
 
-  let parsed
+ let parsed
+let isFullFeedback = false
 
-  try{
+try{
 
-    parsed =
-    JSON.parse(
-      item.ai_feedback
-    )
+  parsed =
+  JSON.parse(
+    item.ai_feedback
+  )
 
-  }catch{
+  isFullFeedback =
+
+    parsed?.schreiben &&
+    parsed?.sprechen
+
+}catch{
 
     return (
 
@@ -389,6 +395,84 @@ attempts.map(
 
     )
   }
+
+  if(isFullFeedback){
+
+    console.log("FULL PARSED", parsed)
+console.log("SCHREIBEN", parsed.schreiben)
+console.log("SPRECHEN", parsed.sprechen)
+
+  const schreiben =
+
+typeof parsed.schreiben === "string"
+
+&&
+
+parsed.schreiben.trim().startsWith("{")
+
+? JSON.parse(parsed.schreiben)
+
+: {
+    feedback:
+    parsed.schreiben
+  }
+
+const sprechen =
+
+typeof parsed.sprechen === "string"
+
+&&
+
+parsed.sprechen.trim().startsWith("{")
+
+? JSON.parse(parsed.sprechen)
+
+: {
+    feedback:
+    parsed.sprechen
+  }
+
+  return (
+
+    <div className="mt-5 bg-white/5 rounded-2xl p-6 space-y-10">
+
+      {/* Schreiben */}
+
+      <div>
+
+        <h4 className="text-2xl font-bold text-yellow-400 mb-5">
+
+          Feedback Schreiben
+
+        </h4>
+
+        <p className="whitespace-pre-line">
+
+          {schreiben.feedback}
+        </p>
+
+      </div>
+
+      {/* Sprechen */}
+
+      <div>
+
+        <h4 className="text-2xl font-bold text-green-400 mb-5">
+
+          Feedback Sprechen
+
+        </h4>
+
+        <p className="whitespace-pre-line">
+
+          {sprechen.feedback}
+        </p>
+
+      </div>
+
+    </div>
+  )
+}
 
   return (
 

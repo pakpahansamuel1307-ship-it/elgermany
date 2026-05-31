@@ -23,6 +23,10 @@ type Question = {
   text_block:string
 
   text_block_image:string
+  text_block_image_2:string
+  text_block_image_3:string
+  text_block_image_4:string
+  text_block_image_5:string
 
   option_a:string
   option_b:string
@@ -198,28 +202,28 @@ useState(false)
    /* RESTORE TIMER */
 
 const savedTimer =
-
-localStorage
-.getItem(
+localStorage.getItem(
   timerKey
 )
 
-if(savedTimer){
+
+
+if(
+  savedTimer &&
+  Number(savedTimer) > 0
+){
 
   setRemainingTime(
-
-    Number(
-      savedTimer
-    )
+    Number(savedTimer)
   )
 
 }else{
 
-  setRemainingTime ( 
-    timerMap[
-      level
-    ] || 1200
+  setRemainingTime(
+    timerMap[level] || 1200
   )
+
+  
 }
 
 setTimerReady(
@@ -253,20 +257,21 @@ if(saved){
 
   useEffect(()=>{
 
-  localStorage
-  .setItem(
+  if(
+    !timerReady
+  ) return
 
+  localStorage.setItem(
     timerKey,
-
     String(
       remainingTime
     )
   )
 
 },[
-  remainingTime
+  remainingTime,
+  timerReady
 ])
-
 
 useEffect(()=>{
 
@@ -605,24 +610,26 @@ localStorage
 
             </h2>
 
-            {teilQuestions[
-              0
-            ]?.text_block_image && (
+            {[
+  teilQuestions[0]?.text_block_image,
+  teilQuestions[0]?.text_block_image_2,
+  teilQuestions[0]?.text_block_image_3,
+  teilQuestions[0]?.text_block_image_4,
+  teilQuestions[0]?.text_block_image_5
+]
+.filter(Boolean)
+.map((image,index)=>(
 
-              <img
-                src={
-                  teilQuestions[
-                    0
-                  ]
-                  .text_block_image
-                }
+  <img
+    key={index}
+    src={image}
+    alt={`text-block-${index}`}
+    className="w-full rounded-[32px] mb-6 object-contain bg-white/5 p-4"
+  />
 
-                alt="text block"
+))}
 
-                className="w-full rounded-[32px] mb-6 object-contain bg-white/5 p-4"
-              />
-
-            )}
+            
 
             {teilQuestions[
               0
@@ -744,7 +751,7 @@ localStorage
                       className="bg-white/5 border border-white/10 rounded-[32px] p-6"
                     >
 
-                      <p className="text-lg mb-5">
+                      <p className="text-lg mb-5 whitespace-pre-line">
 
                         {
                           q.question_order

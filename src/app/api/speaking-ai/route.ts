@@ -32,6 +32,19 @@ export async function POST(
       || ""
     )
 
+    const task=
+    String(
+      formData.get("task")
+      || ""
+    )
+
+    const questionType =
+String(
+  formData.get(
+    "questionType"
+  ) || "dialog"
+)
+
     const history =
     JSON.parse(
 
@@ -41,6 +54,17 @@ export async function POST(
         ) || "[]"
       )
     )
+
+    const round =
+    Number(
+      formData.get(
+        "round"
+      ) || 0
+    )
+
+
+
+    
 
     const audioFile =
     formData.get(
@@ -72,6 +96,8 @@ export async function POST(
       userTranscript =
       transcription.text
     }
+
+    
 
     const levelRules = {
 
@@ -124,6 +150,10 @@ Contoh:
 "Am Montag kann ich leider nicht."
 
 Negosiasi sampai menemukan waktu cocok.
+
+Jika jadwal sudah disepakati kedua pihak, akhiri percakapan dengan singkat.
+contoh:
+"Dann machen wir das so. Bis bald!"
 `,
 
      b1: `
@@ -149,6 +179,11 @@ Contoh:
 "Das klingt gut."
 "Vielleicht können wir..."
 "Was meinst du dazu?"
+
+Jika semua poin pada AUFGABE sudah dibahas,
+buat kesimpulan singkat.
+Contoh:
+"Dann haben wir alles geplant. Das klingt gut."
 
 Teil 2:
 Diam.
@@ -196,6 +231,10 @@ Kadang tidak setuju:
 Dorong elaborasi:
 "Können Sie das genauer erklären?"
 "Haben Sie ein Beispiel?"
+
+Jika argumen utama sudah dibahas dan diskusi sudah cukup panjang, buat penutup singkat.
+Contoh:
+"Vielen Dank für das Gespräch."
 `
     }
 
@@ -209,8 +248,14 @@ ${levelRules[
 THEMA:
 ${theme}
 
+AUFGABE:
+${task}
+
 TEIL:
 ${teil}
+
+AKTUELLE RUNDE:
+$(round)
 
 Peserta terakhir berkata:
 

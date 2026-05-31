@@ -16,6 +16,7 @@ type Question = {
   question_order:number
   question_type:string
   question_text:string
+  text_block:string
 
   option_a:string
   option_b:string
@@ -85,6 +86,9 @@ HorenEngine({
 const stageKey =
 
 `horen_stage_${level}_${examSet}`
+
+const audioTimeKey =
+`horen_audio_time_${level}_${examSet}`
 
   const [
     loading,
@@ -361,8 +365,27 @@ useEffect(()=>{
     .audio_url
   )
 
+  const savedAudioTime =
+  Number(
+    localStorage.getItem(
+      audioTimeKey
+    ) || "0"
+  )
+
+  audio.currentTime = savedAudioTime
+
   audioRef.current =
   audio
+
+  const saveInternal =
+  setInterval(()=>{
+    localStorage.setItem(
+      audioTimeKey,
+      String( 
+        audio.currentTime
+      )
+    )
+  },1000)
 
  audio.play()
 .catch(()=>{
@@ -375,6 +398,13 @@ useEffect(()=>{
   audio.onended =
   ()=>{
 
+    clearInterval(
+      saveInternal
+    )
+
+    localStorage.removeItem(
+      audioTimeKey
+    )
     setStage(
       "review"
     )
@@ -624,6 +654,10 @@ localStorage
   stageKey
 )
 
+localStorage.removeItem(
+  audioTimeKey
+)
+
     onComplete()
   }
 
@@ -773,6 +807,16 @@ if(
 
               </h2>
 
+              {teilQuestions[0]?.text_block && (
+
+  <div className="bg-white/5 border border-white/10 rounded-3xl p-6 mb-6 whitespace-pre-line">
+
+    {teilQuestions[0].text_block}
+
+  </div>
+
+)}
+
               <div className="space-y-6">
 
                 {teilQuestions.map(
@@ -810,7 +854,7 @@ if(
                         className="bg-white/5 border border-white/10 rounded-3xl p-6"
                       >
 
-                        <p className="mb-5 text-lg">
+                        <p className="mb-5 text-lg whitespace-pre-line">
 
                           {
                             q.question_order

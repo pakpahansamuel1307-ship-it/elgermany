@@ -35,6 +35,10 @@ useState("")
     text_block:"",
 
     text_block_image:"",
+    text_block_image_2:"",
+text_block_image_3:"",
+text_block_image_4:"",
+text_block_image_5:"",
 
     option_a:"",
     option_b:"",
@@ -124,6 +128,18 @@ option_0_image:"",
 
         text_block_image:
         form.text_block_image,
+
+        text_block_image_2:
+form.text_block_image_2,
+
+text_block_image_3:
+form.text_block_image_3,
+
+text_block_image_4:
+form.text_block_image_4,
+
+text_block_image_5:
+form.text_block_image_5,
 
         option_a:
         form.option_a,
@@ -495,28 +511,12 @@ const isTrueFalse =
               Speaking
             </option>
 
-            <option value="vorstellen">
-  A1 Vorstellen
-</option>
-
-<option value="bitte">
-  A1 Bitte
-</option>
-
-<option value="dialog">
+           <option value="dialog">
   Dialog
 </option>
 
-<option value="presentation">
-  Presentation
-</option>
-
-<option value="discussion">
-  Discussion
-</option>
-
-<option value="termin">
-  Termin Planung
+<option value="monolog">
+  Monolog
 </option>
 
           </select>
@@ -574,6 +574,54 @@ const isTrueFalse =
   }
 
   className="w-full mt-6 bg-white/10 p-4 rounded-2xl"
+/>
+
+<input
+  placeholder="Text Block Image URL 2"
+  value={form.text_block_image_2 || ""}
+  onChange={(e)=>
+    handleChange(
+      "text_block_image_2",
+      e.target.value
+    )
+  }
+  className="w-full mt-4 bg-white/10 p-4 rounded-2xl"
+/>
+
+<input
+  placeholder="Text Block Image URL 3"
+  value={form.text_block_image_3 || ""}
+  onChange={(e)=>
+    handleChange(
+      "text_block_image_3",
+      e.target.value
+    )
+  }
+  className="w-full mt-4 bg-white/10 p-4 rounded-2xl"
+/>
+
+<input
+  placeholder="Text Block Image URL 4"
+  value={form.text_block_image_4 || ""}
+  onChange={(e)=>
+    handleChange(
+      "text_block_image_4",
+      e.target.value
+    )
+  }
+  className="w-full mt-4 bg-white/10 p-4 rounded-2xl"
+/>
+
+<input
+  placeholder="Text Block Image URL 5"
+  value={form.text_block_image_5 || ""}
+  onChange={(e)=>
+    handleChange(
+      "text_block_image_5",
+      e.target.value
+    )
+  }
+  className="w-full mt-4 bg-white/10 p-4 rounded-2xl"
 />
 
 {form.text_block_image && (
