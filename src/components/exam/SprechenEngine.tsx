@@ -925,20 +925,23 @@ JSON.stringify({
 
   }catch(error){
 
-    console.log(
-      error
-    )
+  console.log(error)
 
-    localStorage
-    .setItem(
+  localStorage.setItem(
+    "sprechenScore",
+    "0"
+  )
 
-      "sprechenScore",
+  localStorage.setItem(
+    "sprechenFeedback",
+    JSON.stringify({
+      feedback:
+      "Terjadi kesalahan saat menilai speaking."
+    })
+  )
 
-      "75"
-    )
-
-    onComplete()
-  }
+  onComplete()
+}
 }
 
   function

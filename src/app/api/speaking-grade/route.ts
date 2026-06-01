@@ -21,6 +21,21 @@ export async function POST(
   questions = []
 } = body
 
+if(
+  !transcript ||
+  transcript.trim().length < 10
+){ return NextResponse.json({
+
+  score:0,
+  grade:"Nicht bestanden",
+  feedback:
+  "Tidak ditemukan jawaban lisan yang cukup untuk dinilai.",
+  grammarMistakes:[],
+  strengths:[],
+  improvements:["Berikan jawaban lisan pada setiap Teil."]
+})}
+
+
     const prompt = `
 Kamu adalah kombinasi:
 
@@ -146,7 +161,9 @@ FORMAT JSON WAJIB:
 
       return NextResponse.json({
 
-        score:70,
+        score:0,
+
+        grade:"Nicht bestanden",
 
         feedback:
         "AI gagal membaca hasil speaking.",
@@ -162,11 +179,13 @@ FORMAT JSON WAJIB:
     return NextResponse.json({
 
       score:
-      parsed.score ?? 70,
+     typeof parsed.score=== "number"
+     ? parsed.score
+     : 0,
 
       grade:
       parsed.grade
-      ?? "Ausreichend",
+      ?? "Nicht bestanden",
 
       feedback:
       parsed.feedback
@@ -195,8 +214,9 @@ FORMAT JSON WAJIB:
 
     return NextResponse.json({
 
-      score:70,
-
+      score:0,
+      grade:"Nicht bestanden",
+      
       feedback:
       "Terjadi kesalahan saat menilai speaking.",
 
