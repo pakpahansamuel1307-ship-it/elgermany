@@ -18,16 +18,50 @@ export async function POST(req: Request) {
       module = "schreiben",
     } = body;
 
-    const question = questions[0] || "";
-    const answer = answers[0] || "";
+    
+
+   const examData =
+
+questions.map(
+  (
+    question:string,
+    index:number
+  ) =>
+
+`
+================================
+
+TEIL ${index + 1}
+
+SOAL:
+${question}
+
+JAWABAN PESERTA:
+${answers[index] || ""}
+
+`
+).join("\n")
 
     // Validasi kosong
-    if (!answer.trim()) {
-      return NextResponse.json({
-        score: 0,
-        feedback: "Jawaban masih kosong.",
-      });
-    }
+   const hasAnswer =
+
+answers.some(
+  (a:string)=>
+
+  a &&
+  a.trim().length > 0
+)
+
+if(!hasAnswer){
+
+  return NextResponse.json({
+
+    score:0,
+
+    feedback:
+    "Jawaban masih kosong."
+  })
+}
 
     // Model berdasarkan level
     const model =
@@ -62,11 +96,9 @@ ${level}
 MODUL:
 ${module}
 
-SOAL GOETHE:
-${question}
+DATA UJIAN:
 
-JAWABAN PESERTA:
-${answer}
+${examData}
 
 ================================
 STANDAR PENILAIAN BERDASARKAN LEVEL
@@ -125,6 +157,23 @@ Apakah peserta benar-benar menjawab tugas?
 - Keterhubungan ide
 - Organisasi tulisan
 
+PENTING:
+
+Setiap TEIL harus dinilai.
+
+Periksa:
+
+- Apakah setiap Teil dijawab.
+- Apakah jawaban sesuai tugas pada Teil tersebut.
+- Apakah ada Teil yang kosong.
+- Apakah ada Teil yang hanya dijawab sebagian.
+
+Jika satu Teil kosong,
+kurangi nilai secara signifikan.
+
+Jika beberapa Teil kosong,
+nilai harus turun drastis.
+
 ================================
 ATURAN PENTING
 ================================
@@ -135,6 +184,13 @@ ATURAN PENTING
 - Jika grammar buruk tetapi isi jelas pada A1/A2, tetap adil.
 - Jika jawaban terlalu pendek, turunkan nilai.
 - Jika jawaban tidak menjawab soal, turunkan nilai.
+- Jika terdapat beberapa soal Schreiben:
+  -Nilai semua soal sekaligus.
+  -perhatikan kelengkapan setiap Teil
+  -Jika ada Teil yang tidak di jawab,
+  kurangi nilai secara signifikan.
+  -Jika semua Teil kosog,
+   score harus 0
 
 ================================
 GAYA FEEDBACK
@@ -215,28 +271,56 @@ Format wajib:
 
     try {
       parsed = JSON.parse(cleanedText);
-    } catch {
-      return NextResponse.json({
-        score: 70,
-        feedback:
-          "AI merespons tetapi format tidak valid.",
-      });
-    }
+    }catch {
 
-    return NextResponse.json({
-      score: parsed.score ?? 70,
-      feedback:
-        parsed.feedback ??
-        "Feedback belum tersedia.",
-    });
+  console.log(
+    "INVALID JSON:",
+    cleanedText
+  )
 
+  return NextResponse.json({
+
+    score: 0,
+
+    feedback:
+    "AI gagal menghasilkan format penilaian yang valid."
+
+  })
+}
+
+   return NextResponse.json({
+
+  score:
+
+  typeof parsed.score
+  === "number"
+
+  ?
+
+  parsed.score
+
+  :
+
+  0,
+
+  feedback:
+
+  parsed.feedback
+  ??
+
+  "Feedback belum tersedia."
+
+})
   } catch (error: any) {
     console.error("OPENAI ERROR:", error);
 
     return NextResponse.json({
-      score: 70,
-      feedback:
-        "Terjadi kesalahan saat memproses penilaian.",
-    });
+
+  score: 0,
+
+  feedback:
+  "Terjadi kesalahan saat memproses penilaian."
+
+});
   }
 }

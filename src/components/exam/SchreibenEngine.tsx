@@ -371,13 +371,14 @@ submitExam(){
 
     const score =
 
-      aiResult.score
-      || 70
+      typeof aiResult.score === "number"
+      ? aiResult.score
+      : 0
 
     const feedback =
 
       aiResult.feedback
-      || "Feedback belum tersedia."
+      ?? "Feedback belum tersedia."
 
     localStorage
     .setItem(
