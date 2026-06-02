@@ -173,6 +173,12 @@ useState("")
   const chunks =
   useRef<Blob[]>([])
 
+  const aiAudioRef =
+useRef<
+  HTMLAudioElement
+  | null
+>(null)
+
   // ==================
   // LOAD QUESTIONS
   // ==================
@@ -310,6 +316,8 @@ useState("")
          if(
   currentTeil < 3
 ){
+
+  stopAiAudio()
 
   setCurrentTeil(
     prev => prev + 1
@@ -532,9 +540,12 @@ if(isMonolog){
     )
 
     const audio =
-    new Audio(
-      data.audio
-    )
+new Audio(
+  data.audio
+)
+
+aiAudioRef.current =
+audio
 
     setAiSpeaking(true)
 
@@ -737,10 +748,13 @@ formData.append(
           data.aiReply
         )
 
-        const audio =
-        new Audio(
-          data.audio
-        )
+      const audio =
+new Audio(
+  data.audio
+)
+
+aiAudioRef.current =
+audio
 
         setAiSpeaking(
           true
@@ -794,7 +808,31 @@ setConversationHistory(
   }
 }
 
+function stopAiAudio(){
+
+  if(
+    aiAudioRef.current
+  ){
+
+    aiAudioRef.current.pause()
+
+    aiAudioRef.current.currentTime = 0
+
+    aiAudioRef.current.onended = null
+
+    aiAudioRef.current = null
+  }
+
+  setAiSpeaking(false)
+
+  setAiThinking(false)
+
+  setAiMessage("")
+}
+
   function nextTeil(){
+
+    stopAiAudio()
 
   const maxTeil =
   Math.max(
@@ -823,6 +861,8 @@ setConversationHistory(
 
   async function
 finishExam(){
+
+  stopAiAudio()
 
   if(
   examFinished
