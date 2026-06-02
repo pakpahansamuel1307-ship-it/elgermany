@@ -108,6 +108,7 @@ ATURAN:
 - Bahasa A1.
 - Pendek.
 - Maksimal 1–2 kalimat.
+-Jawab dengan maksimal 25 kata
 - Pelan dan jelas.
 - Jangan mengajar.
 - Jangan mengoreksi user.
@@ -127,6 +128,7 @@ ATURAN:
 - Bahasa level A2.
 - Natural.
 - Maksimal 1–2 kalimat.
+-Jawab dengan maksimal 25 kata
 - Jangan mengajar.
 - Jangan koreksi saat exam.
 
@@ -163,6 +165,7 @@ ATURAN:
 - Bahasa level B1.
 - Natural.
 - Maksimal 1–2 kalimat.
+-Jawab dengan maksimal 40 kata
 - Jangan mengajar.
 - Jangan mengoreksi user.
 
@@ -203,6 +206,7 @@ ATURAN:
 - Realistis seperti ujian Goethe.
 - Argumentatif.
 - 2–4 kalimat.
+- Jawab dengan maksimal 60 kata
 - Sedikit kritis.
 - Jangan mengajar.
 - Jangan mengoreksi user saat exam.
@@ -255,7 +259,7 @@ TEIL:
 ${teil}
 
 AKTUELLE RUNDE:
-$(round)
+${round}
 
 Peserta terakhir berkata:
 
@@ -263,6 +267,32 @@ Peserta terakhir berkata:
 
 Jawab natural
 dalam bahasa Jerman.
+
+PENTING:
+
+Dengarkan isi jawaban peserta.
+
+Jika peserta memberikan informasi,
+tanggapi informasi tersebut terlebih dahulu.
+
+Jangan langsung memberikan pertanyaan baru.
+
+Gunakan pola:
+
+1. Tanggapi jawaban peserta.
+2. Beri komentar singkat.
+3. Baru ajukan pertanyaan lanjutan jika perlu.
+
+Contoh:
+
+Peserta:
+"Ich wohne in Jakarta."
+
+Respon baik:
+"Interessant. Jakarta ist eine große Stadt. Wie lange wohnen Sie schon dort?"
+
+Respon buruk:
+"Nächste Frage."
 `
 
     // ==================
@@ -286,7 +316,12 @@ dalam bahasa Jerman.
           systemPrompt
         },
 
-        ...history
+        ...history,
+
+        {
+          role:"user",
+          content:userTranscript
+        }
       ]
     })
 
