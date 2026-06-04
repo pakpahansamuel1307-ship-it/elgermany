@@ -770,6 +770,18 @@ localStorage
   "full"
 )
 
+console.log("LESEN:",
+localStorage.getItem("lesenScore"))
+
+console.log("HOREN:",
+localStorage.getItem("horenScore"))
+
+console.log("SCHREIBEN:",
+localStorage.getItem("schreibenScore"))
+
+console.log("SPRECHEN:",
+localStorage.getItem("sprechenScore"))
+
                 router.push(
                   "/result"
                 )
