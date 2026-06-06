@@ -73,10 +73,10 @@ ModulePage({
     "Rp10.000",
 
     schreiben:
-    "Rp12.000",
+    "Rp10.000",
 
     sprechen:
-    "Rp13.000"
+    "Rp10.000"
   }
 
   const handleBuy =
@@ -451,13 +451,13 @@ className="bg-gradient-to-r from-yellow-400 to-red-500 text-black px-8 py-4 roun
 
                   <p className="text-gray-300">
 
-                    BCA:
-                    123456789
+                    BNI :1847255472
+                    
                   </p>
 
                   <p className="text-gray-300 mb-6">
 
-                    a.n. Samuel
+                    a.n. Samuel Ephraim Pakpahan
                   </p>
 
                   <input

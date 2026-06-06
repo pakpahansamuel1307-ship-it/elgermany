@@ -17,7 +17,7 @@ export const moduleData = {
           "Schlafen"
         ],
 
-        answer:
+      answer:
           "Reisen"
       },
 

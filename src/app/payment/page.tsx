@@ -226,13 +226,13 @@ async ()=>{
 
           <p className="text-gray-300">
 
-            BCA: 123456789
+            BNI: 1847255472
 
           </p>
 
           <p className="text-gray-300">
 
-            a.n. Samuel
+            a.n. Samuel Ephraim Pakpahan
 
           </p>
 
