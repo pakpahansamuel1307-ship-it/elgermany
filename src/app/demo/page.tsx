@@ -128,14 +128,13 @@ DemoPage(){
 
         <h1 className="text-5xl font-bold mb-4">
 
-          Demo Tryout Gratis
+          Demo free Tryout 
 
         </h1>
 
         <p className="text-gray-400 mb-10">
 
-          Coba soal gratis
-          sebelum membeli token.
+          Try the free questions before purchasing tokens.
 
         </p>
 
@@ -330,7 +329,7 @@ DemoPage(){
                 className="mt-8 bg-gradient-to-r from-yellow-400 to-red-500 text-black px-8 py-4 rounded-2xl font-bold disabled:opacity-40"
               >
 
-                Submit Jawaban
+                Submit 
 
               </button>
 
@@ -376,7 +375,7 @@ DemoPage(){
             className="bg-yellow-400 text-black px-8 py-4 rounded-2xl font-bold inline-block"
           >
 
-            Beli Token Full Tryout
+            Buy Token Full Tryout
 
           </a>
 

@@ -683,25 +683,22 @@ if(
 
       <h1 className="text-5xl font-bold mb-8">
 
-        Persiapan Hören
+        Listening Preparation
 
       </h1>
 
       <p className="text-xl text-gray-300 max-w-2xl mx-auto">
 
-        Audio akan langsung
-        diputar otomatis.
+        Audio will be played automatically.
 
         <br />
 
-        Audio hanya dapat
-        diputar satu kali.
+        Audio can only be played once.
+    
 
         <br />
 
-        Siapkan headset
-        dan fokus mendengar.
-
+       Put on your headset and listen carefully.
       </p>
 
       <div className="text-7xl font-bold text-yellow-400 mt-12">
@@ -727,8 +724,8 @@ if(
 
   <div className="bg-red-500/20 border border-red-500 rounded-3xl p-5 mb-8">
 
-    Audio sedang diputar.
-    Dengarkan baik-baik.
+    Audio is playing.
+    Listen carefully.
 
   </div>
 
@@ -751,7 +748,7 @@ if(
 
     <p className="font-bold">
 
-      Waktu memeriksa jawaban
+      Time to review answers
 
     </p>
 
@@ -1038,7 +1035,7 @@ if(
 
       >
 
-        Lanjut
+        Next Module
 
       </button>
 

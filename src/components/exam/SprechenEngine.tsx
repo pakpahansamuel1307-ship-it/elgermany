@@ -1098,7 +1098,7 @@ questionType === "monolog"
 
           <div className="bg-yellow-400 text-black rounded-3xl p-5 text-center font-bold text-2xl">
 
-            Persiapan:
+            Preparation:
 
             {" "}
 
@@ -1230,7 +1230,7 @@ questionType === "monolog"
 
   >
 
-    Akhiri Persiapan
+    End Preparation
 
   </button>
 
@@ -1302,7 +1302,7 @@ questionType === "monolog"
 
   ?
 
-  "🎧 AI Sedang Berbicara..."
+  "🎧 AI is Speaking..."
 
   :
 
@@ -1315,11 +1315,11 @@ questionType === "monolog"
 
   ?
 
-  "Akhiri Dialog"
+  "Close Conversation"
 
   :
 
-  "Akhiri Monolog"
+  "Close Conversation"
 )
 
 :
@@ -1331,7 +1331,7 @@ questionType === "monolog"
     ?
     "Start Dialog"
     :
-    "🎤 Sedang Mendengarkan..."
+    "🎤 Listening..."
   )
   :
   "Start Monolog"
@@ -1372,7 +1372,7 @@ isMonolog && (
 
     >
 
-      Lanjut Teil
+      Next Teil
 
     </button>
 
@@ -1402,7 +1402,7 @@ isMonolog && (
 
     >
 
-      Lanjut Teil Berikutnya →
+      Next Teil →
 
     </button>
 

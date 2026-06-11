@@ -265,7 +265,7 @@ Math.round(
                 className="bg-gradient-to-r from-yellow-400 to-red-500 text-black font-bold px-8 py-4 rounded-2xl hover:opacity-90 transition"
               >
 
-                Kembali ke Dashboard
+                Back to Dashboard
 
               </a>
 

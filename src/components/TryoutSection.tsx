@@ -209,9 +209,8 @@ attempts.map(
 
       <p className="text-gray-400 mb-10">
 
-        Review hasil tryout
-        dan pembahasanmu
-
+        Review your tryout results 
+        and explanations.
       </p>
 
       <div className="space-y-6">
@@ -262,7 +261,7 @@ attempts.map(
 
       <p className="text-gray-400">
 
-        Nilai Akhir
+        Final Score
 
       </p>
 
@@ -291,7 +290,7 @@ attempts.map(
     className="bg-gradient-to-r from-yellow-400 to-red-500 text-black font-bold px-5 py-3 rounded-2xl whitespace-nowrap"
   >
 
-    Lihat Pembahasan ▶
+    View Explanation ▶
 
   </a>
 
@@ -299,7 +298,7 @@ attempts.map(
 
   <div className="bg-white/10 text-gray-400 font-bold px-5 py-3 rounded-2xl whitespace-nowrap">
 
-    Belum Ada Pembahasan
+    No Explanation Available Yet
 
   </div>
 
@@ -349,7 +348,7 @@ attempts.map(
 
     <h4 className="font-bold mb-5 text-xl">
 
-      Feedback AI
+      AI Feedback
 
     </h4>
 
@@ -480,7 +479,7 @@ parsed.sprechen.trim().startsWith("{")
 
       <h4 className="font-bold text-xl mb-5">
 
-        Feedback AI
+        AI Feedback
       </h4>
 
       {parsed.feedback && (
@@ -627,7 +626,7 @@ parsed.sprechen.trim().startsWith("{")
 
   <h4 className="font-bold text-xl mb-5">
 
-    Review Soal
+    Review Answers
 
   </h4>
 
@@ -691,7 +690,7 @@ parsed.sprechen.trim().startsWith("{")
 
             <p className="text-gray-400">
 
-              Jawaban kamu:
+              Your Answer:
             </p>
 
             <p className="mb-4">
@@ -705,7 +704,7 @@ parsed.sprechen.trim().startsWith("{")
 
             <p className="text-gray-400">
 
-              Jawaban benar:
+              Correct Answer:
             </p>
 
             <p
@@ -775,7 +774,7 @@ parsed.sprechen.trim().startsWith("{")
 
       <h4 className="font-bold mb-3 text-yellow-300">
 
-        Pembahasan
+        Explanation
 
       </h4>
 

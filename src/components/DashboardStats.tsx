@@ -26,13 +26,13 @@ DashboardStats(){
 
     {
       title:
-      "Sisa Akses",
+      "Remaining Access",
       value:"0"
     },
 
     {
       title:
-      "Nilai Tertinggi",
+      "Highest Score",
       value:"0"
     },
 
@@ -220,7 +220,7 @@ DashboardStats(){
 
         {
           title:
-          "Sisa Akses",
+          "Remaining Access",
 
           value:
           String(
@@ -234,7 +234,7 @@ DashboardStats(){
 
         {
           title:
-          "Nilai Tertinggi",
+          "Highest Score",
 
           value:
           String(

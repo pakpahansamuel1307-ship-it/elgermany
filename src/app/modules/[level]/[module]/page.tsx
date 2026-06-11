@@ -128,8 +128,8 @@ ModuleSetsPage(){
 
         <p className="text-gray-400 mb-12">
 
-          Pilih set modul
-          yang tersedia.
+          Select the module set
+          that is available.
 
         </p>
 
@@ -168,7 +168,7 @@ ModuleSetsPage(){
 
                   <p className="text-gray-400">
 
-                    Modul terpisah
+                    Separated module
 
                   </p>
 

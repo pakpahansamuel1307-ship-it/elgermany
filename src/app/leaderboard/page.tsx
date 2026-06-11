@@ -5,7 +5,7 @@ export default function LeaderboardPage() {
       <h1>Leaderboard</h1>
 
       <p>
-        Ranking siswa terbaik akan tampil di sini.
+        The top student rankings will appear here.
       </p>
 
     </div>

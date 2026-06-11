@@ -148,7 +148,7 @@ useEffect(()=>{
     ){
 
       alert(
-        "Tryout ini sudah pernah dikerjakan."
+        "You have already completed this tryout."
       )
 
       router.push(

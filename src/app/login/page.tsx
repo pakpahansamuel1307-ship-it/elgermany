@@ -122,7 +122,7 @@ async ()=>{
 
       alert(
 
-        "Gagal create profile: " +
+        " create profile: failed " +
 
         profileInsertError.message
 
@@ -173,7 +173,7 @@ async ()=>{
   if(!email){
 
     alert(
-      "Masukkan email dulu"
+      "Please enter your email first."
     )
 
     return
@@ -209,7 +209,7 @@ async ()=>{
 
   alert(
 
-"Email reset password berhasil dikirim"
+"Password reset email sent successfully."
 
   )
 }
@@ -277,7 +277,7 @@ async ()=>{
 
 >
 
-  Lupa Password?
+  Forgot Password?
 
 </button>
 
@@ -291,17 +291,17 @@ async ()=>{
 
 >
 
-  Login dengan Google
+  Login with Google
 
 </button>
 
         <p className="text-center mt-6 text-gray-400">
-  Belum punya akun?{" "}
+  Don't have an account?{" "}
   <a
     href="/register"
     className="text-yellow-400 hover:underline"
   >
-    Daftar sekarang
+    Register now
   </a>
 </p>
 

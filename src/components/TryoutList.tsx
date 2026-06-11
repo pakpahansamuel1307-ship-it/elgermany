@@ -96,7 +96,7 @@ TryoutList(){
 
         <h2 className="text-3xl font-bold">
 
-          Terbaru
+          Latest
 
         </h2>
 
@@ -104,7 +104,7 @@ TryoutList(){
           href="/start"
           className="text-yellow-400 hover:underline"
         >
-          Lihat Semua
+          View All
         </a>
 
       </div>
@@ -166,8 +166,7 @@ TryoutList(){
               className="w-full bg-gradient-to-r from-yellow-400 to-red-500 hover:opacity-90 transition text-black font-bold py-4 rounded-2xl"
             >
 
-              Lihat Detail
-
+              View Details
             </button>
 
           </div>

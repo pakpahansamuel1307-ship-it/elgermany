@@ -377,7 +377,7 @@ uploadAvatar(
 
       <p className="text-gray-400 mb-10">
 
-        Kelola informasi akunmu
+       Manage your account information
 
       </p>
 
@@ -562,7 +562,7 @@ uploadAvatar(
               className="bg-gradient-to-r from-yellow-400 to-red-500 text-black font-bold px-8 py-4 rounded-2xl"
             >
 
-              Simpan Perubahan
+              Save
 
             </button>
 

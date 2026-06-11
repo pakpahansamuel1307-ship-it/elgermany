@@ -108,9 +108,7 @@ HistorySection(){
 
       <p className="text-gray-400 mb-8">
 
-        Riwayat tryout
-        yang sudah kamu kerjakan
-
+        History of the tryouts you have completed.
       </p>
 
       <div className="space-y-4">
@@ -120,7 +118,7 @@ HistorySection(){
 
           <div className="bg-white/5 border border-white/10 rounded-3xl p-8 text-center text-gray-400">
 
-            Belum ada history tryout
+            No tryout history available
 
           </div>
 

@@ -26,8 +26,7 @@ ModulesPage(){
 
         <p className="text-gray-400 mb-12">
 
-          Pilih level modul
-          yang ingin dipelajari.
+          Select the module level you want to study.
 
         </p>
 

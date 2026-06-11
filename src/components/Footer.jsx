@@ -44,13 +44,12 @@ Footer(){
 
             <p className="text-gray-400 mt-5 leading-relaxed">
 
-              Platform try out bahasa Jerman modern
-              dengan AI correction,
+              Modern German language practice platform
+              with AI correction,
               speaking simulation,
-              dan latihan Goethe
-              A1–B2 untuk membantu
-              persiapan ujianmu.
-
+              and Goethe A1–B2 
+              practice materials 
+              to help you prepare for your exam.
             </p>
 
           </div>
@@ -159,7 +158,7 @@ Footer(){
 
                 <span>
 
-                  contact@elgermany.com
+                  pakpahansamuel137@gmail.com
 
                 </span>
 

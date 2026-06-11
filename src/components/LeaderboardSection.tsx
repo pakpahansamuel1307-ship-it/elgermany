@@ -221,8 +221,7 @@ console.log( "SORTED", sorted )
 
       <p className="text-gray-400 mb-10">
 
-        Top 20 Nilai
-        Full Tryout Goethe
+        Top 20 Scores in the Goethe Full Tryout
 
       </p>
 
@@ -283,7 +282,7 @@ console.log( "SORTED", sorted )
 
         <h2 className="font-bold text-yellow-400 text-xl">
 
-          Ranking Kamu:
+          Your Ranking:
           {" "}
           #{myRank || "-"}
 

@@ -8,13 +8,13 @@ export default function StartPage() {
 
         <h1 className="text-5xl font-bold text-center mb-4">
 
-          Pilih Jenis Belajar
+          Choose Learning Method
 
         </h1>
 
         <p className="text-center text-gray-400 mb-12">
 
-          Pilih metode belajar yang sesuai kebutuhanmu
+          Choose the learning method that suits your needs
 
         </p>
 
@@ -26,15 +26,15 @@ export default function StartPage() {
 
             <h2 className="text-3xl font-bold mb-4">
 
-              Modul Terpisah
+              Seperate Modules
 
             </h2>
 
             <p className="text-gray-400 mb-8">
 
-              Beli modul Lesen,
+              Buy modules for Lesen,
               Hören, Schreiben,
-              atau Sprechen secara terpisah.
+              or Sprechen separately.
 
             </p>
 
@@ -43,7 +43,7 @@ export default function StartPage() {
               className="bg-yellow-400 text-black px-6 py-3 rounded-xl font-bold inline-block"
             >
 
-              Pilih Modul
+              View Modules
 
             </a>
 
@@ -61,9 +61,7 @@ export default function StartPage() {
 
             <p className="text-gray-400 mb-8">
 
-              Gunakan token untuk
-              mengakses full paket tryout.
-
+              Use tokens to access the full tryout package.
             </p>
 
             <a
@@ -71,7 +69,7 @@ export default function StartPage() {
               className="bg-yellow-400 text-black px-6 py-3 rounded-xl font-bold inline-block"
             >
 
-              Mulai Tryout
+              Start Tryout
 
             </a>
 
@@ -100,7 +98,7 @@ export default function StartPage() {
               className="bg-yellow-400 text-black px-6 py-3 rounded-xl font-bold inline-block"
             >
 
-              Mulai Belajar
+              Start Learning
 
             </a>
 

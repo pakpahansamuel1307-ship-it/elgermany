@@ -13,19 +13,19 @@ const plans = [
 
   {
     name:"1 Token Tryout",
-    price:"Rp25.000",
+    price:"€ 3",
     tokens:1
   },
 
   {
     name:"5 Token Tryout",
-    price:"Rp100.000",
+    price:"€ 13",
     tokens:5
   },
 
   {
     name:"10 Token Tryout",
-    price:"Rp180.000",
+    price:"€ 27",
     tokens:10
   }
 
@@ -63,7 +63,7 @@ async ()=>{
   ){
 
     alert(
-      "Pilih paket."
+      "Please select a package."
     )
 
     return
@@ -91,7 +91,7 @@ async ()=>{
   ){
 
     alert(
-      "Upload bukti transfer dulu."
+      "Please upload a payment proof."
     )
 
     return
@@ -127,7 +127,7 @@ async ()=>{
   ){
 
     alert(
-      "Gagal upload bukti transfer."
+      "Failed to upload proof of transfer"
     )
 
     return
@@ -196,7 +196,7 @@ async ()=>{
   }
 
   alert(
-    "Payment berhasil dikirim."
+    "Payment successfully submitted."
   )
 }
 
@@ -210,7 +210,7 @@ async ()=>{
 
         <h1 className="text-5xl font-bold mb-10">
 
-          Pembelian Token
+          Token Purchase
 
         </h1>
 
@@ -220,13 +220,13 @@ async ()=>{
 
           <h2 className="text-2xl font-bold mb-5">
 
-            Transfer ke:
+            Transfer to:
 
           </h2>
 
           <p className="text-gray-300">
 
-            BNI: 1847255472
+            BNI: 1847255472 / chat admin first
 
           </p>
 
@@ -295,7 +295,7 @@ async ()=>{
 
           <p className="mb-5">
 
-            Upload bukti transfer
+            Upload Payment Proof
 
           </p>
 
@@ -321,7 +321,7 @@ async ()=>{
 
   <p className="text-green-400 mt-3">
 
-    File dipilih:
+    File selected:
     {" "}
     {proof.name}
 
@@ -337,7 +337,7 @@ async ()=>{
   className="mt-8 bg-gradient-to-r from-yellow-400 to-red-500 text-black px-8 py-4 rounded-2xl font-bold"
 >
 
-  Kirim Bukti Transfer
+  Upload Proof of Payment
 
 </button>
 

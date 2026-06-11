@@ -191,7 +191,7 @@ if(
   ){
 
     alert(
-      "Token habis"
+      "No tokens remaining"
     )
 
     router.push(
@@ -275,7 +275,7 @@ if(!session){
       ){
 
         alert(
-          "Token habis"
+          "No tokens remaining"
         )
 
         router.push(
@@ -559,7 +559,7 @@ if(
 ){
 
   alert(
-    "Full tryout ini sudah pernah digunakan."
+    "This full tryout has already been used."
   )
 
   router.push(

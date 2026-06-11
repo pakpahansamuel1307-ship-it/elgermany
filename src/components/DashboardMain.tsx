@@ -51,7 +51,7 @@ export default function DashboardMain() {
         </div>
 
         <div className="stat-card">
-          <h3>Sisa Try Out</h3>
+          <h3>Remaining Tryouts</h3>
           <p>
             {remaining}
           </p>

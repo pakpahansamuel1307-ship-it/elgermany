@@ -67,16 +67,16 @@ ModulePage({
   } = {
 
     horen:
-    "Rp10.000",
+    "€0.80",
 
     lesen:
-    "Rp10.000",
+    "€0.80",
 
     schreiben:
-    "Rp10.000",
+    "€0.80",
 
     sprechen:
-    "Rp10.000"
+    "€0.80"
   }
 
   const handleBuy =
@@ -135,7 +135,7 @@ ModulePage({
     ){
 
       alert(
-"Upload bukti transfer dulu."
+"Please upload a payment proof first."
       )
 
       return
@@ -172,7 +172,7 @@ ModulePage({
     ){
 
       alert(
-"Gagal upload bukti transfer"
+"Failed to upload proof of payment."
       )
 
       return
@@ -242,7 +242,7 @@ ModulePage({
 
     alert(
 
-"Pembelian modul berhasil dikirim. Menunggu approval admin."
+"Module purchase submitted successfully. Awaiting admin approval."
 
     )
 
@@ -378,7 +378,7 @@ href={`/exam/module/${module}/${level}/${id}`}
 className="bg-gradient-to-r from-yellow-400 to-red-500 text-black px-8 py-4 rounded-2xl font-bold"
                   >
 
-                    Mulai Modul
+                    Start Module
 
                   </button>
 
@@ -392,7 +392,7 @@ href={`/modules/video/${productId}`}
 className="bg-white/10 px-8 py-4 rounded-2xl"
                   >
 
-                    Video Pembahasan
+                    Explanation
 
                   </button>
 
@@ -408,7 +408,7 @@ className="bg-white/10 px-8 py-4 rounded-2xl"
 
               <p className="text-red-400 text-xl mb-6">
 
-                🔒 Modul terkunci
+                🔒 Module locked
 
               </p>
 
@@ -430,7 +430,7 @@ className="bg-white/10 px-8 py-4 rounded-2xl"
 className="bg-gradient-to-r from-yellow-400 to-red-500 text-black px-8 py-4 rounded-2xl font-bold"
               >
 
-                Beli Modul
+                Buy Module
 
               </button>
 
@@ -440,18 +440,19 @@ className="bg-gradient-to-r from-yellow-400 to-red-500 text-black px-8 py-4 roun
 
                   <h3 className="text-2xl font-bold mb-5">
 
-                    Upload Bukti Transfer
+                    Upload Payment Proof
 
                   </h3>
 
                   <p className="text-gray-300">
 
-                    Transfer ke:
+                    Transfer to:
                   </p>
 
                   <p className="text-gray-300">
 
-                    BNI :1847255472
+                    BNI :1847255472 / chat admin first
+
                     
                   </p>
 
@@ -487,7 +488,7 @@ e.target.files?.[0]
 
                     <p className="text-green-400 mt-3">
 
-                      File dipilih:
+                      File selected:
                       {" "}
 
                       {
@@ -507,7 +508,7 @@ handleSubmitPayment
 className="mt-6 bg-gradient-to-r from-yellow-400 to-red-500 text-black px-8 py-4 rounded-2xl font-bold"
                   >
 
-                    Kirim Bukti Transfer
+                    Send Payment Proof
 
                   </button>
 

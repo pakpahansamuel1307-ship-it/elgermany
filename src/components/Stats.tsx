@@ -168,7 +168,7 @@ Stats(){
 
             <p className="text-gray-400 mt-3">
 
-              Try Out Diselesaikan
+              Try Out Completed
 
             </p>
 
@@ -186,7 +186,7 @@ Stats(){
 
             <p className="text-gray-400 mt-3">
 
-              Pengguna Aktif
+              Active Users
 
             </p>
 
@@ -202,7 +202,7 @@ Stats(){
 
             <p className="text-gray-400 mt-3">
 
-              Tingkat Kepuasan
+              Satisfaction Level
 
             </p>
 
@@ -218,7 +218,7 @@ Stats(){
 
             <p className="text-gray-400 mt-3">
 
-              Semua Level
+             All Level
 
             </p>
 

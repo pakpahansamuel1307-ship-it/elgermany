@@ -18,14 +18,13 @@ TryoutPage(){
 
         <h1 className="text-5xl font-bold text-center mb-4">
 
-          Pilih Level Tryout
+          choose Level Tryout
 
         </h1>
 
         <p className="text-center text-gray-400 mb-14">
 
-          Pilih level Goethe
-          yang ingin kamu kerjakan
+          Choose the Goethe level you want to practice.
 
         </p>
 
@@ -55,7 +54,7 @@ TryoutPage(){
 
                 <div className="bg-gradient-to-r from-yellow-400 to-red-500 text-black font-bold py-4 rounded-2xl">
 
-                  Pilih Level
+                  choose level
 
                 </div>
 

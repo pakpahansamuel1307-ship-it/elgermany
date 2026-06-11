@@ -20,7 +20,7 @@ export default function Features(){
 
           <h2 className="text-4xl md:text-5xl font-bold">
 
-            Kenapa Memilih
+           Why Choose
             <span className="text-yellow-400">
               {" "}EL Germany?
             </span>
@@ -29,8 +29,8 @@ export default function Features(){
 
           <p className="text-gray-400 mt-5 text-lg">
 
-            Platform try out bahasa Jerman modern
-            dengan pengalaman premium.
+            Modern German language practice platform
+            with a premium experience.
 
           </p>
 
@@ -56,14 +56,14 @@ export default function Features(){
 
             <h3 className="text-2xl font-bold mb-4">
 
-              Try Out Realistis
+              Realistic Try Out
 
             </h3>
 
             <p className="text-gray-400 leading-relaxed">
 
-              Simulasi ujian Goethe yang dirancang
-              menyerupai ujian asli.
+              Goethe exam simulation designed
+              to resemble the actual exam.
 
             </p>
 
@@ -87,8 +87,8 @@ export default function Features(){
 
             <p className="text-gray-400 leading-relaxed">
 
-              Penilaian schreiben dan sprechen
-              otomatis menggunakan AI modern.
+              Automatic assessment of Schreiben and Sprechen
+              using modern AI.
 
             </p>
 
@@ -106,14 +106,14 @@ export default function Features(){
 
             <h3 className="text-2xl font-bold mb-4">
 
-              Video Pembahasan
+              Video Explanations
 
             </h3>
 
             <p className="text-gray-400 leading-relaxed">
 
-              Akses video pembahasan eksklusif
-              setelah menyelesaikan try out.
+              Exclusive File explanations
+              after completing the try out.
 
             </p>
 

@@ -31,17 +31,17 @@ export default function DashboardHero(){
 
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
 
-            Siap Melanjutkan
+            Ready to Continue
             <br />
-            Persiapan Goethe?
+            Goethe Preparation?
 
           </h1>
 
           <p className="text-gray-400 text-lg mt-6 max-w-2xl">
 
-            Kerjakan try out premium,
-            akses video pembahasan,
-            dan tingkatkan peluang lulusmu.
+           Take premium tryouts,
+            access file explanations, 
+            and increase your chances of passing.
 
           </p>
 
@@ -50,7 +50,7 @@ window.location.href =
 "/start"
 }} className="mt-10 bg-yellow-400 hover:bg-yellow-300 hover:scale-105 transition-all duration-300 text-black px-8 py-5 rounded-2xl font-bold">
 
-            Mulai Try Out
+            Start Practice Test
 
           </button>
 

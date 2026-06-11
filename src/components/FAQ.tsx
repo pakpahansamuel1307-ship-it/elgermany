@@ -6,23 +6,23 @@ import { motion, AnimatePresence } from "framer-motion"
 
 const faqData = [
   {
-    question:"Apakah try out mirip ujian Goethe asli?",
-    answer:"Ya, soal dan struktur try out dibuat menyerupai ujian Goethe asli."
+    question:"Is the tryout similar to the actual Goethe exam?",
+    answer:"Yes, the questions and structure of the tryout are designed to closely resemble the actual Goethe exam."
   },
 
   {
-    question:"Apakah AI correction otomatis?",
-    answer:"Ya, schreiben dan sprechen akan dinilai otomatis menggunakan AI modern."
+    question:"Is AI correction automatic?",
+    answer:"Yes, Schreiben and Sprechen are automatically assessed using modern AI."
   },
 
   {
-    question:"Apakah video pembahasan gratis?",
-    answer:"Video pembahasan hanya tersedia untuk pengguna premium."
+    question:"Are the explanation files free?",
+    answer:"Explanation files are only available to premium users.."
   },
 
   {
-    question:"Apakah tersedia speaking simulation?",
-    answer:"Ya, tersedia simulasi sprechen menggunakan AI."
+    question:"Is a speaking simulation available?",
+    answer:"Yes, AI-powered speaking simulations are available"
   },
 ]
 
@@ -49,7 +49,7 @@ export default function FAQ(){
 
           <p className="text-gray-400 mt-5 text-lg">
 
-            Pertanyaan yang paling sering ditanyakan.
+            Frequently Asked Questions
 
           </p>
 

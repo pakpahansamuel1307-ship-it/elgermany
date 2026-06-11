@@ -29,17 +29,17 @@ export default function CTA(){
 
             <h2 className="text-4xl md:text-6xl font-bold leading-tight">
 
-              Mulai Persiapan Goethe
+              Start Goethe Preparation
               <span className="text-yellow-400">
-                {" "}Sekarang
+                {" "}Now
               </span>
 
             </h2>
 
             <p className="text-gray-400 text-lg mt-6 max-w-2xl mx-auto">
 
-              Tingkatkan peluang lulus ujian Goethe
-              dengan try out modern dan AI correction premium.
+              Upgrade your chances of passing the Goethe exam
+              with modern practice tests and premium AI correction.
 
             </p>
 
@@ -47,7 +47,7 @@ export default function CTA(){
 href="/start"
 className="bg-yellow-400 text-black px-6 py-3 rounded-xl font-bold hover:opacity-90 transition inline-block"
 >
-Mulai Sekarang
+Start now
 </a>
 
           </div>

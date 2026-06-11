@@ -48,7 +48,7 @@ ResetPasswordPage(){
     }
 
     alert(
-      "Password berhasil diubah"
+      "Password successfully changed"
     )
 
     router.push(
@@ -64,13 +64,13 @@ ResetPasswordPage(){
 
         <h1 className="text-3xl font-bold mb-6 text-center">
 
-          Password Baru
+          New password
 
         </h1>
 
         <input
           type="password"
-          placeholder="Password baru"
+          placeholder="New password"
 
           value={password}
 
@@ -93,7 +93,7 @@ ResetPasswordPage(){
 
         >
 
-          Simpan Password
+          Save Password
 
         </button>
 

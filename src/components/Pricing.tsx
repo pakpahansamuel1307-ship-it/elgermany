@@ -19,7 +19,7 @@ export default function Pricing(){
 
           <p className="text-gray-400 mt-5 text-lg">
 
-            Pilih paket try out sesuai kebutuhanmu.
+            Choose the tryout package that suits your needs.
 
           </p>
 
@@ -39,13 +39,13 @@ export default function Pricing(){
 
             <p className="text-gray-400 mt-3">
 
-              Cocok untuk pemula
+              Perfect for beginners
 
             </p>
 
             <p className="text-gray-400 mt-3">
 
-              Mulai dari
+              Start from scratch
 
             </p>
 
@@ -53,7 +53,7 @@ export default function Pricing(){
 
               <span className="text-5xl font-bold">
 
-                8K
+                €1
 
               </span>
 
@@ -61,10 +61,10 @@ export default function Pricing(){
 
             <ul className="mt-8 space-y-4 text-gray-300">
 
-              <li>✓ Modul Terpisah</li>
-              <li>✓ Video Pembahasan</li>
-              <li>✓ Score Otomatis</li>
-              <li>✓ Menguatkan bagian yang lemah</li>
+              <li>✓ Seperate Module</li>
+              <li>✓ File Explanation</li>
+              <li>✓ Automatic Scoring</li>
+              <li>✓ Strengthen Weak Areas</li>
 
             </ul>
 
@@ -73,7 +73,7 @@ export default function Pricing(){
               className="mt-10 w-full bg-yellow-400 hover:bg-yellow-300 hover:scale-105 transition-all duration-300 text-black font-bold py-4 rounded-2xl inline-flex items-center justify-center"
             >
 
-              Pilih Paket
+              Choose Package
 
             </a>
 
@@ -97,7 +97,7 @@ export default function Pricing(){
 
             <p className="mt-3">
 
-              Paket paling diminati
+              The most popular package
 
             </p>
 
@@ -105,7 +105,7 @@ export default function Pricing(){
 
               <span className="text-5xl font-bold">
 
-                185K
+                €13
 
               </span>
 
@@ -114,11 +114,11 @@ export default function Pricing(){
             <ul className="mt-8 space-y-4">
 
               <li>✓ 5 Try Out</li>
-              <li>✓ Full Modul</li>
+              <li>✓ Full Module</li>
               <li>✓ AI Correction</li>
               <li>✓ Speaking Simulation</li>
-              <li>✓ Video Pembahasan</li>
-              <li>✓ Siap Menghadapi Ujian</li>
+              <li>✓ File Explanation</li>
+              <li>✓ Ready to Face the Exam</li>
 
             </ul>
 
@@ -127,7 +127,7 @@ export default function Pricing(){
               className="mt-10 w-full bg-black text-white hover:scale-105 transition-all duration-300 py-4 rounded-2xl font-bold hover:bg-gray-900 inline-flex items-center justify-center"
             >
 
-              Pilih Paket
+              Choose Package
 
             </a>
 
@@ -153,7 +153,7 @@ export default function Pricing(){
 
               <span className="text-5xl font-bold">
 
-                330K
+                €28
 
               </span>
 
@@ -162,10 +162,10 @@ export default function Pricing(){
             <ul className="mt-8 space-y-4 text-gray-300">
 
               <li>✓ 10 Try Out</li>
-              <li>✓ Full Modul</li>
-              <li>✓ Video Pembahasan</li>
+              <li>✓ Full Module</li>
+              <li>✓ File Explanation</li>
               <li>✓ AI Correction</li>
-              <li>✓ Lebih Percaya Diri Menghadapi Ujian Sungguhan</li>
+              <li>✓ Ready to Face the Exam</li>
 
             </ul>
 
@@ -174,7 +174,7 @@ export default function Pricing(){
               className="mt-10 w-full bg-red-500 hover:bg-red-400 hover:scale-105 transition-all duration-300 text-white font-bold py-4 rounded-2xl inline-flex items-center justify-center"
             >
 
-              Pilih Paket
+              Choose Package
 
             </a>
 

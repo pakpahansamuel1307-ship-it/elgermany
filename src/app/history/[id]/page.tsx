@@ -151,7 +151,7 @@ HistoryDetailPage(){
 
         <h1 className="text-5xl font-bold mb-3">
 
-          Pembahasan
+          Explanation
 
         </h1>
 
@@ -191,7 +191,7 @@ HistoryDetailPage(){
 
             <h2 className="text-2xl font-bold mb-5">
 
-              Video Pembahasan
+              Explanation
 
             </h2>
 
@@ -207,7 +207,7 @@ HistoryDetailPage(){
 
             >
 
-              Tonton Video
+              Explanation
 
             </a>
 
@@ -279,7 +279,7 @@ HistoryDetailPage(){
 
         >
 
-          Kembali ke Dashboard
+          Back to Dashboard
 
         </a>
 

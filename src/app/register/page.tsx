@@ -48,7 +48,7 @@ async () => {
     
 
     alert(
-      "Register berhasil, silakan login"
+      "Registration successful. Please log in."
     )
 
     window.location.href =
@@ -59,7 +59,7 @@ async () => {
     console.log(err)
 
     alert(
-      "Terjadi kesalahan"
+      "An error occurred"
     )
   }
 }
@@ -158,12 +158,12 @@ async ()=>{
 
 >
 
-  Register dengan Google
+  Register with Google
 
 </button>
 
         <p className="text-center mt-6 text-gray-400">
-  Sudah punya akun?{" "}
+  Already have an account?{" "}
   <a
     href="/login"
     className="text-yellow-400 hover:underline"

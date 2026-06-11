@@ -33,19 +33,19 @@ export default function Hero(){
 
           <h1 className="text-5xl md:text-7xl font-bold leading-tight">
 
-            Persiapan Bahasa Jerman
+           German Language Preparation
             <span className="text-yellow-400">
               {" "}Modern
             </span>
             <br />
-            Dengan AI
+            With AI
 
           </h1>
 
           <p className="text-gray-400 text-lg mt-6 leading-relaxed">
 
-            Platform try out bahasa Jerman modern dengan AI correction,
-            simulasi sprechen interaktif, dan video pembahasan premium.
+            Modern German language practice platform with AI correction,
+            interactive speaking simulation, and premium video explanations.
 
           </p>
 
@@ -54,14 +54,14 @@ export default function Hero(){
          <a
 href="/start"
 className="bg-yellow-400 text-black px-6 py-3 rounded-xl font-bold">
-Mulai Try Out
+Start Try Out
 </a>
 
             <a
 href="/demo"
 className="border border-white px-6 py-3 rounded-xl text-white font-bold"
 >
-Lihat Demo
+View Demo
 </a>
 
           </div>
@@ -105,7 +105,7 @@ Lihat Demo
                     </h3>
 
                     <p className="text-sm text-gray-400">
-                      Simulasi ujian real
+                      Real exam simulation
                     </p>
 
                   </div>
@@ -127,7 +127,7 @@ Lihat Demo
                     </h3>
 
                     <p className="text-sm text-gray-400">
-                      Feedback otomatis modern
+                      Modern automatic feedback
                     </p>
 
                   </div>
@@ -143,7 +143,7 @@ Lihat Demo
                 </h3>
 
                 <p>
-                  Latihan diselesaikan
+                  Exercises Completed
                 </p>
 
               </div>

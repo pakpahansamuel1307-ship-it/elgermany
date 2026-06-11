@@ -463,16 +463,14 @@ localStorage
 
       <p className="text-gray-400 mb-10">
 
-        Jawab semua pertanyaan
-        dengan bahasa Jerman.
-
+        Answer all questions in German.
       </p>
 
       <div className="bg-yellow-400 text-black rounded-3xl p-5 mb-8 flex justify-between">
 
   <p className="font-bold">
 
-    Waktu Tersisa
+    Time Remaining
 
   </p>
 
@@ -600,7 +598,7 @@ localStorage
 
               <div className="mt-4 text-sm text-gray-400">
 
-                Jumlah kata:
+                Word Count:
 
                 {" "}
 

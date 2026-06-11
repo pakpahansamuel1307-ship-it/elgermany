@@ -553,7 +553,7 @@ localStorage
 
   <p className="font-bold">
 
-    Waktu Tersisa
+    Time Remaining
 
   </p>
 
