@@ -5,14 +5,28 @@ import {
   Circle
 } from "lucide-react"
 
-export default function
-Footer(){
+const menuLinks = [
+  { label: "Home", href: "/" },
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Try Out", href: "/tryout" },
+  { label: "Modul", href: "/modules" },
+]
+
+const programs = ["Goethe A1", "Goethe A2", "Goethe B1", "Goethe B2"]
+
+const socials = [
+  { icon: Globe, href: "#", hoverClass: "hover:bg-gold hover:text-ink" },
+  { icon: Circle, href: "#", hoverClass: "hover:bg-crimson hover:text-paper" },
+  { icon: MessageCircle, href: "#", hoverClass: "hover:bg-green-500 hover:text-paper" },
+]
+
+export default function Footer(){
 
   return (
 
-    <footer className="border-t border-white/10 mt-24 bg-[#050816]">
+    <footer className="border-t border-white/10 mt-24 bg-surface-deep">
 
-      <div className="max-w-6xl mx-auto px-6 md:px-16 py-16">
+      <div className="max-w-6xl mx-auto px-6 md:px-16 py-14 md:py-16">
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
@@ -25,30 +39,19 @@ Footer(){
               <img
                 src="/logo.png"
                 alt="EL Germany"
-                className="w-12 h-12 object-contain"
+                className="w-11 h-11 object-contain"
               />
 
-              <h2 className="text-2xl font-bold text-white">
-
-                EL
-
-                <span className="text-yellow-400">
-
-                  Germany
-
-                </span>
-
+              <h2 className="text-xl font-bold text-paper">
+                EL<span className="text-gold">Germany</span>
               </h2>
 
             </div>
 
-            <p className="text-gray-400 mt-5 leading-relaxed">
-
+            <p className="text-mist mt-5 leading-relaxed text-sm">
               Modern German language practice platform
-              with AI correction,
-              speaking simulation,
-              and Goethe A1–B2 
-              practice materials 
+              with AI correction, speaking simulation,
+              and Goethe A1&ndash;B2 practice materials
               to help you prepare for your exam.
             </p>
 
@@ -58,50 +61,20 @@ Footer(){
 
           <div>
 
-            <h3 className="font-bold text-lg mb-5 text-white">
-
+            <h3 className="font-bold text-base mb-5 text-paper">
               Menu
-
             </h3>
 
-            <div className="flex flex-col gap-3 text-gray-400">
-
-              <a
-                href="/"
-                className="hover:text-yellow-400 transition"
-              >
-
-                Home
-
-              </a>
-
-              <a
-                href="/dashboard"
-                className="hover:text-yellow-400 transition"
-              >
-
-                Dashboard
-
-              </a>
-
-              <a
-                href="/tryout"
-                className="hover:text-yellow-400 transition"
-              >
-
-                Try Out
-
-              </a>
-
-              <a
-                href="/modules"
-                className="hover:text-yellow-400 transition"
-              >
-
-                Modul
-
-              </a>
-
+            <div className="flex flex-col gap-3 text-mist text-sm">
+              {menuLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="hover:text-gold transition-colors duration-200 w-fit"
+                >
+                  {link.label}
+                </a>
+              ))}
             </div>
 
           </div>
@@ -110,30 +83,14 @@ Footer(){
 
           <div>
 
-            <h3 className="font-bold text-lg mb-5 text-white">
-
+            <h3 className="font-bold text-base mb-5 text-paper">
               Program
-
             </h3>
 
-            <div className="space-y-3 text-gray-400">
-
-              <p>
-                Goethe A1
-              </p>
-
-              <p>
-                Goethe A2
-              </p>
-
-              <p>
-                Goethe B1
-              </p>
-
-              <p>
-                Goethe B2
-              </p>
-
+            <div className="space-y-3 text-mist text-sm">
+              {programs.map((program) => (
+                <p key={program}>{program}</p>
+              ))}
             </div>
 
           </div>
@@ -142,66 +99,29 @@ Footer(){
 
           <div>
 
-            <h3 className="font-bold text-lg mb-5 text-white">
-
+            <h3 className="font-bold text-base mb-5 text-paper">
               Contact
-
             </h3>
 
-            <div className="space-y-4 text-gray-400">
+            <div className="space-y-4 text-mist text-sm">
 
               <div className="flex items-center gap-3">
-
-                <Mail
-                  size={18}
-                />
-
-                <span>
-
-                  pakpahansamuel137@gmail.com
-
-                </span>
-
+                <Mail size={16} className="shrink-0" />
+                <span className="break-all">pakpahansamuel137@gmail.com</span>
               </div>
 
-              <div className="flex gap-4 pt-2">
-
-                <a
-                  href="#"
-                  target="_blank"
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-pink-500 hover:text-white transition"
-                >
-
-                  <Globe
-                    size={18}
-                  />
-
-                </a>
-
-                <a
-                  href="#"
-                  target="_blank"
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-black transition"
-                >
-
-                  <Circle
-                    size={18}
-                  />
-
-                </a>
-
-                <a
-                  href="#"
-                  target="_blank"
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-green-500 hover:text-white transition"
-                >
-
-                  <MessageCircle
-                    size={18}
-                  />
-
-                </a>
-
+              <div className="flex gap-3 pt-1">
+                {socials.map(({ icon: Icon, href, hoverClass }, index) => (
+                  <a
+                    key={index}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center transition-colors duration-200 ${hoverClass}`}
+                  >
+                    <Icon size={16} />
+                  </a>
+                ))}
               </div>
 
             </div>
@@ -212,19 +132,14 @@ Footer(){
 
         {/* BOTTOM */}
 
-        <div className="border-t border-white/10 mt-14 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+        <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
 
-          <p className="text-gray-500 text-sm">
-
-            © 2026 elgermany.com —
-            All rights reserved.
-
+          <p className="text-mist/70 text-xs md:text-sm">
+            &copy; 2026 elgermany.com &mdash; All rights reserved.
           </p>
 
-          <p className="text-gray-500 text-sm">
-
-            Made with ❤️ for German learners
-
+          <p className="text-mist/70 text-xs md:text-sm">
+            Made with &#10084;&#65039; for German learners
           </p>
 
         </div>

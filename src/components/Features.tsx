@@ -8,26 +8,47 @@ import {
   GraduationCap,
 } from "lucide-react"
 
+const features = [
+  {
+    icon: BookOpen,
+    tint: "bg-gold/15 text-gold",
+    title: "Realistic Try Out",
+    body: "Goethe exam simulation designed to resemble the actual exam.",
+  },
+  {
+    icon: Brain,
+    tint: "bg-crimson/15 text-crimson",
+    title: "AI Correction",
+    body: "Automatic assessment of Schreiben and Sprechen using modern AI.",
+  },
+  {
+    icon: GraduationCap,
+    tint: "bg-green-500/15 text-green-400",
+    title: "Video Explanations",
+    body: "Exclusive file explanations after completing the try out.",
+  },
+]
+
 export default function Features(){
 
   return (
 
-    <section id="features"className="relative z-10 px-6 md:px-16 py-24">
+    <section id="features" className="relative z-10 px-6 md:px-16 py-20 md:py-28">
 
       <div className="max-w-6xl mx-auto">
 
-        <div className="text-center mb-16">
+        <div className="text-center mb-14 md:mb-16">
 
-          <h2 className="text-4xl md:text-5xl font-bold">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-paper">
 
-           Why Choose
-            <span className="text-yellow-400">
+            Why Choose
+            <span className="text-gold">
               {" "}EL Germany?
             </span>
 
           </h2>
 
-          <p className="text-gray-400 mt-5 text-lg">
+          <p className="text-mist mt-5 text-base md:text-lg">
 
             Modern German language practice platform
             with a premium experience.
@@ -37,87 +58,35 @@ export default function Features(){
         </div>
 
         <motion.div
-          initial={{ opacity:0, y:50 }}
+          initial={{ opacity:0, y:32 }}
           whileInView={{ opacity:1, y:0 }}
-          transition={{ duration:0.7 }}
-          viewport={{ once:true }}
-          className="grid md:grid-cols-3 gap-8"
+          transition={{ duration:0.6, ease:"easeOut" }}
+          viewport={{ once:true, margin:"-80px" }}
+          className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8"
         >
 
-          {/* CARD 1 */}
+          {features.map((feature) => (
 
-          <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-8 hover:scale-105 transition-all duration-300">
+            <div
+              key={feature.title}
+              className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-7 md:p-8 hover:bg-white/[0.07] hover:-translate-y-1 transition-all duration-300"
+            >
 
-            <div className="w-14 h-14 rounded-2xl bg-yellow-400/20 flex items-center justify-center mb-6">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${feature.tint}`}>
+                <feature.icon size={22} />
+              </div>
 
-              <BookOpen className="text-yellow-400" />
+              <h3 className="text-xl font-bold mb-3 text-paper">
+                {feature.title}
+              </h3>
 
-            </div>
-
-            <h3 className="text-2xl font-bold mb-4">
-
-              Realistic Try Out
-
-            </h3>
-
-            <p className="text-gray-400 leading-relaxed">
-
-              Goethe exam simulation designed
-              to resemble the actual exam.
-
-            </p>
-
-          </div>
-
-          {/* CARD 2 */}
-
-          <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-8 hover:scale-105 transition-all duration-300">
-
-            <div className="w-14 h-14 rounded-2xl bg-red-500/20 flex items-center justify-center mb-6">
-
-              <Brain className="text-red-400" />
+              <p className="text-mist leading-relaxed text-sm md:text-base">
+                {feature.body}
+              </p>
 
             </div>
 
-            <h3 className="text-2xl font-bold mb-4">
-
-              AI Correction
-
-            </h3>
-
-            <p className="text-gray-400 leading-relaxed">
-
-              Automatic assessment of Schreiben and Sprechen
-              using modern AI.
-
-            </p>
-
-          </div>
-
-          {/* CARD 3 */}
-
-          <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-8 hover:scale-105 transition-all duration-300">
-
-            <div className="w-14 h-14 rounded-2xl bg-green-500/20 flex items-center justify-center mb-6">
-
-              <GraduationCap className="text-green-400" />
-
-            </div>
-
-            <h3 className="text-2xl font-bold mb-4">
-
-              Video Explanations
-
-            </h3>
-
-            <p className="text-gray-400 leading-relaxed">
-
-              Exclusive File explanations
-              after completing the try out.
-
-            </p>
-
-          </div>
+          ))}
 
         </motion.div>
 

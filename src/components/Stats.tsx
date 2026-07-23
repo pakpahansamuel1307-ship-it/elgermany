@@ -1,232 +1,85 @@
 "use client"
 
-import { motion }
-from "framer-motion"
+import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
+import { supabase } from "../lib/supabase"
 
-import {
-  useEffect,
-  useState
-} from "react"
+export default function Stats(){
 
-import { supabase }
-from "../lib/supabase"
-
-export default function
-Stats(){
-
-  const [
-    completedTryouts,
-    setCompletedTryouts
-  ] =
-  useState(500)
-
-  const [
-    activeUsers,
-    setActiveUsers
-  ] =
-  useState(300)
+  const [completedTryouts, setCompletedTryouts] = useState(500)
+  const [activeUsers, setActiveUsers] = useState(300)
 
   useEffect(()=>{
 
-    async function
-    loadStats(){
+    async function loadStats(){
 
       /* TRYOUT COUNT */
 
-      const {
-        count:
-        tryoutCount,
-        error:
-        tryoutError
-      } =
-      await supabase
+      const { count: tryoutCount, error: tryoutError } = await supabase
+        .from("tryout_attempts")
+        .select("*", { count: "exact", head: true })
+        .not("module_type", "eq", "full")
 
-      .from(
-        "tryout_attempts"
-      )
-
-      .select(
-        "*",
-        {
-          count:
-          "exact",
-          head:true
-        }
-      )
-
-      .not(
-        "module_type",
-        "eq",
-        "full"
-      )
-
-      console.log(
-        "TRYOUT COUNT:",
-        tryoutCount
-      )
-
-      console.log(
-        "TRYOUT ERROR:",
-        tryoutError
-      )
+      console.log("TRYOUT COUNT:", tryoutCount)
+      console.log("TRYOUT ERROR:", tryoutError)
 
       /* USER COUNT */
 
-      const {
-        count:
-        userCount,
-        error:
-        userError
-      } =
-      await supabase
+      const { count: userCount, error: userError } = await supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
 
-      .from(
-        "profiles"
-      )
+      console.log("USER COUNT:", userCount)
+      console.log("USER ERROR:", userError)
 
-      .select(
-        "*",
-        {
-          count:
-          "exact",
-          head:true
-        }
-      )
-
-      console.log(
-        "USER COUNT:",
-        userCount
-      )
-
-      console.log(
-        "USER ERROR:",
-        userError
-      )
-
-      setCompletedTryouts(
-
-        500 +
-
-        (
-          tryoutCount
-          || 0
-        )
-
-      )
-
-      setActiveUsers(
-
-        300 +
-
-        (
-          userCount
-          || 0
-        )
-
-      )
+      setCompletedTryouts(500 + (tryoutCount || 0))
+      setActiveUsers(300 + (userCount || 0))
     }
 
     loadStats()
 
   },[])
 
+  const stats = [
+    { value: `${completedTryouts}+`, label: "Try Out Completed", color: "text-gold" },
+    { value: `${activeUsers}+`, label: "Active Users", color: "text-crimson" },
+    { value: "95%", label: "Satisfaction Level", color: "text-green-400" },
+    { value: "A1-B2", label: "All Level", color: "text-blue-400" },
+  ]
+
   return (
 
-    <section className="px-6 md:px-16 py-24">
+    <section className="px-6 md:px-16 py-20 md:py-28">
 
-      <motion.div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto">
 
         <motion.div
-          initial={{
-            opacity:0
-          }}
-
-          whileInView={{
-            opacity:1
-          }}
-
-          transition={{
-            duration:1
-          }}
-
-          viewport={{
-            once:true
-          }}
-
-          className="grid md:grid-cols-4 gap-8"
+          initial={{ opacity:0, y:24 }}
+          whileInView={{ opacity:1, y:0 }}
+          transition={{ duration:0.6, ease:"easeOut" }}
+          viewport={{ once:true, margin:"-80px" }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10"
         >
 
-          <div className="text-center">
+          {stats.map((stat) => (
 
-            <h3 className="text-5xl font-bold text-yellow-400">
+            <div key={stat.label} className="text-center">
 
-              {
-                completedTryouts
-              }+
+              <h3 className={`text-3xl sm:text-4xl md:text-5xl font-bold ${stat.color}`}>
+                {stat.value}
+              </h3>
 
-            </h3>
+              <p className="text-mist mt-3 text-sm md:text-base">
+                {stat.label}
+              </p>
 
-            <p className="text-gray-400 mt-3">
+            </div>
 
-              Try Out Completed
-
-            </p>
-
-          </div>
-
-          <div className="text-center">
-
-            <h3 className="text-5xl font-bold text-red-400">
-
-              {
-                activeUsers
-              }+
-
-            </h3>
-
-            <p className="text-gray-400 mt-3">
-
-              Active Users
-
-            </p>
-
-          </div>
-
-          <div className="text-center">
-
-            <h3 className="text-5xl font-bold text-green-400">
-
-              95%
-
-            </h3>
-
-            <p className="text-gray-400 mt-3">
-
-              Satisfaction Level
-
-            </p>
-
-          </div>
-
-          <div className="text-center">
-
-            <h3 className="text-5xl font-bold text-blue-400">
-
-              A1-B2
-
-            </h3>
-
-            <p className="text-gray-400 mt-3">
-
-             All Level
-
-            </p>
-
-          </div>
+          ))}
 
         </motion.div>
 
-      </motion.div>
+      </div>
 
     </section>
   )

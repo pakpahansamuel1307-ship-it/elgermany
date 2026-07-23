@@ -1,25 +1,23 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import {
-  useEffect,
-  useState
-} from "react"
+  BookOpen,
+  Clock,
+  CheckCircle2,
+  Circle,
+  Loader2,
+} from "lucide-react"
 
-import { supabase }
-from "../../lib/supabase"
+import { supabase } from "../../lib/supabase"
 
 type Question = {
 
   id:number
-
   teil:number
-
   question_order:number
-
   question_type:string
-
   question_text:string
-
   text_block:string
 
   text_block_image:string
@@ -56,960 +54,407 @@ type Question = {
 }
 
 type Props = {
-
   level:string
-
   examSet:number
-
-  onComplete:
-  ()=>void
+  onComplete:()=>void
 }
 
-export default function
-UniversalLesenEngine({
+export default function UniversalLesenEngine({ level, examSet, onComplete }:Props){
 
-  level,
+  const [questions, setQuestions] = useState<Question[]>([])
+  const [answers, setAnswers] = useState<Record<number,string>>({})
 
-  examSet,
+  const storageKey = `lesen_${level}_${examSet}`
+  const timerKey = `lesen_timer_${level}_${examSet}`
 
-  onComplete
+  const timerMap:{ [key:string]:number } = {
+    a1: 20 * 60,
+    a2: 30 * 60,
+    b1: 65 * 60,
+    b2: 65 * 60
+  }
 
-}:Props){
-
-  const [
-    questions,
-    setQuestions
-  ] =
-  useState<Question[]>(
-    []
-  )
-
-  const [
-    answers,
-    setAnswers
-  ] =
-  useState<
-    Record<number,string>
-  >({})
-
-  const storageKey =
-
-`lesen_${level}_${examSet}`
-
-const timerKey =
-
-`lesen_timer_${level}_${examSet}`
-
-const timerMap:{
-  [key:string]:
-  number
-} = {
-
-  a1:20 * 60,
-  a2:30 * 60,
-  b1:65 * 60,
-  b2:65 * 60
-}
-
-const [
-  remainingTime,
-  setRemainingTime
-] =
-useState(
-
-  0
-)
-
-  const [
-    loading,
-    setLoading
-  ] =
-  useState(true)
-
-  const [
-  timerReady,
-  setTimerReady
-] =
-useState(false)
+  const [remainingTime, setRemainingTime] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [timerReady, setTimerReady] = useState(false)
 
   useEffect(()=>{
 
-    async function
-    loadQuestions(){
+    async function loadQuestions(){
 
-      const {
-        data,
-        error
-      } =
-      await supabase
-
-      .from(
-        "exam_questions"
-      )
-
-      .select("*")
-
-      .eq(
-        "level",
-        level
-      )
-
-      .eq(
-        "module",
-        "lesen"
-      )
-
-      .eq(
-        "exam_set",
-        examSet
-      )
-
-      .order(
-        "teil",
-        {
-          ascending:true
-        }
-      )
-
-      .order(
-        "question_order",
-        {
-          ascending:true
-        }
-      )
+      const { data, error } = await supabase
+        .from("exam_questions")
+        .select("*")
+        .eq("level", level)
+        .eq("module", "lesen")
+        .eq("exam_set", examSet)
+        .order("teil", { ascending:true })
+        .order("question_order", { ascending:true })
 
       if(error){
-
-        console.log(
-          error
-        )
-
+        console.log(error)
         return
       }
 
-      setQuestions(
-        data || []
-      )
-
-      setLoading(
-        false
-      )
-
+      setQuestions(data || [])
+      setLoading(false)
     }
 
     loadQuestions()
 
-   /* RESTORE TIMER */
+    /* RESTORE TIMER */
 
-const savedTimer =
-localStorage.getItem(
-  timerKey
-)
+    const savedTimer = localStorage.getItem(timerKey)
 
+    if(savedTimer && Number(savedTimer) > 0){
+      setRemainingTime(Number(savedTimer))
+    }else{
+      setRemainingTime(timerMap[level] || 1200)
+    }
 
-
-if(
-  savedTimer &&
-  Number(savedTimer) > 0
-){
-
-  setRemainingTime(
-    Number(savedTimer)
-  )
-
-}else{
-
-  setRemainingTime(
-    timerMap[level] || 1200
-  )
-
-  
-}
-
-setTimerReady(
-  true
-)
+    setTimerReady(true)
 
     /* RESTORE ANSWERS */
 
-const saved =
+    const saved = localStorage.getItem(storageKey)
 
-localStorage
-.getItem(
-  storageKey
-)
+    if(saved){
+      setAnswers(JSON.parse(saved))
+    }
 
-if(saved){
+  },[level, examSet])
 
-  setAnswers(
-    JSON.parse(
-      saved
-    )
-  )
-}
+  useEffect(()=>{
+    if(!timerReady) return
 
+    localStorage.setItem(timerKey, String(remainingTime))
 
-
-  },[
-    level,
-    examSet
-  ])
+  },[remainingTime, timerReady])
 
   useEffect(()=>{
 
-  if(
-    !timerReady
-  ) return
+    if(loading) return
+    if(!timerReady) return
+    if(remainingTime <= 0) return
 
-  localStorage.setItem(
-    timerKey,
-    String(
-      remainingTime
-    )
-  )
-
-},[
-  remainingTime,
-  timerReady
-])
-
-useEffect(()=>{
-
-  if(
-    loading
-  ) return
-
-  if(
-    !timerReady
-  ) return
-
-  if(
-    remainingTime
-    <= 0
-  ) return
-
-  const timer =
-  setInterval(()=>{
-
-    setRemainingTime(
-      prev=>{
-
-        if(
-          prev <= 1
-        ){
-
-          clearInterval(
-            timer
-          )
-
+    const timer = setInterval(()=>{
+      setRemainingTime(prev=>{
+        if(prev <= 1){
+          clearInterval(timer)
           submitExam()
-
           return 0
         }
-
         return prev - 1
-      }
-    )
+      })
+    },1000)
 
-  },1000)
+    return ()=>{ clearInterval(timer) }
 
-  return ()=>{
+  },[loading, timerReady])
 
-    clearInterval(
-      timer
-    )
+  function handleAnswer(id:number, value:string){
+
+    const updated = { ...answers, [id]:value }
+
+    setAnswers(updated)
+
+    localStorage.setItem(storageKey, JSON.stringify(updated))
   }
 
-},[
-  loading,
-  timerReady
-])
-
-  function
-handleAnswer(
-
-  id:number,
-
-  value:string
-
-){
-
-  const updated = {
-
-    ...answers,
-
-    [id]:
-    value
-  }
-
-  setAnswers(
-    updated
-  )
-
-  localStorage
-  .setItem(
-
-    storageKey,
-
-    JSON.stringify(
-      updated
-    )
-  )
-}
-
-
-
-  function
-  submitExam(){
+  function submitExam(){
 
     let score = 0
 
-    questions.forEach(
-      q=>{
-
-        if(
-
-          answers[
-            q.id
-          ] ===
-          q.correct_answer
-
-        ){
-
-          score++
-        }
+    questions.forEach(q=>{
+      if(answers[q.id] === q.correct_answer){
+        score++
       }
-    )
+    })
 
-    const finalScore =
-    Math.round(
+    const finalScore = Math.round((score / questions.length) * 100)
 
-      (
-        score /
-        questions.length
-      ) * 100
+    localStorage.setItem("lesenScore", String(finalScore))
+    localStorage.setItem("moduleScore", String(finalScore))
 
-    )
+    async function saveAnswers(){
 
-    localStorage
-    .setItem(
+      const { data:userData } = await supabase.auth.getUser()
 
-      "lesenScore",
+      const user = userData.user
 
-      String(
-        finalScore
-      )
-    )
+      if(!user) return
 
-    localStorage
-.setItem(
-
-  "moduleScore",
-
-  String(finalScore)
-)
-
-    async function
-saveAnswers(){
-
-  const {
-    data:userData
-  } =
-
-  await supabase
-  .auth
-  .getUser()
-
-  const user =
-  userData.user
-
-  if(!user)
-  return
-
-  const rows =
-
-    questions.map(
-      q=>({
-
-        user_id:
-        user.id,
-
+      const rows = questions.map(q=>({
+        user_id: user.id,
         level,
+        module: "lesen",
+        exam_set: examSet,
+        question_id: q.id,
+        question_text: q.question_text,
+        user_answer: answers[q.id] || "",
+        correct_answer: q.correct_answer,
+        is_correct: answers[q.id] === q.correct_answer
+      }))
 
-        module:
-        "lesen",
+      await supabase.from("user_answers").insert(rows)
+    }
 
-        exam_set:
-        examSet,
+    saveAnswers()
 
-        question_id:
-        q.id,
-
-        question_text:
-        q.question_text,
-
-        user_answer:
-
-        answers[
-          q.id
-        ] || "",
-
-        correct_answer:
-        q.correct_answer,
-
-        is_correct:
-
-        answers[
-          q.id
-        ] ===
-
-        q.correct_answer
-      })
-    )
-
-  await supabase
-
-  .from(
-    "user_answers"
-  )
-
-  .insert(
-    rows
-  )
-}
-
-saveAnswers()
-
-localStorage
-.removeItem(
-  storageKey
-)
-
-localStorage
-.removeItem(
-  timerKey
-)
+    localStorage.removeItem(storageKey)
+    localStorage.removeItem(timerKey)
 
     onComplete()
   }
 
   if(loading){
-
     return (
-      <div>
-        Loading...
+      <div className="flex flex-col items-center justify-center gap-3 py-32 text-mist">
+        <Loader2 className="animate-spin text-gold" size={28} />
+        <p>Loading...</p>
       </div>
     )
   }
 
-  const grouped =
+  const grouped = questions.reduce((acc, q)=>{
+    if(!acc[q.teil]){
+      acc[q.teil] = []
+    }
+    acc[q.teil].push(q)
+    return acc
+  }, {} as Record<number, Question[]>)
 
-  questions.reduce(
-
-    (
-      acc,
-      q
-    )=>{
-
-      if(
-        !acc[q.teil]
-      ){
-
-        acc[q.teil]
-        = []
-      }
-
-      acc[
-        q.teil
-      ].push(q)
-
-      return acc
-
-    },
-
-    {} as Record<
-      number,
-      Question[]
-    >
-
-  )
+  const answeredCount = questions.filter(q => answers[q.id]).length
 
   return (
 
-    <div>
+    <div className="max-w-4xl mx-auto">
 
-      <h1 className="text-4xl font-bold mb-10">
+      {/* HEADER */}
 
-        Lesen{" "}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
 
-        {
-          level
-          .toUpperCase()
-        }
+        <h1 className="text-2xl md:text-4xl font-bold text-paper flex items-center gap-3">
+          <BookOpen className="text-gold shrink-0" size={26} />
+          Lesen <span className="text-gold">{level.toUpperCase()}</span>
+        </h1>
 
-      </h1>
+        <div className="flex items-center gap-2 text-xs md:text-sm text-mist bg-white/5 border border-white/10 rounded-full px-4 py-2">
+          <CheckCircle2 size={14} className="text-gold" />
+          {answeredCount} / {questions.length} answered
+        </div>
 
-      <div className="bg-yellow-400 text-black rounded-3xl p-5 mb-8 flex justify-between">
+      </div>
 
-  <p className="font-bold">
+      {/* TIMER */}
 
-    Time Remaining
+      <div className="bg-gold rounded-2xl p-5 mb-6 flex items-center justify-between text-ink">
 
-  </p>
+        <div className="flex items-center gap-2 font-bold text-sm md:text-base">
+          <Clock size={16} />
+          Time Remaining
+        </div>
 
-  <p className="font-bold text-2xl">
+        <p className="font-bold text-xl md:text-2xl tabular-nums">
+          {Math.floor((remainingTime ?? 0) / 60)}:{String((remainingTime ?? 0) % 60).padStart(2,"0")}
+        </p>
 
-   {
-  Math.floor(
-    (
-      remainingTime
-      ?? 0
-    ) / 60
-  )
-}
+      </div>
 
-:
+      {/* QUESTION NAVIGATOR */}
 
-{
-  String(
+      <div className="flex flex-wrap gap-2 mb-10 bg-white/5 border border-white/10 rounded-2xl p-4">
 
-    (
-      remainingTime
-      ?? 0
-    ) % 60
+        {questions.map((q, index) => {
+          const isAnswered = Boolean(answers[q.id])
+          return (
+            <button
+              key={q.id}
+              onClick={() => {
+                document.getElementById(`lesen-q-${q.id}`)?.scrollIntoView({ behavior:"smooth", block:"center" })
+              }}
+              aria-label={`Go to question ${index + 1}`}
+              className={`w-8 h-8 md:w-9 md:h-9 rounded-lg text-xs font-semibold flex items-center justify-center transition-colors duration-200 ${
+                isAnswered
+                  ? "bg-gold text-ink"
+                  : "bg-white/10 text-mist hover:bg-white/20"
+              }`}
+            >
+              {index + 1}
+            </button>
+          )
+        })}
 
-  ).padStart(
-    2,
-    "0"
-  )
-}
+      </div>
 
-  </p>
+      {Object.entries(grouped).map(([teil, teilQuestions])=>(
 
-</div>
+        <div key={teil} className="mb-14">
 
-      {Object.entries(
-        grouped
-      ).map(
+          <h2 className="text-xl md:text-2xl font-bold mb-6 text-paper">
+            Teil {teil}
+          </h2>
 
-        (
-          [
-            teil,
-            teilQuestions
+          {[
+            teilQuestions[0]?.text_block_image,
+            teilQuestions[0]?.text_block_image_2,
+            teilQuestions[0]?.text_block_image_3,
+            teilQuestions[0]?.text_block_image_4,
+            teilQuestions[0]?.text_block_image_5
           ]
-        )=>(
-
-          <div
-            key={teil}
-            className="mb-14"
-          >
-
-            <h2 className="text-2xl font-bold mb-6">
-
-              Teil {teil}
-
-            </h2>
-
-            {[
-  teilQuestions[0]?.text_block_image,
-  teilQuestions[0]?.text_block_image_2,
-  teilQuestions[0]?.text_block_image_3,
-  teilQuestions[0]?.text_block_image_4,
-  teilQuestions[0]?.text_block_image_5
-]
-.filter(Boolean)
-.map((image,index)=>(
-
-  <img
-    key={index}
-    src={image}
-    alt={`text-block-${index}`}
-    className="w-full rounded-[32px] mb-6 object-contain bg-white/5 p-4"
-  />
-
-))}
-
-            
-
-            {teilQuestions[
-              0
-            ]?.text_block && (
-
-              <div className="bg-white/5 border border-white/10 rounded-[32px] p-6 mb-8">
-
-                <p className="whitespace-pre-line text-lg">
-
-                  {
-                    teilQuestions[
-                      0
-                    ]
-                    .text_block
-                  }
-
-                </p>
-
-              </div>
-
-            )}
-
-            <div className="space-y-8">
-
-              {teilQuestions.map(
-                q=>{
-
-                  const options = [
-
-                    {
-                      key:"A",
-                      text:q.option_a,
-                      image:
-                      q.option_a_image
-                    },
-
-                    {
-                      key:"B",
-                      text:q.option_b,
-                      image:
-                      q.option_b_image
-                    },
-
-                    {
-                      key:"C",
-                      text:q.option_c,
-                      image:
-                      q.option_c_image
-                    },
-
-                    {
-                      key:"D",
-                      text:q.option_d,
-                      image:
-                      q.option_d_image
-                    },
-
-                    {
-                      key:"E",
-                      text:q.option_e,
-                      image:
-                      q.option_e_image
-                    },
-
-                    {
-                      key:"F",
-                      text:q.option_f,
-                      image:
-                      q.option_f_image
-                    },
-
-                    {
-                      key:"G",
-                      text:q.option_g,
-                      image:
-                      q.option_g_image
-                    },
-
-                    {
-                      key:"H",
-                      text:q.option_h,
-                      image:
-                      q.option_h_image
-                    },
-
-                    {
-  key:"I",
-  text:q.option_i,
-  image:
-  q.option_i_image
-},
-
-{
-  key:"J",
-  text:q.option_j,
-  image:
-  q.option_j_image
-},
-
-                    {
-                      key:"0",
-                      text:q.option_0,
-                      image:
-                      q.option_0_image
-                    }
-
-                  ].filter(
-                    option=>
-
-                    option.text ||
-
-                    option.image
-                  )
-
-                  return (
-
-                    <div
-                      key={q.id}
-                      className="bg-white/5 border border-white/10 rounded-[32px] p-6"
-                    >
-
-                      <p className="text-lg mb-5 whitespace-pre-line">
-
-                        {
-                          q.question_order
-                        }.
-
-                        {" "}
-
-                        {
-                          q.question_text
-                        }
-
-                      </p>
-
-                      {q.question_type ===
-                      "multiple_choice" && (
-
-                        <div className="space-y-3">
-
-                          {options.map(
-                            option=>(
-
-                              <button
-                                key={
-                                  option.key
-                                }
-
-                                onClick={()=>{
-
-                                  handleAnswer(
-
-                                    q.id,
-
-                                    option.key
-                                  )
-                                }}
-
-                                className={`
-
-                                w-full
-                                text-left
-                                p-4
-                                rounded-3xl
-
-                                ${
-                                  answers[
-                                    q.id
-                                  ]
-                                  ===
-                                  option.key
-
-                                  ?
-
-                                  "bg-yellow-400 text-black"
-
-                                  :
-
-                                  "bg-white/10"
-                                }
-
-                                `}
-                              >
-
-                                {option.image && (
-
-                                  <img
-                                    src={
-                                      option.image
-                                    }
-
-                                    alt="option"
-
-                                    className="w-full max-h-[250px] object-contain rounded-2xl bg-white/5 mb-4"
-                                  />
-
-                                )}
-
-                                <span className="font-bold">
-
-                                  {
-                                    option.key
-                                  }.
-
-                                </span>
-
-                                {" "}
-
-                                {
-                                  option.text
-                                }
-
-                              </button>
-
-                            )
-                          )}
-
-                        </div>
-
-                      )}
-
-                      {q.question_type ===
-                      "matching_ads" && (
-
-                        <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
-
-                          {options.map(
-                            option=>(
-
-                              <button
-                                key={
-                                  option.key
-                                }
-
-                                onClick={()=>{
-
-                                  handleAnswer(
-
-                                    q.id,
-
-                                    option.key
-                                  )
-                                }}
-
-                                className={`
-
-                                p-4
-                                rounded-2xl
-                                font-bold
-
-                                ${
-                                  answers[
-                                    q.id
-                                  ]
-                                  ===
-                                  option.key
-
-                                  ?
-
-                                  "bg-yellow-400 text-black"
-
-                                  :
-
-                                  "bg-white/10"
-                                }
-
-                                `}
-                              >
-
-                                {
-                                  option.key
-                                }
-
-                              </button>
-
-                            )
-                          )}
-
-                        </div>
-
-                      )}
-
-                      {q.question_type ===
-"true_false" && (
-
-  <div className="grid grid-cols-2 gap-4">
-
-    {[
-      {
-        key:"true",
-        text:"richtig"
-      },
-
-      {
-        key:"false",
-        text:"falsch"
-      }
-
-    ].map(
-      option=>(
-
-        <button
-          key={
-            option.key
-          }
-
-          onClick={()=>{
-
-            handleAnswer(
-
-              q.id,
-
-              option.key
-            )
-          }}
-
-          className={`
-
-          p-4
-          rounded-2xl
-          font-bold
-
-          ${
-            answers[
-              q.id
-            ]
-            ===
-            option.key
-
-            ?
-
-            "bg-yellow-400 text-black"
-
-            :
-
-            "bg-white/10"
-          }
-
-          `}
-        >
-
-          {
-            option.text
-          }
-
-        </button>
-
-      )
-    )}
-
-  </div>
-
-)}
-
-                    </div>
-
-                  )
-                }
-              )}
-
+          .filter(Boolean)
+          .map((image, index)=>(
+            <img
+              key={index}
+              src={image}
+              alt={`text-block-${index}`}
+              className="w-full rounded-2xl mb-6 object-contain bg-white/5 p-4"
+            />
+          ))}
+
+          {teilQuestions[0]?.text_block && (
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 mb-8">
+              <p className="whitespace-pre-line text-base md:text-lg leading-loose text-mist max-w-[68ch]">
+                {teilQuestions[0].text_block}
+              </p>
             </div>
+          )}
+
+          <div className="space-y-6">
+
+            {teilQuestions.map(q=>{
+
+              const options = [
+                { key:"A", text:q.option_a, image:q.option_a_image },
+                { key:"B", text:q.option_b, image:q.option_b_image },
+                { key:"C", text:q.option_c, image:q.option_c_image },
+                { key:"D", text:q.option_d, image:q.option_d_image },
+                { key:"E", text:q.option_e, image:q.option_e_image },
+                { key:"F", text:q.option_f, image:q.option_f_image },
+                { key:"G", text:q.option_g, image:q.option_g_image },
+                { key:"H", text:q.option_h, image:q.option_h_image },
+                { key:"I", text:q.option_i, image:q.option_i_image },
+                { key:"J", text:q.option_j, image:q.option_j_image },
+                { key:"0", text:q.option_0, image:q.option_0_image },
+              ].filter(option => option.text || option.image)
+
+              return (
+
+                <div
+                  id={`lesen-q-${q.id}`}
+                  key={q.id}
+                  className="bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 scroll-mt-24"
+                >
+
+                  <div className="flex items-start gap-3 mb-5">
+
+                    <span className="shrink-0 w-7 h-7 rounded-full bg-white/10 text-paper text-sm font-bold flex items-center justify-center">
+                      {q.question_order}
+                    </span>
+
+                    <p className="text-base md:text-lg text-paper whitespace-pre-line pt-0.5">
+                      {q.question_text}
+                    </p>
+
+                  </div>
+
+                  {q.question_type === "multiple_choice" && (
+
+                    <div className="space-y-3">
+                      {options.map(option=>{
+                        const selected = answers[q.id] === option.key
+                        return (
+                          <button
+                            key={option.key}
+                            onClick={()=>{ handleAnswer(q.id, option.key) }}
+                            className={`w-full text-left p-4 rounded-xl flex items-start gap-3 transition-colors duration-200 ${
+                              selected
+                                ? "bg-gold text-ink"
+                                : "bg-white/10 text-paper hover:bg-white/[0.15]"
+                            }`}
+                          >
+                            {selected ? <CheckCircle2 size={16} className="shrink-0 mt-0.5" /> : <Circle size={16} className="shrink-0 mt-0.5 opacity-40" />}
+
+                            <span>
+                              {option.image && (
+                                <img
+                                  src={option.image}
+                                  alt="option"
+                                  className="w-full max-h-[250px] object-contain rounded-xl bg-white/5 mb-4"
+                                />
+                              )}
+                              <span className="font-bold">{option.key}.</span>{" "}
+                              {option.text}
+                            </span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  {q.question_type === "matching_ads" && (
+
+                    <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+                      {options.map(option=>{
+                        const selected = answers[q.id] === option.key
+                        return (
+                          <button
+                            key={option.key}
+                            onClick={()=>{ handleAnswer(q.id, option.key) }}
+                            className={`p-4 rounded-xl font-bold flex items-center justify-center gap-1.5 transition-colors duration-200 ${
+                              selected
+                                ? "bg-gold text-ink"
+                                : "bg-white/10 text-paper hover:bg-white/[0.15]"
+                            }`}
+                          >
+                            {selected && <CheckCircle2 size={14} />}
+                            {option.key}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  {q.question_type === "true_false" && (
+
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { key:"true", text:"richtig" },
+                        { key:"false", text:"falsch" },
+                      ].map(option=>{
+                        const selected = answers[q.id] === option.key
+                        return (
+                          <button
+                            key={option.key}
+                            onClick={()=>{ handleAnswer(q.id, option.key) }}
+                            className={`p-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors duration-200 ${
+                              selected
+                                ? "bg-gold text-ink"
+                                : "bg-white/10 text-paper hover:bg-white/[0.15]"
+                            }`}
+                          >
+                            {selected ? <CheckCircle2 size={16} /> : <Circle size={16} className="opacity-40" />}
+                            {option.text}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                </div>
+              )
+            })}
 
           </div>
 
-        )
-
-      )}
+        </div>
+      ))}
 
       <button
-
-        onClick={
-          submitExam
-        }
-
-        className="w-full bg-gradient-to-r from-yellow-400 to-red-500 text-black font-bold py-5 rounded-3xl text-xl"
-
+        onClick={submitExam}
+        className="w-full bg-gradient-to-r from-gold to-crimson text-ink font-bold py-4 md:py-5 rounded-2xl text-lg md:text-xl hover:opacity-90 transition-opacity duration-200"
       >
-
         Submit Lesen
-
       </button>
 
     </div>

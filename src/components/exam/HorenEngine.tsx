@@ -1,13 +1,17 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
 import {
-  useEffect,
-  useRef,
-  useState
-} from "react"
+  Headphones,
+  Volume2,
+  Clock,
+  CheckCircle2,
+  Circle,
+  Lock,
+  Loader2,
+} from "lucide-react"
 
-import { supabase }
-from "../../lib/supabase"
+import { supabase } from "../../lib/supabase"
 
 type Question = {
 
@@ -43,1000 +47,512 @@ type Question = {
 }
 
 type Props = {
-
   level:string
-
   examSet:number
-
-  onComplete:
-  ()=>void
+  onComplete:()=>void
 }
 
-export default function
-HorenEngine({
+export default function HorenEngine({ level, examSet, onComplete }:Props){
 
-  level,
+  const [questions, setQuestions] = useState<Question[]>([])
+  const [answers, setAnswers] = useState<Record<number,string>>({})
 
-  examSet,
+  const storageKey = `horen_${level}_${examSet}`
+  const stageKey = `horen_stage_${level}_${examSet}`
+  const audioTimeKey = `horen_audio_time_${level}_${examSet}`
 
-  onComplete
+  const [loading, setLoading] = useState(true)
+  const [stage, setStage] = useState<"preparation" | "listening" | "review">("preparation")
+  const [prepTime, setPrepTime] = useState(60)
+  const [reviewTime, setReviewTime] = useState(300)
+  const [restored, setRestored] = useState(false)
 
-}:Props){
+  /* Presentation-only: mirrors the already-playing audio element so we can
+     draw a (read-only, non-seekable) progress indicator. Does not affect
+     playback, timing, or the single-play exam rule in any way. */
+  const [audioCurrentTime, setAudioCurrentTime] = useState(0)
+  const [audioDuration, setAudioDuration] = useState(0)
 
-  const [
-    questions,
-    setQuestions
-  ] =
-  useState<Question[]>(
-    []
-  )
-
-  const [
-    answers,
-    setAnswers
-  ] =
-  useState<
-    Record<number,string>
-  >({})
-
-  const storageKey =
-
-`horen_${level}_${examSet}`
-
-const stageKey =
-
-`horen_stage_${level}_${examSet}`
-
-const audioTimeKey =
-`horen_audio_time_${level}_${examSet}`
-
-  const [
-    loading,
-    setLoading
-  ] =
-  useState(true)
-
-  const [
-  stage,
-  setStage
-] =
-useState<
-  "preparation"
-  |
-  "listening"
-  |
-  "review"
->(
-  "preparation"
-)
-
-const [
-  prepTime,
-  setPrepTime
-] =
-useState(60)
-
-const [
-  reviewTime,
-  setReviewTime
-] =
-useState(300)
-
-const [
-  restored,
-  setRestored
-] =
-useState(false)
-
-
-
-
-
-  const audioRef =
-  useRef<
-    HTMLAudioElement
-    | null
-  >(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(()=>{
 
-    async function
-    loadQuestions(){
+    async function loadQuestions(){
 
-      const {
-        data,
-        error
-      } =
-      await supabase
-
-      .from(
-        "exam_questions"
-      )
-
-      .select("*")
-
-      .eq(
-        "level",
-        level
-      )
-
-      .eq(
-        "module",
-        "horen"
-      )
-
-      .eq(
-        "exam_set",
-        examSet
-      )
-
-      .order(
-        "teil",
-        {
-          ascending:true
-        }
-      )
-
-      .order(
-        "question_order",
-        {
-          ascending:true
-        }
-      )
+      const { data, error } = await supabase
+        .from("exam_questions")
+        .select("*")
+        .eq("level", level)
+        .eq("module", "horen")
+        .eq("exam_set", examSet)
+        .order("teil", { ascending:true })
+        .order("question_order", { ascending:true })
 
       if(error){
-
-        console.log(
-          error
-        )
-
+        console.log(error)
         return
       }
 
-      setQuestions(
-        data || []
-      )
-
-      setLoading(
-        false
-      )
+      setQuestions(data || [])
+      setLoading(false)
     }
 
     loadQuestions()
 
-/* RESTORE ANSWERS */
+    /* RESTORE ANSWERS */
 
-const saved =
+    const saved = localStorage.getItem(storageKey)
 
-localStorage
-.getItem(
-  storageKey
-)
+    if(saved){
+      setAnswers(JSON.parse(saved))
+    }
 
-if(saved){
+    /* RESTORE STAGE */
 
-  setAnswers(
-    JSON.parse(
-      saved
-    )
-  )
-}
+    const savedStage = localStorage.getItem(stageKey)
 
-/* RESTORE STAGE */
+    if(savedStage){
+      const parsed = JSON.parse(savedStage)
+      setStage(parsed.stage ?? "preparation")
+      setPrepTime(parsed.prepTime ?? 60)
+      setReviewTime(parsed.reviewTime ?? 300)
+    }
 
-const savedStage =
+    setRestored(true)
 
-localStorage
-.getItem(
-  stageKey
-)
+    if(!savedStage){
+      setRestored(true)
+    }
 
-if(savedStage){
-
-  const parsed =
-  JSON.parse(
-    savedStage
-  )
-
-  setStage(
-    parsed.stage
-    ??
-    "preparation"
-  )
-
-  setPrepTime(
-    parsed.prepTime
-    ??
-    60
-  )
-
-  setReviewTime(
-    parsed.reviewTime
-    ??
-    300
-  )
-}
-
-setRestored(
-  true
-)
-
-  
-  if(
-  !savedStage
-){
-
-  setRestored(
-    true
-  )
-}
-
-  },[
-    level,
-    examSet
-  ])
-
-
+  },[level, examSet])
 
   /* 1 MENIT PERSIAPAN */
 
-useEffect(()=>{
-if(
+  useEffect(()=>{
+    if(stage !== "preparation" || prepTime <= 0) return
 
-  stage !==
-  "preparation"
-
-  ||
-
-  prepTime <= 0
-
-) return
-
-  const timer =
-  setInterval(()=>{
-
-    setPrepTime(
-  prev=>{
-
-    if(
-      prev <= 1
-    ){
-
-      clearInterval(
-        timer
-      )
-
-      setStage(
-        "listening"
-      )
-
-      return 0
-    }
-
-    return Math.max(
-      prev - 1,
-      0
-    )
-  }
-)
-
-  },1000)
-
-  return ()=>{
-
-    clearInterval(
-      timer
-    )
-  }
-
-},[
-  stage
-])
-
-/* AUTOPLAY AUDIO */
-
-useEffect(()=>{
-
-  if(
-
-    stage !==
-    "listening"
-
-    ||
-
-    !questions.length
-
-  ) return
-
-  const firstAudio =
-
-  questions.find(
-    q=>
-    q.audio_url
-  )
-
-  if(
-    !firstAudio
-  ) return
-
-  const audio =
-  new Audio(
-    firstAudio
-    .audio_url
-  )
-
-  const savedAudioTime =
-  Number(
-    localStorage.getItem(
-      audioTimeKey
-    ) || "0"
-  )
-
-  audio.currentTime = savedAudioTime
-
-  audioRef.current =
-  audio
-
-  const saveInternal =
-  setInterval(()=>{
-    localStorage.setItem(
-      audioTimeKey,
-      String( 
-        audio.currentTime
-      )
-    )
-  },1000)
-
- audio.play()
-.catch(()=>{
-
-  console.log(
-    "Autoplay blocked"
-  )
-})
-
-  audio.onended =
-  ()=>{
-
-    clearInterval(
-      saveInternal
-    )
-
-    localStorage.removeItem(
-      audioTimeKey
-    )
-    setStage(
-      "review"
-    )
-  }
-
-},[
-  stage,
-  questions
-])
-
-/* SAVE STAGE */
-
-useEffect(()=>{
-
-  if(
-    !restored
-  ) return
-
-  localStorage
-  .setItem(
-
-    stageKey,
-
-    JSON.stringify({
-
-      stage,
-
-      prepTime,
-
-      reviewTime
-    })
-  )
-
-},[
-  stage,
-  prepTime,
-  reviewTime,
-  restored
-])
-
-/* REVIEW 5 MENIT */
-
-useEffect(()=>{
-
-  if(
-    stage !==
-    "review"
-  ) return
-
-  const timer =
-  setInterval(()=>{
-
-    setReviewTime(
-      prev=>{
-
-        if(
-          prev <= 1
-        ){
-
-          clearInterval(
-            timer
-          )
-
-          submitExam()
-
+    const timer = setInterval(()=>{
+      setPrepTime(prev=>{
+        if(prev <= 1){
+          clearInterval(timer)
+          setStage("listening")
           return 0
         }
+        return Math.max(prev - 1, 0)
+      })
+    },1000)
 
+    return ()=>{ clearInterval(timer) }
+
+  },[stage])
+
+  /* AUTOPLAY AUDIO */
+
+  useEffect(()=>{
+
+    if(stage !== "listening" || !questions.length) return
+
+    const firstAudio = questions.find(q=>q.audio_url)
+
+    if(!firstAudio) return
+
+    const audio = new Audio(firstAudio.audio_url)
+
+    const savedAudioTime = Number(localStorage.getItem(audioTimeKey) || "0")
+
+    audio.currentTime = savedAudioTime
+    setAudioCurrentTime(savedAudioTime)
+
+    audioRef.current = audio
+
+    const saveInternal = setInterval(()=>{
+      localStorage.setItem(audioTimeKey, String(audio.currentTime))
+    },1000)
+
+    /* Display-only listeners: track progress for the read-only progress bar. */
+    audio.onloadedmetadata = ()=>{
+      setAudioDuration(audio.duration || 0)
+    }
+    audio.ontimeupdate = ()=>{
+      setAudioCurrentTime(audio.currentTime)
+    }
+
+    audio.play().catch(()=>{
+      console.log("Autoplay blocked")
+    })
+
+    audio.onended = ()=>{
+      clearInterval(saveInternal)
+      localStorage.removeItem(audioTimeKey)
+      setStage("review")
+    }
+
+  },[stage, questions])
+
+  /* SAVE STAGE */
+
+  useEffect(()=>{
+    if(!restored) return
+
+    localStorage.setItem(stageKey, JSON.stringify({ stage, prepTime, reviewTime }))
+
+  },[stage, prepTime, reviewTime, restored])
+
+  /* REVIEW 5 MENIT */
+
+  useEffect(()=>{
+    if(stage !== "review") return
+
+    const timer = setInterval(()=>{
+      setReviewTime(prev=>{
+        if(prev <= 1){
+          clearInterval(timer)
+          submitExam()
+          return 0
+        }
         return prev - 1
-      }
-    )
+      })
+    },1000)
 
-  },1000)
+    return ()=>{ clearInterval(timer) }
 
-  return ()=>{
+  },[stage])
 
-    clearInterval(
-      timer
-    )
+  function handleAnswer(id:number, value:string){
+
+    const updated = { ...answers, [id]:value }
+
+    setAnswers(updated)
+
+    localStorage.setItem(storageKey, JSON.stringify(updated))
   }
 
-},[
-  stage
-])
-
- 
-
-  function
-handleAnswer(
-
-  id:number,
-
-  value:string
-){
-
-  const updated = {
-
-    ...answers,
-
-    [id]:
-    value
-  }
-
-  setAnswers(
-    updated
-  )
-
-  localStorage
-  .setItem(
-
-    storageKey,
-
-    JSON.stringify(
-      updated
-    )
-  )
-}
-
-  async function
-  submitExam(){
+  async function submitExam(){
 
     let score = 0
 
-    questions.forEach(
-      q=>{
-
-        if(
-
-          answers[
-            q.id
-          ] ===
-          q.correct_answer
-
-        ){
-
-          score++
-        }
+    questions.forEach(q=>{
+      if(answers[q.id] === q.correct_answer){
+        score++
       }
-    )
+    })
 
-    const finalScore =
-    Math.round(
+    const finalScore = Math.round((score / questions.length) * 100)
 
-      (
-        score /
-        questions.length
-      ) * 100
+    localStorage.setItem("horenScore", String(finalScore))
+    localStorage.setItem("moduleScore", String(finalScore))
 
-    )
+    async function saveAnswers(){
 
-    localStorage
-    .setItem(
+      const { data:userData } = await supabase.auth.getUser()
 
-      "horenScore",
+      const user = userData.user
 
-      String(
-        finalScore
-      )
-    )
+      if(!user) return
 
-    localStorage
-.setItem(
-
-  "moduleScore",
-
-  String(finalScore)
-)
-
-    async function
-saveAnswers(){
-
-  const {
-    data:userData
-  } =
-
-  await supabase
-  .auth
-  .getUser()
-
-  const user =
-  userData.user
-
-  if(!user)
-  return
-
-  const rows =
-
-    questions.map(
-      q=>({
-
-        user_id:
-        user.id,
-
+      const rows = questions.map(q=>({
+        user_id: user.id,
         level,
+        module: "horen",
+        exam_set: examSet,
+        question_id: q.id,
+        question_text: q.question_text,
+        user_answer: answers[q.id] || "",
+        correct_answer: q.correct_answer,
+        is_correct: answers[q.id] === q.correct_answer
+      }))
 
-        module:
-        "horen",
+      await supabase.from("user_answers").insert(rows)
+    }
 
-        exam_set:
-        examSet,
+    await saveAnswers()
 
-        question_id:
-        q.id,
-
-        question_text:
-        q.question_text,
-
-        user_answer:
-
-        answers[
-          q.id
-        ] || "",
-
-        correct_answer:
-        q.correct_answer,
-
-        is_correct:
-
-        answers[
-          q.id
-        ] ===
-
-        q.correct_answer
-      })
-    )
-
-  await supabase
-
-  .from(
-    "user_answers"
-  )
-
-  .insert(
-    rows
-  )
-}
-
-await saveAnswers()
-
-localStorage
-.removeItem(
-  storageKey
-)
-
-localStorage
-.removeItem(
-  stageKey
-)
-
-localStorage.removeItem(
-  audioTimeKey
-)
+    localStorage.removeItem(storageKey)
+    localStorage.removeItem(stageKey)
+    localStorage.removeItem(audioTimeKey)
 
     onComplete()
   }
 
   if(loading){
-
     return (
-      <div>
-        Loading...
+      <div className="flex flex-col items-center justify-center gap-3 py-32 text-mist">
+        <Loader2 className="animate-spin text-gold" size={28} />
+        <p>Loading...</p>
       </div>
     )
   }
 
-  /* WARNING SCREEN */
+  /* PREPARATION SCREEN */
 
-if(
-  stage ===
-  "preparation"
-){
+  if(stage === "preparation"){
+    return (
+      <div className="text-center py-20 md:py-28 px-6">
+
+        <div className="w-16 h-16 rounded-2xl bg-gold/15 flex items-center justify-center mx-auto mb-8">
+          <Headphones className="text-gold" size={28} />
+        </div>
+
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-paper">
+          Listening Preparation
+        </h1>
+
+        <p className="text-base md:text-xl text-mist max-w-2xl mx-auto mt-6 leading-relaxed">
+          Audio will be played automatically.
+          <br />
+          Audio can only be played once.
+          <br />
+          Put on your headset and listen carefully.
+        </p>
+
+        <div className="text-6xl md:text-7xl font-bold text-gold mt-12 tabular-nums">
+          {prepTime}
+        </div>
+
+      </div>
+    )
+  }
+
+  const totalQuestions = questions.length
+  const answeredCount = questions.filter(q => answers[q.id]).length
+  const progressPct = audioDuration > 0
+    ? Math.min(100, (audioCurrentTime / audioDuration) * 100)
+    : 0
 
   return (
 
-    <div className="text-center py-24">
+    <div className="px-4 sm:px-6 md:px-10 py-8 md:py-12 max-w-4xl mx-auto">
 
-      <h1 className="text-5xl font-bold mb-8">
+      {/* HEADER */}
 
-        Listening Preparation
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
 
-      </h1>
+        <h1 className="text-2xl md:text-4xl font-bold text-paper">
+          H&ouml;ren <span className="text-gold">{level.toUpperCase()}</span>
+        </h1>
 
-      <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-
-        Audio will be played automatically.
-
-        <br />
-
-        Audio can only be played once.
-    
-
-        <br />
-
-       Put on your headset and listen carefully.
-      </p>
-
-      <div className="text-7xl font-bold text-yellow-400 mt-12">
-
-        {
-          prepTime
-        }
+        <div className="flex items-center gap-2 text-xs md:text-sm text-mist bg-white/5 border border-white/10 rounded-full px-4 py-2">
+          <CheckCircle2 size={14} className="text-gold" />
+          {answeredCount} / {totalQuestions} answered
+        </div>
 
       </div>
 
-    </div>
-  )
-}
+      {/* LISTENING STATUS */}
 
-  return (
+      {stage === "listening" && (
 
-    <div>
+        <div className="bg-crimson/10 border border-crimson/40 rounded-2xl p-5 mb-6">
 
-      <h1 className="text-4xl font-bold mb-6">
+          <div className="flex items-center gap-3 mb-4">
 
-        {stage ===
-"listening" && (
+            <div className="w-9 h-9 rounded-xl bg-crimson/20 flex items-center justify-center shrink-0">
+              <Volume2 size={16} className="text-crimson animate-pulse" />
+            </div>
 
-  <div className="bg-red-500/20 border border-red-500 rounded-3xl p-5 mb-8">
+            <p className="font-semibold text-paper text-sm md:text-base">
+              Audio is playing. Listen carefully.
+            </p>
 
-    Audio is playing.
-    Listen carefully.
+          </div>
 
-  </div>
+          {/* read-only progress indicator, no seek/pause control */}
 
-)}
-
-        Hören{" "}
-
-        {
-          level
-          .toUpperCase()
-        }
-
-      </h1>
-
-      
-{stage ===
-"review" && (
-
-  <div className="bg-yellow-400 text-black rounded-3xl p-5 mb-8 flex justify-between">
-
-    <p className="font-bold">
-
-      Time to review answers
-
-    </p>
-
-    <p className="font-bold text-2xl">
-
-      {
-        Math.floor(
-          reviewTime / 60
-        )
-      }
-
-      :
-
-      {
-        String(
-          reviewTime % 60
-        ).padStart(
-          2,
-          "0"
-        )
-      }
-
-    </p>
-
-  </div>
-
-)}
-
-      {[1,2,3,4].map(
-        teil=>{
-
-          const teilQuestions =
-          questions.filter(
-            q=>
-            q.teil === teil
-          )
-
-          if(
-            !teilQuestions
-            .length
-          ) return null
-
-          return (
-
+          <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
             <div
-              key={teil}
-              className="mb-14"
+              className="h-full rounded-full bg-gradient-to-r from-gold to-crimson transition-[width] duration-300"
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+
+          <div className="flex items-center justify-between mt-2 text-xs text-mist">
+            <span className="tabular-nums">
+              {Math.floor(audioCurrentTime / 60)}:{String(Math.floor(audioCurrentTime % 60)).padStart(2,"0")}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Lock size={11} />
+              Plays once, cannot be replayed
+            </span>
+          </div>
+
+        </div>
+      )}
+
+      {/* REVIEW STATUS */}
+
+      {stage === "review" && (
+
+        <div className="bg-gold rounded-2xl p-5 mb-6 flex items-center justify-between text-ink">
+
+          <div className="flex items-center gap-2 font-bold text-sm md:text-base">
+            <Clock size={16} />
+            Time to review answers
+          </div>
+
+          <p className="font-bold text-xl md:text-2xl tabular-nums">
+            {Math.floor(reviewTime / 60)}:{String(reviewTime % 60).padStart(2,"0")}
+          </p>
+
+        </div>
+      )}
+
+      {/* QUESTION NAVIGATOR */}
+
+      <div className="flex flex-wrap gap-2 mb-10 bg-white/5 border border-white/10 rounded-2xl p-4">
+
+        {questions.map((q, index) => {
+          const isAnswered = Boolean(answers[q.id])
+          return (
+            <button
+              key={q.id}
+              onClick={() => {
+                document.getElementById(`horen-q-${q.id}`)?.scrollIntoView({ behavior:"smooth", block:"center" })
+              }}
+              aria-label={`Go to question ${index + 1}`}
+              className={`w-8 h-8 md:w-9 md:h-9 rounded-lg text-xs font-semibold flex items-center justify-center transition-colors duration-200 ${
+                isAnswered
+                  ? "bg-gold text-ink"
+                  : "bg-white/10 text-mist hover:bg-white/20"
+              }`}
             >
+              {index + 1}
+            </button>
+          )
+        })}
 
-              <h2 className="text-2xl font-bold mb-6">
+      </div>
 
-                Teil {teil}
+      {/* QUESTIONS BY TEIL */}
 
-              </h2>
+      {[1,2,3,4].map(teil=>{
 
-              {teilQuestions[0]?.text_block && (
+        const teilQuestions = questions.filter(q=>q.teil === teil)
 
-  <div className="bg-white/5 border border-white/10 rounded-3xl p-6 mb-6 whitespace-pre-line">
+        if(!teilQuestions.length) return null
 
-    {teilQuestions[0].text_block}
+        return (
 
-  </div>
+          <div key={teil} className="mb-14">
 
-)}
+            <h2 className="text-xl md:text-2xl font-bold mb-6 text-paper">
+              Teil {teil}
+            </h2>
 
-              <div className="space-y-6">
-
-                {teilQuestions.map(
-                  q=>{
-
-                    const options = [
-
-                      {
-                        key:"A",
-                        text:q.option_a,
-                        image:
-                        q.option_a_image
-                      },
-
-                      {
-                        key:"B",
-                        text:q.option_b,
-                        image:
-                        q.option_b_image
-                      },
-
-                      {
-                        key:"C",
-                        text:q.option_c,
-                        image:
-                        q.option_c_image
-                      }
-
-                    ]
-
-                    return (
-
-                      <div
-                        key={q.id}
-                        className="bg-white/5 border border-white/10 rounded-3xl p-6"
-                      >
-
-                        <p className="mb-5 text-lg whitespace-pre-line">
-
-                          {
-                            q.question_order
-                          }.
-
-                          {" "}
-
-                          {
-                            q.question_text
-                          }
-
-                        </p>
-
-                        <div className="space-y-3">
-
-                          {q.question_type ===
-                          "true_false" && (
-
-                            ["richtig","falsch"]
-                            .map(
-                              option=>(
-
-                                <button
-                                  key={option}
-
-                                  onClick={()=>{
-
-                                    handleAnswer(
-                                      q.id,
-                                      option
-                                    )
-                                  }}
-
-                                  className={`
-
-                                  w-full
-                                  text-left
-                                  p-4
-                                  rounded-2xl
-
-                                  ${
-                                    answers[
-                                      q.id
-                                    ]
-                                    === option
-
-                                    ?
-
-                                    "bg-yellow-400 text-black"
-
-                                    :
-
-                                    "bg-white/10"
-                                  }
-
-                                  `}
-                                >
-
-                                  {
-                                    option
-                                  }
-
-                                </button>
-
-                              )
-                            )
-                          )}
-
-                          {q.question_type ===
-                          "multiple_choice" && (
-
-                            <div className="grid md:grid-cols-3 gap-4">
-
-                              {options.map(
-                                option=>(
-
-                                  <button
-                                    key={
-                                      option.key
-                                    }
-
-                                    onClick={()=>{
-
-                                      handleAnswer(
-                                        q.id,
-                                        option.key
-                                      )
-                                    }}
-
-                                    className={`
-
-                                    rounded-3xl
-                                    overflow-hidden
-                                    border
-                                    p-4
-
-                                    ${
-                                      answers[
-                                        q.id
-                                      ]
-                                      === option.key
-
-                                      ?
-
-                                      "bg-yellow-400 text-black"
-
-                                      :
-
-                                      "bg-white/10 border-white/10"
-                                    }
-
-                                    `}
-                                  >
-
-                                    {option.image && (
-
-                                      <img
-                                        src={
-                                          option.image
-                                        }
-
-                                        alt="option"
-
-                                        className="w-full h-[220px] object-contain rounded-2xl bg-white/5 mb-4"
-                                      />
-
-                                    )}
-
-                                    <p className="font-bold">
-
-                                      {
-                                        option.key
-                                      }
-
-                                    </p>
-
-                                    {option.text && (
-
-                                      <p className="mt-2 text-sm">
-
-                                        {
-                                          option.text
-                                        }
-
-                                      </p>
-
-                                    )}
-
-                                  </button>
-
-                                )
-                              )}
-
-                            </div>
-
-                          )}
-
-                        </div>
-
-                      </div>
-
-                    )
-                  }
-                )}
-
+            {teilQuestions[0]?.text_block && (
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 whitespace-pre-line text-mist leading-relaxed">
+                {teilQuestions[0].text_block}
               </div>
+            )}
+
+            <div className="space-y-5">
+
+              {teilQuestions.map(q=>{
+
+                const options = [
+                  { key:"A", text:q.option_a, image:q.option_a_image },
+                  { key:"B", text:q.option_b, image:q.option_b_image },
+                  { key:"C", text:q.option_c, image:q.option_c_image },
+                ]
+
+                return (
+
+                  <div
+                    id={`horen-q-${q.id}`}
+                    key={q.id}
+                    className="bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 scroll-mt-24"
+                  >
+
+                    <div className="flex items-start gap-3 mb-5">
+
+                      <span className="shrink-0 w-7 h-7 rounded-full bg-white/10 text-paper text-sm font-bold flex items-center justify-center">
+                        {q.question_order}
+                      </span>
+
+                      <p className="text-base md:text-lg text-paper whitespace-pre-line pt-0.5">
+                        {q.question_text}
+                      </p>
+
+                    </div>
+
+                    <div className="space-y-3">
+
+                      {q.question_type === "true_false" && (
+                        <div className="grid grid-cols-2 gap-3">
+                          {["richtig","falsch"].map(option=>{
+                            const selected = answers[q.id] === option
+                            return (
+                              <button
+                                key={option}
+                                onClick={()=>{ handleAnswer(q.id, option) }}
+                                className={`w-full flex items-center justify-center gap-2 text-center p-4 rounded-xl font-semibold capitalize transition-colors duration-200 ${
+                                  selected
+                                    ? "bg-gold text-ink"
+                                    : "bg-white/10 text-paper hover:bg-white/[0.15]"
+                                }`}
+                              >
+                                {selected ? <CheckCircle2 size={16} /> : <Circle size={16} className="opacity-50" />}
+                                {option}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      )}
+
+                      {q.question_type === "multiple_choice" && (
+                        <div className="grid md:grid-cols-3 gap-4">
+                          {options.map(option=>{
+                            const selected = answers[q.id] === option.key
+                            return (
+                              <button
+                                key={option.key}
+                                onClick={()=>{ handleAnswer(q.id, option.key) }}
+                                className={`text-left rounded-2xl overflow-hidden border p-4 transition-colors duration-200 ${
+                                  selected
+                                    ? "bg-gold text-ink border-gold"
+                                    : "bg-white/10 border-white/10 text-paper hover:bg-white/[0.15]"
+                                }`}
+                              >
+                                {option.image && (
+                                  <img
+                                    src={option.image}
+                                    alt="option"
+                                    className="w-full h-[220px] object-contain rounded-xl bg-white/5 mb-4"
+                                  />
+                                )}
+
+                                <p className="font-bold flex items-center gap-2">
+                                  {selected ? <CheckCircle2 size={16} /> : <Circle size={16} className="opacity-40" />}
+                                  {option.key}
+                                </p>
+
+                                {option.text && (
+                                  <p className="mt-2 text-sm">
+                                    {option.text}
+                                  </p>
+                                )}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      )}
+
+                    </div>
+
+                  </div>
+                )
+              })}
 
             </div>
 
-          )
-        }
-      )}
+          </div>
+        )
+      })}
 
       <button
-
-        onClick={
-          submitExam
-        }
-
-        className="mt-10 w-full bg-gradient-to-r from-yellow-400 to-red-500 text-black font-bold py-5 rounded-3xl text-xl"
-
+        onClick={submitExam}
+        className="mt-4 w-full bg-gradient-to-r from-gold to-crimson text-ink font-bold py-4 md:py-5 rounded-2xl text-lg md:text-xl hover:opacity-90 transition-opacity duration-200"
       >
-
         Next Module
-
       </button>
 
     </div>

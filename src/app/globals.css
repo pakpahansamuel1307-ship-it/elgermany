@@ -1,12 +1,39 @@
 @import "tailwindcss";
 
-html{
-  scroll-behavior:smooth;
+/*
+  EL Germany design tokens.
+  Same black / crimson / gold identity the site already uses (a nod to the
+  German flag), just consolidated into one source of truth instead of the
+  handful of near-duplicate hex values that were scattered across
+  components (#0F172A, #111827, #050816, yellow-400, red-500, gray-400...).
+  These generate matching bg-, text- and border- utilities automatically
+  (Tailwind v4 "@theme"), and are purely additive: nothing that already
+  uses the default Tailwind palette (dashboard, exam pages, admin) is
+  touched by this.
+*/
+@theme {
+  --color-ink: #0b1220;         /* page background */
+  --color-surface: #131c30;     /* card / panel surface */
+  --color-surface-deep: #060911;/* footer & deepest sections */
+  --color-gold: #f4c430;        /* primary accent */
+  --color-gold-soft: #ffe28a;   /* gold gradient tint */
+  --color-crimson: #e0293f;     /* secondary accent */
+  --color-mist: #99a2b8;        /* muted body text on dark */
+  --color-paper: #f7f8fb;       /* headings / high-emphasis text */
 }
 
-body{
-  background:#0F172A;
-  color:white;
-  html {scroll-behavior: smooth;}
+html {
+  scroll-behavior: smooth;
+}
 
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+/* Respect reduced-motion preferences site-wide for any plain CSS animation. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

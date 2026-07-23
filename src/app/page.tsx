@@ -11,17 +11,20 @@ export default function Home(){
 
   return (
 
-    <main className="min-h-screen bg-[#0F172A] text-white overflow-hidden">
+    <main className="relative min-h-screen bg-ink text-paper overflow-hidden">
 
-      <div className="absolute inset-0 overflow-hidden">
+      {/* Signature hairline: black / crimson / gold, the same order as the flag */}
+      <div className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-transparent via-crimson to-gold" />
 
-  <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-red-500/20 rounded-full blur-3xl animate-pulse"></div>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
-  <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-yellow-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-crimson/15 rounded-full blur-3xl" />
 
-  <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-orange-400/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gold/15 rounded-full blur-3xl" />
 
-</div>
+        <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-gold/5 rounded-full blur-3xl" />
+
+      </div>
 
       <Navbar />
 
