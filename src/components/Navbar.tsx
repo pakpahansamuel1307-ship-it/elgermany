@@ -27,7 +27,7 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? "bg-ink/80 backdrop-blur-xl border-b border-white/10"
+          ? "bg-paper/85 backdrop-blur-xl border-b border-border shadow-sm"
           : "bg-transparent border-b border-transparent"
       }`}
     >
@@ -41,7 +41,7 @@ export default function Navbar() {
               className="w-10 h-10 md:w-12 md:h-12 object-contain"
             />
             <span className="text-xl md:text-2xl font-bold tracking-tight">
-              EL<span className="text-gold">Germany</span>
+              EL<span className="text-crimson">Germany</span>
             </span>
           </Link>
 
@@ -51,7 +51,7 @@ export default function Navbar() {
               <a
                 key={link.label}
                 href={link.href}
-                className="hover:text-gold transition-colors duration-200"
+                className="hover:text-crimson transition-colors duration-200"
               >
                 {link.label}
               </a>
@@ -72,7 +72,7 @@ export default function Navbar() {
               onClick={() => setOpen(!open)}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
-              className="md:hidden flex items-center justify-center w-11 h-11 rounded-xl border border-white/10 bg-white/5 text-paper"
+              className="md:hidden flex items-center justify-center w-11 h-11 rounded-xl border border-border bg-surface text-ink"
             >
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -87,7 +87,7 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              className="md:hidden mt-4 bg-surface/95 border border-white/10 backdrop-blur-xl rounded-2xl p-5 shadow-xl"
+              className="md:hidden mt-4 bg-surface/95 border border-border backdrop-blur-xl rounded-2xl p-5 shadow-lg"
             >
               <div className="flex flex-col gap-1 text-mist">
                 {links.map((link) => (
@@ -95,7 +95,7 @@ export default function Navbar() {
                     key={link.label}
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className="px-3 py-3 rounded-xl hover:bg-white/5 hover:text-gold transition-colors duration-200"
+                    className="px-3 py-3 rounded-xl hover:bg-paper hover:text-crimson transition-colors duration-200"
                   >
                     {link.label}
                   </a>

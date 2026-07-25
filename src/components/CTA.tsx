@@ -31,7 +31,7 @@ export default function CTA(){
               <span className="text-gold">{" "}Now</span>
             </h2>
 
-            <p className="text-mist text-base md:text-lg mt-6 max-w-2xl mx-auto">
+            <p className="text-paper/75 text-base md:text-lg mt-6 max-w-2xl mx-auto">
               Upgrade your chances of passing the Goethe exam
               with modern practice tests and premium AI correction.
             </p>

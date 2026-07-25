@@ -181,7 +181,7 @@ export default function SchreibenEngine({ level, examSet, onComplete }:Props){
 
       <div className="flex items-center gap-3 mb-2">
         <PenLine className="text-gold shrink-0" size={26} />
-        <h1 className="text-2xl md:text-4xl font-bold text-paper">
+        <h1 className="text-2xl md:text-4xl font-bold text-ink">
           Schreiben <span className="text-gold">{level.toUpperCase()}</span>
         </h1>
       </div>
@@ -218,10 +218,10 @@ export default function SchreibenEngine({ level, examSet, onComplete }:Props){
 
             <div
               key={question.id}
-              className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8"
+              className="bg-surface border border-border rounded-2xl p-6 md:p-8 shadow-sm"
             >
 
-              <h2 className="text-xl md:text-2xl font-bold mb-5 text-paper">
+              <h2 className="text-xl md:text-2xl font-bold mb-5 text-ink">
                 Teil {question.teil}
               </h2>
 
@@ -229,19 +229,19 @@ export default function SchreibenEngine({ level, examSet, onComplete }:Props){
                 <img
                   src={question.text_block_image}
                   alt="stimulus"
-                  className="w-full rounded-2xl mb-6 object-contain bg-white/5 p-4"
+                  className="w-full rounded-2xl mb-6 object-contain bg-black/[0.03] p-4"
                 />
               )}
 
               {question.text_block && (
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
+                <div className="bg-paper border border-border rounded-2xl p-6 mb-6">
                   <p className="whitespace-pre-line text-base md:text-lg text-mist leading-relaxed">
                     {question.text_block}
                   </p>
                 </div>
               )}
 
-              <p className="mb-5 text-base md:text-lg text-paper whitespace-pre-line">
+              <p className="mb-5 text-base md:text-lg text-ink whitespace-pre-line">
                 {question.question_text}
               </p>
 
@@ -249,7 +249,7 @@ export default function SchreibenEngine({ level, examSet, onComplete }:Props){
                 value={value}
                 onChange={(e)=> handleChange(question.id, e.target.value)}
                 placeholder="Tulis jawabanmu di sini..."
-                className="w-full min-h-[240px] bg-surface border border-white/10 rounded-2xl p-6 outline-none focus:border-gold/60 resize-none text-paper text-base leading-relaxed transition-colors duration-200"
+                className="w-full min-h-[240px] bg-surface border border-border rounded-2xl p-6 outline-none focus:border-gold/60 resize-none text-ink text-base leading-relaxed transition-colors duration-200 shadow-sm"
               />
 
               <div className="mt-4 flex items-center gap-5 text-xs md:text-sm text-mist">

@@ -1,814 +1,497 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import {
-  useEffect,
-  useState
-} from "react"
+  ChevronDown,
+  CheckCircle2,
+  XCircle,
+  FileText,
+  Sparkles,
+  BookOpen,
+  Loader2,
+  Award,
+  Video,
+} from "lucide-react"
 
-import { supabase }
-from "../lib/supabase"
+import { supabase } from "../lib/supabase"
 
 type Attempt = {
-
   id:number
-
   module_type:string
-
   tryout_title:string
-
   score:number
-
   ai_feedback:string
-
   created_at:string
-
   level:string
-
   exam_set:number
 }
 
-export default function
-TryoutSection(){
+type UserAnswer = {
+  level:string
+  exam_set:number
+  module:string
+  question_id:number
+  question_order?:number
+  question_text:string
+  user_answer:string
+  correct_answer:string
+  is_correct:boolean
+}
 
-  const [
-    grouped,
-    setGrouped
-  ] =
-  useState<any[]>([])
+type Explanation = {
+  id?:number
+  question_id?:number | null
+  level:string
+  exam_set:number
+  module:string
+  question_order:number
+  explanation_text:string | null
+  video_url?:string | null
+}
 
-  const [
-answers,
-setAnswers
-] =
-useState<any[]>(
-  []
-)
+const moduleLabels:{ [key:string]:string } = {
+  lesen: "Lesen",
+  horen: "H\u00F6ren",
+  schreiben: "Schreiben",
+  sprechen: "Sprechen",
+  full: "Full Try Out",
+}
 
-const [
-explanations,
-setExplanations
-] =
-useState<any[]>(
-  []
-)
+/* question_id is the reliable match (it directly references the exact
+   question that was answered). The composite-key match (level/exam_set/
+   module/question_order) is kept only as a fallback for explanation rows
+   uploaded before question_id existed on this table. */
+function findExplanation(explanations:Explanation[], answer:UserAnswer){
+  return explanations.find(exp=>
+    (exp.question_id && exp.question_id === answer.question_id) ||
+    (
+      !exp.question_id &&
+      exp.level === answer.level &&
+      exp.exam_set === answer.exam_set &&
+      exp.module === answer.module &&
+      exp.question_order === answer.question_order
+    )
+  )
+}
+
+/* Renders the AI feedback block for one attempt. The parsing logic here
+   (try/catch JSON.parse, detecting combined schreiben+sprechen feedback
+   from a Full Tryout vs a single-module feedback blob) is unchanged from
+   before - only the markup/styling around it is new. */
+function AiFeedbackBlock({ rawFeedback }:{ rawFeedback:string }){
+
+  let parsed:any
+  let isFullFeedback = false
+
+  try{
+    parsed = JSON.parse(rawFeedback)
+    isFullFeedback = parsed?.schreiben && parsed?.sprechen
+  }catch{
+    return (
+      <div className="mt-5 bg-paper border border-border rounded-2xl p-5">
+        <h4 className="font-bold mb-3 flex items-center gap-2 text-ink">
+          <Sparkles size={16} className="text-crimson" />
+          Feedback AI
+        </h4>
+        <p className="text-mist whitespace-pre-wrap">{rawFeedback}</p>
+      </div>
+    )
+  }
+
+  if(isFullFeedback){
+
+    const schreiben =
+      typeof parsed.schreiben === "string" && parsed.schreiben.trim().startsWith("{")
+        ? JSON.parse(parsed.schreiben)
+        : { feedback: parsed.schreiben }
+
+    const sprechen =
+      typeof parsed.sprechen === "string" && parsed.sprechen.trim().startsWith("{")
+        ? JSON.parse(parsed.sprechen)
+        : { feedback: parsed.sprechen }
+
+    return (
+      <div className="mt-5 bg-paper border border-border rounded-2xl p-6 space-y-8">
+
+        <div>
+          <h4 className="text-lg font-bold text-crimson mb-3 flex items-center gap-2">
+            <Sparkles size={16} />
+            Feedback Schreiben
+          </h4>
+          <p className="text-ink/80 whitespace-pre-line leading-relaxed">{schreiben.feedback}</p>
+        </div>
+
+        <div>
+          <h4 className="text-lg font-bold text-amber-700 mb-3 flex items-center gap-2">
+            <Sparkles size={16} />
+            Feedback Sprechen
+          </h4>
+          <p className="text-ink/80 whitespace-pre-line leading-relaxed">{sprechen.feedback}</p>
+        </div>
+
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-5 bg-paper border border-border rounded-2xl p-6">
+
+      <h4 className="font-bold text-lg mb-5 flex items-center gap-2 text-ink">
+        <Sparkles size={16} className="text-crimson" />
+        AI Feedback
+      </h4>
+
+      {parsed.feedback && (
+        <div className="mb-6">
+          <h5 className="font-bold text-crimson mb-2 text-sm uppercase tracking-wide">Feedback</h5>
+          <p className="text-ink/80 leading-relaxed whitespace-pre-line">{parsed.feedback}</p>
+        </div>
+      )}
+
+      {parsed.strengths?.length > 0 && (
+        <div className="mb-6">
+          <h5 className="font-bold text-green-700 mb-2 text-sm uppercase tracking-wide">Strengths</h5>
+          <ul className="space-y-1.5">
+            {parsed.strengths.map((item:string, index:number)=>(
+              <li key={index} className="flex items-start gap-2 text-ink/80">
+                <CheckCircle2 size={15} className="text-green-600 shrink-0 mt-0.5" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {parsed.improvements?.length > 0 && (
+        <div className="mb-6">
+          <h5 className="font-bold mb-2 text-sm uppercase tracking-wide text-amber-700">Improvements</h5>
+          <ul className="space-y-1.5">
+            {parsed.improvements.map((item:string, index:number)=>(
+              <li key={index} className="flex items-start gap-2 text-ink/80">
+                <span className="shrink-0 mt-1 w-1.5 h-1.5 rounded-full bg-amber-500" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {parsed.grammarMistakes?.length > 0 && (
+        <div>
+          <h5 className="font-bold text-crimson mb-2 text-sm uppercase tracking-wide">Grammar Mistakes</h5>
+          <ul className="space-y-1.5">
+            {parsed.grammarMistakes.map((item:string, index:number)=>(
+              <li key={index} className="flex items-start gap-2 text-ink/80">
+                <XCircle size={15} className="text-crimson shrink-0 mt-0.5" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+    </div>
+  )
+}
+
+export default function TryoutSection(){
+
+  const [attempts, setAttempts] = useState<Attempt[]>([])
+  const [answers, setAnswers] = useState<UserAnswer[]>([])
+  const [explanations, setExplanations] = useState<Explanation[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(()=>{
 
-    async function
-    loadAttempts(){
+    async function loadAttempts(){
 
-      const {
-        data:userData
-      } =
-      await supabase
-      .auth
-      .getUser()
+      const { data:userData } = await supabase.auth.getUser()
+      const user = userData.user
 
-      const user =
-      userData.user
-
-      if(!user)
-      return
-
-      const {
-
-  data:
-  userAnswers
-
-} =
-
-await supabase
-
-.from(
-  "user_answers"
-)
-
-.select("*")
-
-.eq(
-  "user_id",
-  user.id
-)
-
-.order(
-  "created_at",
-  {
-    ascending:false
-  }
-)
-
-setAnswers(
-  userAnswers
-  || []
-)
-
-      const {
-        data,
-        error
-      } =
-      await supabase
-
-      .from(
-        "tryout_attempts"
-      )
-
-      .select("*")
-
-      .eq(
-        "user_id",
-        user.id
-      )
-
-      .order(
-        "created_at",
-        {
-          ascending:false
-        }
-      )
-
-      if(error){
-
-        console.log(
-          error
-        )
-
+      if(!user){
+        setLoading(false)
         return
       }
 
-     const attempts =
+      const { data:userAnswers } = await supabase
+        .from("user_answers")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending:false })
 
-data || []
+      /* user_answers doesn't store question_order directly - look it up
+         from exam_questions via question_id instead of requiring a schema
+         change (which could break exam submission if that column doesn't
+         already exist on user_answers in the live database). This is a
+         pure read, so if anything about it doesn't match, the worst case
+         is an explanation simply doesn't show - never a broken submission. */
 
-     const {
-
-  data:
-  explanationData
-
-} =
-
-await supabase
-
-.from(
-  "tryout_explanations"
-)
-
-.select("*")
-
-setExplanations(
-  explanationData
-  || []
-)
-
-const groupedData =
-
-attempts.map(
-  item=>{
-
-    const matchedExplanation =
-
-      explanations?.find(
-        exp=>
-
-        exp.level ===
-        item.level
-
-        &&
-
-        exp.exam_set ===
-        item.exam_set
+      const questionIds = Array.from(
+        new Set((userAnswers || []).map(a=>a.question_id).filter(Boolean))
       )
 
-    return {
+      let orderByQuestionId:{ [key:number]:number } = {}
 
-      ...item,
+      if(questionIds.length > 0){
 
-      explanation:
-      matchedExplanation
-    }
-  }
-)
+        const { data:questionRows } = await supabase
+          .from("exam_questions")
+          .select("id, question_order")
+          .in("id", questionIds)
 
-      setGrouped(
-        groupedData
-      )
+        orderByQuestionId = Object.fromEntries(
+          (questionRows || []).map(q=>[q.id, q.question_order])
+        )
+      }
+
+      const enrichedAnswers = (userAnswers || []).map(a=>({
+        ...a,
+        question_order: orderByQuestionId[a.question_id] ?? a.question_order
+      }))
+
+      setAnswers(enrichedAnswers)
+
+      const { data:attemptsData, error } = await supabase
+        .from("tryout_attempts")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending:false })
+
+      if(error){
+        console.log(error)
+        setLoading(false)
+        return
+      }
+
+      const { data:explanationData } = await supabase
+        .from("tryout_explanations")
+        .select("*")
+
+      setExplanations(explanationData || [])
+
+      /* Older Full Tryout attempts were saved without exam_set (the bug
+         that was hiding every explanation for Full Tryout - now fixed at
+         the source in /exam/full/[level]/[set]). For attempts saved
+         before that fix, recover exam_set from the title text
+         ("Goethe A1 Set 3") so their review/explanations still work. */
+      const attemptsWithExamSet = (attemptsData || []).map(item=>{
+        if(item.exam_set) return item
+        const match = item.tryout_title?.match(/Set\s+(\d+)/i)
+        return match ? { ...item, exam_set: Number(match[1]) } : item
+      })
+
+      setAttempts(attemptsWithExamSet)
+      setLoading(false)
     }
 
     loadAttempts()
 
   },[])
 
+  if(loading){
+    return (
+      <section className="flex flex-col items-center justify-center gap-3 py-24 text-mist">
+        <Loader2 className="animate-spin text-gold" size={26} />
+        Loading...
+      </section>
+    )
+  }
+
   return (
 
     <section>
 
-      <h1 className="text-4xl font-bold mb-3">
+      <div className="mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold text-ink flex items-center gap-3">
+          <BookOpen className="text-crimson" size={28} />
+          Riwayat Try Out
+        </h1>
+        <p className="text-mist mt-2">
+          Review hasil dan pembahasan try out kamu.
+        </p>
+      </div>
 
-        Riwayat Tryout
+      {attempts.length === 0 && (
+        <div className="bg-surface border border-border rounded-3xl p-10 text-center text-mist shadow-sm">
+          Belum ada riwayat try out.
+        </div>
+      )}
 
-      </h1>
+      <div className="space-y-5">
 
-      <p className="text-gray-400 mb-10">
+        {attempts.map((item, index)=>{
 
-        Review your tryout results 
-        and explanations.
-      </p>
+          const relevantAnswers = answers.filter(answer=>
+            answer.level === item.level &&
+            answer.exam_set === item.exam_set &&
+            (item.module_type === "full" || answer.module === item.module_type)
+          )
 
-      <div className="space-y-6">
+          /* Group by module so a Full Tryout shows Lesen / H\u00F6ren as their
+             own clearly-numbered sections instead of one long mixed list. */
+          const answersByModule = relevantAnswers.reduce((acc, answer)=>{
+            if(!acc[answer.module]) acc[answer.module] = []
+            acc[answer.module].push(answer)
+            return acc
+          }, {} as { [key:string]:UserAnswer[] })
 
-        {grouped.map(
-          (
-            item,
-            index
-          )=>(
+          const explanationCount = relevantAnswers.filter(answer=>
+            findExplanation(explanations, answer)
+          ).length
+
+          return (
 
             <details
-              key={index}
-              className="bg-white/5 border border-white/10 rounded-[36px] p-8"
+              key={item.id ?? index}
+              className="group bg-surface border border-border rounded-[32px] p-6 md:p-8 shadow-sm"
             >
 
               <summary className="cursor-pointer list-none">
 
-                <div className="flex justify-between items-center gap-6">
+                <div className="flex flex-wrap items-center justify-between gap-6">
 
-  <div>
+                  <div className="flex items-start gap-4">
 
-    <h2 className="text-2xl font-bold">
+                    <div className="w-11 h-11 rounded-xl bg-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+                      <Award size={20} className="text-ink" />
+                    </div>
 
-      {
-        item
-        .tryout_title
-      }
+                    <div>
+                      <h2 className="text-lg md:text-xl font-bold text-ink">
+                        {item.tryout_title}
+                      </h2>
+                      <p className="text-mist text-sm mt-1">
+                        {new Date(item.created_at).toLocaleDateString("id-ID", {
+                          day: "numeric", month: "long", year: "numeric"
+                        })}
+                      </p>
+                    </div>
 
-    </h2>
+                  </div>
 
-    <p className="text-gray-400 mt-2">
+                  <div className="flex items-center gap-4 md:gap-6">
 
-      {
-        new Date(
-          item.created_at
-        )
+                    <div className="text-right">
+                      <p className="text-mist text-xs uppercase tracking-wide">Final Score</p>
+                      <h2 className="text-3xl md:text-4xl font-bold text-crimson">
+                        {item.score}
+                      </h2>
+                    </div>
 
-        .toLocaleDateString()
-      }
+                    {explanationCount > 0 ? (
+                      <div className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-ink bg-gold/20 px-3 py-2 rounded-full whitespace-nowrap">
+                        <FileText size={13} />
+                        {explanationCount} Pembahasan
+                      </div>
+                    ) : null}
 
-    </p>
+                    <ChevronDown
+                      size={20}
+                      className="text-mist transition-transform duration-300 group-open:rotate-180 shrink-0"
+                    />
 
-  </div>
+                  </div>
 
-  <div className="flex items-center gap-6">
-
-    <div className="text-right">
-
-      <p className="text-gray-400">
-
-        Final Score
-
-      </p>
-
-      <h2 className="text-4xl font-bold text-yellow-400">
-
-        {
-          item
-          .score
-        }
-
-      </h2>
-
-    </div>
-
-   {item.explanation ? (
-
-  <a
-    href={
-      item
-      .explanation
-      .video_url
-    }
-
-    target="_blank"
-
-    className="bg-gradient-to-r from-yellow-400 to-red-500 text-black font-bold px-5 py-3 rounded-2xl whitespace-nowrap"
-  >
-
-    View Explanation ▶
-
-  </a>
-
-) : (
-
-  <div className="bg-white/10 text-gray-400 font-bold px-5 py-3 rounded-2xl whitespace-nowrap">
-
-    No Explanation Available Yet
-
-  </div>
-
-)}
-
-  </div>
-
-</div>
+                </div>
 
               </summary>
 
-              <div className="mt-8 space-y-5">
-
-                <div
-  className="bg-white/5 rounded-3xl p-6 border border-white/10"
->
-
-  <div className="flex justify-between items-start">
-
-    <div>
-
-      <h3 className="text-xl font-bold capitalize">
-
-        {
-          item.module_type
-        }
-
-      </h3>
-
-      <p className="text-gray-400 mt-2">
-
-        Score:
-        {" "}
-        {
-          item.score
-        }
-
-      </p>
-
-    </div>
-
-  </div>
-
- {item.ai_feedback && (
-
-  <div className="mt-5 bg-white/5 rounded-2xl p-5">
-
-    <h4 className="font-bold mb-5 text-xl">
-
-      AI Feedback
-
-    </h4>
-
-    <div className="space-y-4">
-
-     {item.ai_feedback && (()=>{
-
- let parsed
-let isFullFeedback = false
-
-try{
-
-  parsed =
-  JSON.parse(
-    item.ai_feedback
-  )
-
-  isFullFeedback =
-
-    parsed?.schreiben &&
-    parsed?.sprechen
-
-}catch{
-
-    return (
-
-      <div className="mt-5 bg-white/5 rounded-2xl p-5">
-
-        <h4 className="font-bold mb-3">
-
-          Feedback AI
-        </h4>
-
-        <p className="text-gray-300 whitespace-pre-wrap">
-
-          {
-            item.ai_feedback
-          }
-
-        </p>
-
-      </div>
-
-    )
-  }
-
-  if(isFullFeedback){
-
-    console.log("FULL PARSED", parsed)
-console.log("SCHREIBEN", parsed.schreiben)
-console.log("SPRECHEN", parsed.sprechen)
-
-  const schreiben =
-
-typeof parsed.schreiben === "string"
-
-&&
-
-parsed.schreiben.trim().startsWith("{")
-
-? JSON.parse(parsed.schreiben)
-
-: {
-    feedback:
-    parsed.schreiben
-  }
-
-const sprechen =
-
-typeof parsed.sprechen === "string"
-
-&&
-
-parsed.sprechen.trim().startsWith("{")
-
-? JSON.parse(parsed.sprechen)
-
-: {
-    feedback:
-    parsed.sprechen
-  }
-
-  return (
-
-    <div className="mt-5 bg-white/5 rounded-2xl p-6 space-y-10">
-
-      {/* Schreiben */}
-
-      <div>
-
-        <h4 className="text-2xl font-bold text-yellow-400 mb-5">
-
-          Feedback Schreiben
-
-        </h4>
-
-        <p className="whitespace-pre-line">
-
-          {schreiben.feedback}
-        </p>
-
-      </div>
-
-      {/* Sprechen */}
-
-      <div>
-
-        <h4 className="text-2xl font-bold text-green-400 mb-5">
-
-          Feedback Sprechen
-
-        </h4>
-
-        <p className="whitespace-pre-line">
-
-          {sprechen.feedback}
-        </p>
-
-      </div>
-
-    </div>
-  )
-}
-
-  return (
-
-    <div className="mt-5 bg-white/5 rounded-2xl p-6">
-
-      <h4 className="font-bold text-xl mb-5">
-
-        AI Feedback
-      </h4>
-
-      {parsed.feedback && (
-
-        <div className="mb-6">
-
-          <h5 className="font-bold text-yellow-400 mb-3">
-
-            Feedback
-          </h5>
-
-          <p className="text-gray-300 leading-8 whitespace-pre-line">
-
-            {
-              parsed.feedback
-            }
-
-          </p>
-
-        </div>
-
-      )}
-
-      {parsed.strengths
-      ?.length > 0 && (
-
-        <div className="mb-6">
-
-          <h5 className="font-bold text-green-400 mb-3">
-
-            Strengths
-          </h5>
-
-          <ul className="space-y-2">
-
-            {parsed
-            .strengths
-            .map(
-              (
-                item:string,
-                index:number
-              )=>(
-
-                <li
-                  key={index}
-                >
-
-                  • {item}
-
-                </li>
-
-            ))}
-
-          </ul>
-
-        </div>
-
-      )}
-
-      {parsed.improvements
-      ?.length > 0 && (
-
-        <div className="mb-6">
-
-          <h5 className="font-bold text-yellow-400 mb-3">
-
-            Improvements
-          </h5>
-
-          <ul className="space-y-2">
-
-            {parsed
-            .improvements
-            .map(
-              (
-                item:string,
-                index:number
-              )=>(
-
-                <li
-                  key={index}
-                >
-
-                  • {item}
-
-                </li>
-
-            ))}
-
-          </ul>
-
-        </div>
-
-      )}
-
-      {parsed.grammarMistakes
-      ?.length > 0 && (
-
-        <div>
-
-          <h5 className="font-bold text-red-400 mb-3">
-
-            Grammar Mistakes
-          </h5>
-
-          <ul className="space-y-2">
-
-            {parsed
-            .grammarMistakes
-            .map(
-              (
-                item:string,
-                index:number
-              )=>(
-
-                <li
-                  key={index}
-                >
-
-                  • {item}
-
-                </li>
-
-            ))}
-
-          </ul>
-
-        </div>
-
-      )}
-
-    </div>
-  )
-
-})()}
-
-    </div>
-
-  </div>
-
-)}
-
-  <div className="mt-6">
-
-  <h4 className="font-bold text-xl mb-5">
-
-    Review Answers
-
-  </h4>
-
-  <div className="space-y-4">
-
-    {answers
-
-      .filter(
-        answer=>
-
-        answer.level
-        ===
-        item.level
-
-        &&
-
-        answer.exam_set
-        ===
-        item.exam_set
-
-        &&
-
-        (
-          item.module_type
-          === "full"
-
-          ||
-
-          answer.module
-          ===
-          item.module_type
-        )
-      )
-
-      .map(
-        (
-          answer,
-          idx
-        )=>(
-
-          <div
-            key={idx}
-
-            className="bg-white/5 border border-white/10 rounded-2xl p-5"
-          >
-
-            <p className="font-semibold mb-4">
-
-              {
-                idx + 1
-              }.
-
-              {" "}
-
-              {
-                answer
-                .question_text
-              }
-
-            </p>
-
-            <p className="text-gray-400">
-
-              Your Answer:
-            </p>
-
-            <p className="mb-4">
-
-              {
-                answer
-                .user_answer
-              }
-
-            </p>
-
-            <p className="text-gray-400">
-
-              Correct Answer:
-            </p>
-
-            <p
-              className={`
-
-              font-bold
-
-              ${
-                answer
-                .is_correct
-
-                ?
-
-                "text-green-400"
-
-                :
-
-                "text-red-400"
-              }
-
-              `}
-            >
-
-              
-
-              {
-                answer
-                .correct_answer
-              }
-
-            </p>
-
-{(() => {
-
-  const matchedExplanation =
-
-    explanations.find(
-      exp=>
-
-      exp.level
-      ===
-      answer.level
-
-      &&
-
-      exp.exam_set
-      ===
-      answer.exam_set
-
-      &&
-
-      exp.module
-      ===
-      answer.module
-
-      &&
-
-      exp.question_order
-      ===
-
-      idx + 1
-    )
-
-  return matchedExplanation ? (
-
-    <div className="mt-5 bg-yellow-400/10 border border-yellow-400/20 rounded-2xl p-5">
-
-      <h4 className="font-bold mb-3 text-yellow-300">
-
-        Explanation
-
-      </h4>
-
-      <p className="text-gray-300 whitespace-pre-wrap">
-
-        {
-          matchedExplanation
-          .explanation_text
-        }
-
-      </p>
-
-    </div>
-
-  ) : null
-})()}
-
-          </div>
-
-        )
-      )}
-
-  </div>
-
-</div>
-
-</div>
+              <div className="mt-8 pt-8 border-t border-border space-y-8">
+
+                {item.ai_feedback && <AiFeedbackBlock rawFeedback={item.ai_feedback} />}
+
+                {Object.entries(answersByModule).map(([moduleType, moduleAnswers])=>(
+
+                  <div key={moduleType}>
+
+                    <h3 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
+                      {item.module_type === "full" && (
+                        <span className="text-xs font-semibold text-mist bg-paper border border-border px-2.5 py-1 rounded-full">
+                          {moduleLabels[moduleType] || moduleType}
+                        </span>
+                      )}
+                      Review Jawaban
+                    </h3>
+
+                    <div className="space-y-4">
+
+                      {moduleAnswers
+                        .slice()
+                        .sort((a,b)=> (a.question_order || 0) - (b.question_order || 0))
+                        .map((answer, idx)=>{
+
+                        const matchedExplanation = findExplanation(explanations, answer)
+
+                        return (
+
+                          <div
+                            key={idx}
+                            className="bg-paper border border-border rounded-2xl p-5"
+                          >
+
+                            <p className="font-semibold text-ink mb-4">
+                              {answer.question_order || idx + 1}. {answer.question_text}
+                            </p>
+
+                            <div className="grid sm:grid-cols-2 gap-4">
+
+                              <div>
+                                <p className="text-mist text-xs uppercase tracking-wide mb-1">Your Answer</p>
+                                <p className="text-ink flex items-center gap-1.5">
+                                  {answer.is_correct
+                                    ? <CheckCircle2 size={15} className="text-green-600 shrink-0" />
+                                    : <XCircle size={15} className="text-crimson shrink-0" />}
+                                  {answer.user_answer || <span className="text-mist italic">(kosong)</span>}
+                                </p>
+                              </div>
+
+                              <div>
+                                <p className="text-mist text-xs uppercase tracking-wide mb-1">Correct Answer</p>
+                                <p className="font-bold text-green-700">
+                                  {answer.correct_answer}
+                                </p>
+                              </div>
+
+                            </div>
+
+                            {matchedExplanation?.explanation_text && (
+                              <div className="mt-4 bg-gold/10 border border-gold/25 rounded-xl p-4">
+                                <h4 className="font-bold mb-2 text-sm flex items-center gap-1.5 text-amber-700">
+                                  <FileText size={14} />
+                                  Pembahasan
+                                </h4>
+                                <p className="text-ink/80 whitespace-pre-wrap text-sm leading-relaxed">
+                                  {matchedExplanation.explanation_text}
+                                </p>
+                              </div>
+                            )}
+
+                            {matchedExplanation?.video_url && (
+                              <a
+                                href={matchedExplanation.video_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-3 inline-flex items-center gap-2 bg-crimson text-paper text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-crimson/90 transition-colors duration-200"
+                              >
+                                <Video size={15} />
+                                Tonton Video Pembahasan
+                              </a>
+                            )}
+
+                          </div>
+                        )
+                      })}
+
+                    </div>
+
+                  </div>
+                ))}
 
               </div>
 
             </details>
-
           )
-        )}
+        })}
 
       </div>
 

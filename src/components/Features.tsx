@@ -11,7 +11,7 @@ import {
 const features = [
   {
     icon: BookOpen,
-    tint: "bg-gold/15 text-gold",
+    tint: "bg-gold/20 text-ink",
     title: "Realistic Try Out",
     body: "Goethe exam simulation designed to resemble the actual exam.",
   },
@@ -23,7 +23,7 @@ const features = [
   },
   {
     icon: GraduationCap,
-    tint: "bg-green-500/15 text-green-400",
+    tint: "bg-green-500/15 text-green-600",
     title: "Video Explanations",
     body: "Exclusive file explanations after completing the try out.",
   },
@@ -39,10 +39,10 @@ export default function Features(){
 
         <div className="text-center mb-14 md:mb-16">
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-paper">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink">
 
             Why Choose
-            <span className="text-gold">
+            <span className="text-crimson">
               {" "}EL Germany?
             </span>
 
@@ -69,14 +69,14 @@ export default function Features(){
 
             <div
               key={feature.title}
-              className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-7 md:p-8 hover:bg-white/[0.07] hover:-translate-y-1 transition-all duration-300"
+              className="bg-surface border border-border rounded-2xl p-7 md:p-8 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
             >
 
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${feature.tint}`}>
                 <feature.icon size={22} />
               </div>
 
-              <h3 className="text-xl font-bold mb-3 text-paper">
+              <h3 className="text-xl font-bold mb-3 text-ink">
                 {feature.title}
               </h3>
 

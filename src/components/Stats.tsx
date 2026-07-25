@@ -41,10 +41,10 @@ export default function Stats(){
   },[])
 
   const stats = [
-    { value: `${completedTryouts}+`, label: "Try Out Completed", color: "text-gold" },
+    { value: `${completedTryouts}+`, label: "Try Out Completed", color: "text-amber-600" },
     { value: `${activeUsers}+`, label: "Active Users", color: "text-crimson" },
-    { value: "95%", label: "Satisfaction Level", color: "text-green-400" },
-    { value: "A1-B2", label: "All Level", color: "text-blue-400" },
+    { value: "95%", label: "Satisfaction Level", color: "text-green-600" },
+    { value: "A1-B2", label: "All Level", color: "text-blue-600" },
   ]
 
   return (

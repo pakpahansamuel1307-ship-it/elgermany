@@ -10,6 +10,15 @@ import {
   useParams
 } from "next/navigation"
 
+import {
+  CheckCircle2,
+  Circle,
+  ArrowRight,
+  PauseCircle,
+  PartyPopper,
+  Loader2,
+} from "lucide-react"
+
 import { supabase }
 from "../../../../../lib/supabase"
 
@@ -31,6 +40,13 @@ const modules = [
   "schreiben",
   "sprechen"
 ]
+
+const moduleLabels:{ [key:string]:string } = {
+  lesen: "Lesen",
+  horen: "H\u00F6ren",
+  schreiben: "Schreiben",
+  sprechen: "Sprechen",
+}
 
 export default function
 FullExamPage(){
@@ -69,6 +85,9 @@ FullExamPage(){
 
   1
 
+  const progressKey =
+  `full_progress_${level}_${examSet}`
+
   const [
     checkingAccess,
     setCheckingAccess
@@ -81,11 +100,39 @@ FullExamPage(){
   ] =
   useState(0)
 
+  /* Checkpoint screen shown between modules: which module was just
+     completed, and whether the checkpoint is currently showing. This does
+     not touch scoring or the Sprechen finalization logic at all - it only
+     delays when setCurrentModule(prev+1) actually fires. */
+  const [
+    showCheckpoint,
+    setShowCheckpoint
+  ] =
+  useState(false)
+
   const [
   remainingTryouts,
   setRemainingTryouts
 ] =
 useState(0)
+
+  useEffect(()=>{
+
+    /* RESTORE PROGRESS: if the participant paused at a checkpoint earlier
+       and comes back, resume at the module they left off at instead of
+       restarting from Lesen. */
+
+    const savedProgress =
+    localStorage.getItem(progressKey)
+
+    if(savedProgress){
+      const parsed = Number(savedProgress)
+      if(!Number.isNaN(parsed) && parsed >= 0 && parsed < modules.length){
+        setCurrentModule(parsed)
+      }
+    }
+
+  },[progressKey])
 
   useEffect(()=>{
 
@@ -301,6 +348,11 @@ if(!session){
     currentModule
   ]
 
+  const justCompletedModule =
+  currentModule > 0
+    ? modules[currentModule - 1]
+    : null
+
   const nextModule =
   ()=>{
 
@@ -309,10 +361,28 @@ if(!session){
       modules.length - 1
     ){
 
-      setCurrentModule(
-        prev=>prev+1
-      )
+      setShowCheckpoint(true)
     }
+  }
+
+  const continueToNextModule =
+  ()=>{
+
+    setShowCheckpoint(false)
+
+    setCurrentModule(
+      prev=>{
+        const next = prev + 1
+        localStorage.setItem(progressKey, String(next))
+        return next
+      }
+    )
+  }
+
+  const pauseForLater =
+  ()=>{
+
+    router.push("/dashboard")
   }
 
   if(
@@ -321,10 +391,11 @@ if(!session){
 
     return (
 
-      <main className="min-h-screen bg-[#050816] text-white flex items-center justify-center">
-
-        Loading...
-
+      <main className="min-h-screen bg-paper text-ink flex items-center justify-center">
+        <div className="flex items-center gap-3 text-mist">
+          <Loader2 className="animate-spin text-gold" size={24} />
+          Loading...
+        </div>
       </main>
 
     )
@@ -332,7 +403,7 @@ if(!session){
 
   return (
 
-    <main className="min-h-screen bg-[#050816] text-white p-6 md:p-10">
+    <main className="min-h-screen bg-paper text-ink p-6 md:p-10">
 
       <div className="max-w-6xl mx-auto">
 
@@ -355,7 +426,7 @@ if(!session){
 
           </h1>
 
-          <p className="text-gray-400 mt-3">
+          <p className="text-mist mt-3">
 
             Kerjakan semua modul
             secara berurutan.
@@ -372,33 +443,26 @@ if(!session){
             (
               item,
               index
-            )=>(
+            )=>{
+
+              const isDone = index < currentModule
+              const isCurrent = index === currentModule && !showCheckpoint
+
+              return (
 
               <div
                 key={item}
 
-                className={`
-
-                rounded-2xl
-                p-5
-                text-center
-                border
-
-                ${
-                  currentModule
-                  === index
-
-                  ?
-
-                  "bg-gradient-to-r from-yellow-400 to-red-500 text-black border-transparent"
-
-                  :
-
-                  "bg-white/5 border-white/10"
-                }
-
-                `}
+                className={`rounded-2xl p-5 text-center border font-semibold flex items-center justify-center gap-2 ${
+                  isCurrent
+                    ? "bg-gradient-to-r from-gold to-crimson text-ink border-transparent"
+                    : isDone
+                    ? "bg-gold/10 border-gold/30 text-ink"
+                    : "bg-surface border-border text-mist"
+                }`}
               >
+
+                {isDone && <CheckCircle2 size={16} />}
 
                 {
                   item
@@ -406,15 +470,94 @@ if(!session){
                 }
 
               </div>
-
-            )
+              )
+            }
           )}
 
         </div>
 
-        {/* MODULE */}
+        {/* CHECKPOINT */}
 
-        <div className="bg-white/5 border border-white/10 rounded-[40px] p-10">
+        {showCheckpoint ? (
+
+          <div className="bg-surface border border-border rounded-[40px] p-10 md:p-14 text-center shadow-sm">
+
+            <div className="w-16 h-16 rounded-2xl bg-gold/15 flex items-center justify-center mx-auto mb-6">
+              <PartyPopper className="text-gold" size={28} />
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-bold mb-3">
+
+              {justCompletedModule ? moduleLabels[justCompletedModule] : ""} selesai!
+
+            </h2>
+
+            <p className="text-mist max-w-md mx-auto mb-10">
+
+              Progres kamu sudah tersimpan. Lanjutkan sekarang ke{" "}
+              {moduleLabels[current]}, atau lanjutkan lagi nanti dari
+              titik ini.
+
+            </p>
+
+            <div className="max-w-sm mx-auto space-y-3 text-left mb-10">
+
+              {modules.map((item, index)=>{
+                const isDone = index < currentModule
+                const isNext = index === currentModule
+                return (
+                  <div
+                    key={item}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl ${
+                      isNext ? "bg-gold/10 border border-gold/30" : "bg-paper border border-border"
+                    }`}
+                  >
+                    {isDone ? (
+                      <CheckCircle2 size={18} className="text-gold shrink-0" />
+                    ) : (
+                      <Circle size={18} className="text-mist shrink-0 opacity-50" />
+                    )}
+                    <span className={isDone ? "text-ink" : isNext ? "text-ink font-semibold" : "text-mist"}>
+                      {moduleLabels[item]}
+                    </span>
+                    {isNext && (
+                      <span className="ml-auto text-xs font-semibold text-gold uppercase tracking-wide">
+                        Berikutnya
+                      </span>
+                    )}
+                  </div>
+                )
+              })}
+
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+              <button
+                onClick={continueToNextModule}
+                className="bg-gradient-to-r from-gold to-crimson text-ink font-bold px-8 py-4 rounded-2xl inline-flex items-center justify-center gap-2 hover:opacity-90 transition-opacity duration-200"
+              >
+                Lanjutkan ke {moduleLabels[current]}
+                <ArrowRight size={18} />
+              </button>
+
+              <button
+                onClick={pauseForLater}
+                className="bg-surface-deep border border-border text-ink font-semibold px-8 py-4 rounded-2xl inline-flex items-center justify-center gap-2 hover:bg-border transition-colors duration-200"
+              >
+                <PauseCircle size={18} />
+                Lanjutkan Nanti
+              </button>
+
+            </div>
+
+          </div>
+
+        ) : (
+
+        /* MODULE */
+
+        <div className="bg-surface border border-border rounded-[40px] p-10 shadow-sm">
 
           {/* LESEN */}
 
@@ -710,6 +853,9 @@ await supabase
   level:
   String(level),
 
+  exam_set:
+  examSet,
+
   score:
   finalScore,
 
@@ -782,6 +928,10 @@ localStorage.getItem("schreibenScore"))
 console.log("SPRECHEN:",
 localStorage.getItem("sprechenScore"))
 
+                /* full tryout truly finished now - clear the checkpoint
+                   resume marker so a future attempt starts at Lesen again */
+                localStorage.removeItem(progressKey)
+
                 router.push(
                   "/result"
                 )
@@ -792,6 +942,7 @@ localStorage.getItem("sprechenScore"))
           )}
 
         </div>
+        )}
 
       </div>
 

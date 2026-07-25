@@ -234,12 +234,12 @@ export default function UniversalLesenEngine({ level, examSet, onComplete }:Prop
 
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
 
-        <h1 className="text-2xl md:text-4xl font-bold text-paper flex items-center gap-3">
+        <h1 className="text-2xl md:text-4xl font-bold text-ink flex items-center gap-3">
           <BookOpen className="text-gold shrink-0" size={26} />
           Lesen <span className="text-gold">{level.toUpperCase()}</span>
         </h1>
 
-        <div className="flex items-center gap-2 text-xs md:text-sm text-mist bg-white/5 border border-white/10 rounded-full px-4 py-2">
+        <div className="flex items-center gap-2 text-xs md:text-sm text-mist bg-surface border border-border rounded-full px-4 py-2 shadow-sm">
           <CheckCircle2 size={14} className="text-gold" />
           {answeredCount} / {questions.length} answered
         </div>
@@ -263,7 +263,7 @@ export default function UniversalLesenEngine({ level, examSet, onComplete }:Prop
 
       {/* QUESTION NAVIGATOR */}
 
-      <div className="flex flex-wrap gap-2 mb-10 bg-white/5 border border-white/10 rounded-2xl p-4">
+      <div className="flex flex-wrap gap-2 mb-10 bg-surface border border-border rounded-2xl p-4 shadow-sm">
 
         {questions.map((q, index) => {
           const isAnswered = Boolean(answers[q.id])
@@ -277,7 +277,7 @@ export default function UniversalLesenEngine({ level, examSet, onComplete }:Prop
               className={`w-8 h-8 md:w-9 md:h-9 rounded-lg text-xs font-semibold flex items-center justify-center transition-colors duration-200 ${
                 isAnswered
                   ? "bg-gold text-ink"
-                  : "bg-white/10 text-mist hover:bg-white/20"
+                  : "bg-black/[0.05] text-mist hover:bg-black/[0.1]"
               }`}
             >
               {index + 1}
@@ -291,7 +291,7 @@ export default function UniversalLesenEngine({ level, examSet, onComplete }:Prop
 
         <div key={teil} className="mb-14">
 
-          <h2 className="text-xl md:text-2xl font-bold mb-6 text-paper">
+          <h2 className="text-xl md:text-2xl font-bold mb-6 text-ink">
             Teil {teil}
           </h2>
 
@@ -308,12 +308,12 @@ export default function UniversalLesenEngine({ level, examSet, onComplete }:Prop
               key={index}
               src={image}
               alt={`text-block-${index}`}
-              className="w-full rounded-2xl mb-6 object-contain bg-white/5 p-4"
+              className="w-full rounded-2xl mb-6 object-contain bg-black/[0.03] p-4"
             />
           ))}
 
           {teilQuestions[0]?.text_block && (
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 mb-8">
+            <div className="bg-surface border border-border rounded-2xl p-6 md:p-8 mb-8 shadow-sm">
               <p className="whitespace-pre-line text-base md:text-lg leading-loose text-mist max-w-[68ch]">
                 {teilQuestions[0].text_block}
               </p>
@@ -343,16 +343,16 @@ export default function UniversalLesenEngine({ level, examSet, onComplete }:Prop
                 <div
                   id={`lesen-q-${q.id}`}
                   key={q.id}
-                  className="bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 scroll-mt-24"
+                  className="bg-surface border border-border rounded-2xl p-5 md:p-6 scroll-mt-24 shadow-sm"
                 >
 
                   <div className="flex items-start gap-3 mb-5">
 
-                    <span className="shrink-0 w-7 h-7 rounded-full bg-white/10 text-paper text-sm font-bold flex items-center justify-center">
+                    <span className="shrink-0 w-7 h-7 rounded-full bg-black/[0.06] text-ink text-sm font-bold flex items-center justify-center">
                       {q.question_order}
                     </span>
 
-                    <p className="text-base md:text-lg text-paper whitespace-pre-line pt-0.5">
+                    <p className="text-base md:text-lg text-ink whitespace-pre-line pt-0.5">
                       {q.question_text}
                     </p>
 
@@ -370,7 +370,7 @@ export default function UniversalLesenEngine({ level, examSet, onComplete }:Prop
                             className={`w-full text-left p-4 rounded-xl flex items-start gap-3 transition-colors duration-200 ${
                               selected
                                 ? "bg-gold text-ink"
-                                : "bg-white/10 text-paper hover:bg-white/[0.15]"
+                                : "bg-black/[0.04] text-ink hover:bg-black/[0.08]"
                             }`}
                           >
                             {selected ? <CheckCircle2 size={16} className="shrink-0 mt-0.5" /> : <Circle size={16} className="shrink-0 mt-0.5 opacity-40" />}
@@ -380,7 +380,7 @@ export default function UniversalLesenEngine({ level, examSet, onComplete }:Prop
                                 <img
                                   src={option.image}
                                   alt="option"
-                                  className="w-full max-h-[250px] object-contain rounded-xl bg-white/5 mb-4"
+                                  className="w-full max-h-[250px] object-contain rounded-xl bg-black/[0.03] mb-4"
                                 />
                               )}
                               <span className="font-bold">{option.key}.</span>{" "}
@@ -404,7 +404,7 @@ export default function UniversalLesenEngine({ level, examSet, onComplete }:Prop
                             className={`p-4 rounded-xl font-bold flex items-center justify-center gap-1.5 transition-colors duration-200 ${
                               selected
                                 ? "bg-gold text-ink"
-                                : "bg-white/10 text-paper hover:bg-white/[0.15]"
+                                : "bg-black/[0.04] text-ink hover:bg-black/[0.08]"
                             }`}
                           >
                             {selected && <CheckCircle2 size={14} />}
@@ -430,7 +430,7 @@ export default function UniversalLesenEngine({ level, examSet, onComplete }:Prop
                             className={`p-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors duration-200 ${
                               selected
                                 ? "bg-gold text-ink"
-                                : "bg-white/10 text-paper hover:bg-white/[0.15]"
+                                : "bg-black/[0.04] text-ink hover:bg-black/[0.08]"
                             }`}
                           >
                             {selected ? <CheckCircle2 size={16} /> : <Circle size={16} className="opacity-40" />}

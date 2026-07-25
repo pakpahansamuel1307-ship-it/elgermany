@@ -1,257 +1,302 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import {
-  useState
+  Upload,
+  Video,
+  FileText,
+  CheckCircle2,
+  Loader2,
+  ListChecks,
+} from "lucide-react"
+
+import { supabase } from "../../../lib/supabase"
+
+type QuestionOption = {
+  id:number
+  question_order:number
+  question_text:string
 }
-from "react"
 
-import {
-  supabase
+type ExplanationRow = {
+  id:number
+  question_order:number
+  explanation_text:string | null
+  video_url:string | null
 }
-from "../../../lib/supabase"
 
-export default function
-AdminExplanationPage(){
+export default function AdminExplanationPage(){
 
-  const [
-    form,
-    setForm
-  ] =
-  useState({
+  const [level, setLevel] = useState("a1")
+  const [module, setModule] = useState("lesen")
+  const [examSet, setExamSet] = useState(1)
 
-    level:"a1",
+  const [questions, setQuestions] = useState<QuestionOption[]>([])
+  const [questionId, setQuestionId] = useState<number | "">("")
+  const [loadingQuestions, setLoadingQuestions] = useState(false)
 
-    exam_set:1,
+  const [explanationText, setExplanationText] = useState("")
+  const [videoUrl, setVideoUrl] = useState("")
+  const [submitting, setSubmitting] = useState(false)
 
-    module:"lesen",
+  const [existing, setExisting] = useState<ExplanationRow[]>([])
 
-    question_order:1,
+  /* Load the actual questions for the chosen level/module/exam_set so the
+     admin picks the exact question from a list instead of typing a raw
+     question number by hand - this is what makes matching reliable on the
+     display side, since we capture the real question_id straight from
+     exam_questions instead of risking a typo. */
+  useEffect(()=>{
 
-    explanation_text:""
-  })
+    async function loadQuestions(){
 
-  async function
-  submit(){
+      setLoadingQuestions(true)
+      setQuestionId("")
 
-    const {
-      error
-    } =
+      const { data } = await supabase
+        .from("exam_questions")
+        .select("id, question_order, question_text")
+        .eq("level", level)
+        .eq("module", module)
+        .eq("exam_set", examSet)
+        .order("question_order", { ascending:true })
 
-    await supabase
+      setQuestions(data || [])
+      setLoadingQuestions(false)
+    }
 
-    .from(
-      "tryout_explanations"
-    )
+    loadQuestions()
 
-    .insert(
-      form
-    )
+  },[level, module, examSet])
 
-    if(error){
+  useEffect(()=>{
 
-      alert(
-        error.message
-      )
+    async function loadExisting(){
 
+      const { data } = await supabase
+        .from("tryout_explanations")
+        .select("id, question_order, explanation_text, video_url")
+        .eq("level", level)
+        .eq("module", module)
+        .eq("exam_set", examSet)
+        .order("question_order", { ascending:true })
+
+      setExisting(data || [])
+    }
+
+    loadExisting()
+
+  },[level, module, examSet, submitting])
+
+  async function submit(){
+
+    if(!questionId){
+      alert("Pilih soal terlebih dahulu.")
       return
     }
 
-    alert(
-      "Pembahasan berhasil"
-    )
+    if(!explanationText.trim() && !videoUrl.trim()){
+      alert("Isi pembahasan teks atau link video (minimal salah satu).")
+      return
+    }
+
+    const selectedQuestion = questions.find(q=>q.id === questionId)
+
+    setSubmitting(true)
+
+    const { error } = await supabase
+      .from("tryout_explanations")
+      .insert({
+        level,
+        exam_set: examSet,
+        module,
+        question_id: questionId,
+        question_order: selectedQuestion?.question_order ?? null,
+        explanation_text: explanationText.trim() || null,
+        video_url: videoUrl.trim() || null,
+      })
+
+    setSubmitting(false)
+
+    if(error){
+      alert(error.message)
+      return
+    }
+
+    setExplanationText("")
+    setVideoUrl("")
+    setQuestionId("")
+    alert("Pembahasan berhasil diupload.")
   }
 
   return (
 
-    <main className="min-h-screen bg-[#050816] text-white p-10">
+    <main className="min-h-screen bg-paper text-ink p-6 md:p-10">
 
       <div className="max-w-3xl mx-auto">
 
-        <h1 className="text-4xl font-bold mb-10">
-
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 flex items-center gap-3">
+          <Upload className="text-crimson" size={30} />
           Upload Pembahasan
-
         </h1>
 
-        <div className="space-y-5">
+        <p className="text-mist mb-10">
+          Pilih soal secara langsung dari daftar supaya pembahasan pasti
+          nyambung ke soal yang benar.
+        </p>
 
-          <select
+        <div className="bg-surface border border-border rounded-3xl p-6 md:p-8 shadow-sm space-y-5">
 
-            value={
-              form.level
-            }
+          <div className="grid sm:grid-cols-2 gap-5">
 
-            onChange={(
-              e
-            )=>
+            <div>
+              <label className="text-sm font-semibold text-mist mb-2 block">Level</label>
+              <select
+                value={level}
+                onChange={(e)=>setLevel(e.target.value)}
+                className="w-full bg-paper border border-border p-4 rounded-2xl text-ink"
+              >
+                <option value="a1">A1</option>
+                <option value="a2">A2</option>
+                <option value="b1">B1</option>
+                <option value="b2">B2</option>
+              </select>
+            </div>
 
-              setForm({
+            <div>
+              <label className="text-sm font-semibold text-mist mb-2 block">Modul</label>
+              <select
+                value={module}
+                onChange={(e)=>setModule(e.target.value)}
+                className="w-full bg-paper border border-border p-4 rounded-2xl text-ink"
+              >
+                <option value="lesen">Lesen</option>
+                <option value="horen">H&ouml;ren</option>
+                <option value="schreiben">Schreiben</option>
+                <option value="sprechen">Sprechen</option>
+              </select>
+            </div>
 
-                ...form,
+          </div>
 
-                level:
-                e.target
-                .value
-              })
-            }
+          <div>
+            <label className="text-sm font-semibold text-mist mb-2 block">Exam Set</label>
+            <input
+              type="number"
+              min={1}
+              value={examSet}
+              onChange={(e)=>setExamSet(Number(e.target.value) || 1)}
+              className="w-full bg-paper border border-border p-4 rounded-2xl text-ink"
+              placeholder="Exam Set"
+            />
+          </div>
 
-            className="w-full bg-white/10 p-4 rounded-2xl"
-          >
+          <div>
+            <label className="text-sm font-semibold text-mist mb-2 block">Pilih Soal</label>
 
-            <option value="a1">
-              A1
-            </option>
+            {loadingQuestions ? (
+              <div className="flex items-center gap-2 text-mist p-4">
+                <Loader2 className="animate-spin" size={16} />
+                Memuat soal...
+              </div>
+            ) : questions.length === 0 ? (
+              <div className="text-mist p-4 bg-paper border border-border rounded-2xl text-sm">
+                Tidak ada soal untuk kombinasi level/modul/exam set ini.
+              </div>
+            ) : (
+              <select
+                value={questionId}
+                onChange={(e)=>setQuestionId(Number(e.target.value))}
+                className="w-full bg-paper border border-border p-4 rounded-2xl text-ink"
+              >
+                <option value="">-- Pilih nomor soal --</option>
+                {questions.map(q=>(
+                  <option key={q.id} value={q.id}>
+                    Soal {q.question_order}: {q.question_text.slice(0, 60)}
+                    {q.question_text.length > 60 ? "..." : ""}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
 
-            <option value="a2">
-              A2
-            </option>
+          <div>
+            <label className="text-sm font-semibold text-mist mb-2 flex items-center gap-1.5">
+              <FileText size={14} />
+              Pembahasan Teks (opsional)
+            </label>
+            <textarea
+              value={explanationText}
+              onChange={(e)=>setExplanationText(e.target.value)}
+              placeholder="Tulis pembahasan di sini..."
+              className="w-full min-h-[180px] bg-paper border border-border p-5 rounded-3xl text-ink resize-none"
+            />
+          </div>
 
-            <option value="b1">
-              B1
-            </option>
-
-            <option value="b2">
-              B2
-            </option>
-
-          </select>
-
-          <input
-            type="number"
-
-            value={
-              form.exam_set
-            }
-
-            onChange={(
-              e
-            )=>
-
-              setForm({
-
-                ...form,
-
-                exam_set:
-                Number(
-                  e.target
-                  .value
-                )
-              })
-            }
-
-            className="w-full bg-white/10 p-4 rounded-2xl"
-
-            placeholder="Exam Set"
-          />
-
-          <select
-
-            value={
-              form.module
-            }
-
-            onChange={(
-              e
-            )=>
-
-              setForm({
-
-                ...form,
-
-                module:
-                e.target
-                .value
-              })
-            }
-
-            className="w-full bg-white/10 p-4 rounded-2xl"
-          >
-
-            <option value="lesen">
-              Lesen
-            </option>
-
-            <option value="horen">
-              Hören
-            </option>
-
-            <option value="schreiben">
-              Schreiben
-            </option>
-
-            <option value="sprechen">
-              Sprechen
-            </option>
-
-          </select>
-
-          <input
-            type="number"
-
-            value={
-              form
-              .question_order
-            }
-
-            onChange={(
-              e
-            )=>
-
-              setForm({
-
-                ...form,
-
-                question_order:
-                Number(
-                  e.target
-                  .value
-                )
-              })
-            }
-
-            placeholder="Nomor Soal"
-
-            className="w-full bg-white/10 p-4 rounded-2xl"
-          />
-
-          <textarea
-
-            value={
-              form
-              .explanation_text
-            }
-
-            onChange={(
-              e
-            )=>
-
-              setForm({
-
-                ...form,
-
-                explanation_text:
-                e.target
-                .value
-              })
-            }
-
-            placeholder="Pembahasan"
-
-            className="w-full min-h-[220px] bg-white/10 p-5 rounded-3xl"
-          />
+          <div>
+            <label className="text-sm font-semibold text-mist mb-2 flex items-center gap-1.5">
+              <Video size={14} />
+              Link Video Pembahasan (opsional)
+            </label>
+            <input
+              type="url"
+              value={videoUrl}
+              onChange={(e)=>setVideoUrl(e.target.value)}
+              placeholder="https://youtube.com/... atau link Google Drive"
+              className="w-full bg-paper border border-border p-4 rounded-2xl text-ink"
+            />
+          </div>
 
           <button
-
-            onClick={
-              submit
-            }
-
-            className="w-full bg-gradient-to-r from-yellow-400 to-red-500 text-black py-5 rounded-3xl font-bold"
+            onClick={submit}
+            disabled={submitting}
+            className="w-full bg-gradient-to-r from-gold to-crimson text-ink py-4 md:py-5 rounded-3xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-
-            Upload Pembahasan
-
+            {submitting ? (
+              <>
+                <Loader2 className="animate-spin" size={18} />
+                Mengupload...
+              </>
+            ) : (
+              <>
+                <Upload size={18} />
+                Upload Pembahasan
+              </>
+            )}
           </button>
+
+        </div>
+
+        {/* EXISTING FOR THIS FILTER */}
+
+        <div className="mt-8">
+
+          <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-ink">
+            <ListChecks size={18} className="text-crimson" />
+            Pembahasan Tersimpan &mdash; {level.toUpperCase()} / {module} / Set {examSet}
+          </h2>
+
+          {existing.length === 0 ? (
+            <p className="text-mist text-sm">Belum ada pembahasan untuk kombinasi ini.</p>
+          ) : (
+            <div className="space-y-2">
+              {existing.map(row=>(
+                <div
+                  key={row.id}
+                  className="bg-surface border border-border rounded-xl p-4 flex items-center gap-3 text-sm"
+                >
+                  <CheckCircle2 size={16} className="text-green-600 shrink-0" />
+                  <span className="font-semibold text-ink">Soal {row.question_order}</span>
+                  {row.explanation_text && (
+                    <span className="text-mist flex items-center gap-1"><FileText size={12} /> Teks</span>
+                  )}
+                  {row.video_url && (
+                    <span className="text-mist flex items-center gap-1"><Video size={12} /> Video</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
 
         </div>
 

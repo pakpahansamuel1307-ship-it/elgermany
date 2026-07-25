@@ -293,7 +293,7 @@ export default function HorenEngine({ level, examSet, onComplete }:Props){
           <Headphones className="text-gold" size={28} />
         </div>
 
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-paper">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-ink">
           Listening Preparation
         </h1>
 
@@ -327,11 +327,11 @@ export default function HorenEngine({ level, examSet, onComplete }:Props){
 
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
 
-        <h1 className="text-2xl md:text-4xl font-bold text-paper">
+        <h1 className="text-2xl md:text-4xl font-bold text-ink">
           H&ouml;ren <span className="text-gold">{level.toUpperCase()}</span>
         </h1>
 
-        <div className="flex items-center gap-2 text-xs md:text-sm text-mist bg-white/5 border border-white/10 rounded-full px-4 py-2">
+        <div className="flex items-center gap-2 text-xs md:text-sm text-mist bg-surface border border-border rounded-full px-4 py-2 shadow-sm">
           <CheckCircle2 size={14} className="text-gold" />
           {answeredCount} / {totalQuestions} answered
         </div>
@@ -350,7 +350,7 @@ export default function HorenEngine({ level, examSet, onComplete }:Props){
               <Volume2 size={16} className="text-crimson animate-pulse" />
             </div>
 
-            <p className="font-semibold text-paper text-sm md:text-base">
+            <p className="font-semibold text-ink text-sm md:text-base">
               Audio is playing. Listen carefully.
             </p>
 
@@ -358,7 +358,7 @@ export default function HorenEngine({ level, examSet, onComplete }:Props){
 
           {/* read-only progress indicator, no seek/pause control */}
 
-          <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+          <div className="h-1.5 rounded-full bg-black/[0.08] overflow-hidden">
             <div
               className="h-full rounded-full bg-gradient-to-r from-gold to-crimson transition-[width] duration-300"
               style={{ width: `${progressPct}%` }}
@@ -398,7 +398,7 @@ export default function HorenEngine({ level, examSet, onComplete }:Props){
 
       {/* QUESTION NAVIGATOR */}
 
-      <div className="flex flex-wrap gap-2 mb-10 bg-white/5 border border-white/10 rounded-2xl p-4">
+      <div className="flex flex-wrap gap-2 mb-10 bg-surface border border-border rounded-2xl p-4 shadow-sm">
 
         {questions.map((q, index) => {
           const isAnswered = Boolean(answers[q.id])
@@ -412,7 +412,7 @@ export default function HorenEngine({ level, examSet, onComplete }:Props){
               className={`w-8 h-8 md:w-9 md:h-9 rounded-lg text-xs font-semibold flex items-center justify-center transition-colors duration-200 ${
                 isAnswered
                   ? "bg-gold text-ink"
-                  : "bg-white/10 text-mist hover:bg-white/20"
+                  : "bg-black/[0.05] text-mist hover:bg-black/[0.1]"
               }`}
             >
               {index + 1}
@@ -434,12 +434,12 @@ export default function HorenEngine({ level, examSet, onComplete }:Props){
 
           <div key={teil} className="mb-14">
 
-            <h2 className="text-xl md:text-2xl font-bold mb-6 text-paper">
+            <h2 className="text-xl md:text-2xl font-bold mb-6 text-ink">
               Teil {teil}
             </h2>
 
             {teilQuestions[0]?.text_block && (
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 whitespace-pre-line text-mist leading-relaxed">
+              <div className="bg-surface border border-border rounded-2xl p-6 mb-6 whitespace-pre-line text-mist leading-relaxed shadow-sm">
                 {teilQuestions[0].text_block}
               </div>
             )}
@@ -459,16 +459,16 @@ export default function HorenEngine({ level, examSet, onComplete }:Props){
                   <div
                     id={`horen-q-${q.id}`}
                     key={q.id}
-                    className="bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 scroll-mt-24"
+                    className="bg-surface border border-border rounded-2xl p-5 md:p-6 scroll-mt-24 shadow-sm"
                   >
 
                     <div className="flex items-start gap-3 mb-5">
 
-                      <span className="shrink-0 w-7 h-7 rounded-full bg-white/10 text-paper text-sm font-bold flex items-center justify-center">
+                      <span className="shrink-0 w-7 h-7 rounded-full bg-black/[0.06] text-ink text-sm font-bold flex items-center justify-center">
                         {q.question_order}
                       </span>
 
-                      <p className="text-base md:text-lg text-paper whitespace-pre-line pt-0.5">
+                      <p className="text-base md:text-lg text-ink whitespace-pre-line pt-0.5">
                         {q.question_text}
                       </p>
 
@@ -487,7 +487,7 @@ export default function HorenEngine({ level, examSet, onComplete }:Props){
                                 className={`w-full flex items-center justify-center gap-2 text-center p-4 rounded-xl font-semibold capitalize transition-colors duration-200 ${
                                   selected
                                     ? "bg-gold text-ink"
-                                    : "bg-white/10 text-paper hover:bg-white/[0.15]"
+                                    : "bg-black/[0.05] text-ink hover:bg-black/[0.1]"
                                 }`}
                               >
                                 {selected ? <CheckCircle2 size={16} /> : <Circle size={16} className="opacity-50" />}
@@ -509,14 +509,14 @@ export default function HorenEngine({ level, examSet, onComplete }:Props){
                                 className={`text-left rounded-2xl overflow-hidden border p-4 transition-colors duration-200 ${
                                   selected
                                     ? "bg-gold text-ink border-gold"
-                                    : "bg-white/10 border-white/10 text-paper hover:bg-white/[0.15]"
+                                    : "bg-black/[0.03] border-border text-ink hover:bg-black/[0.06]"
                                 }`}
                               >
                                 {option.image && (
                                   <img
                                     src={option.image}
                                     alt="option"
-                                    className="w-full h-[220px] object-contain rounded-xl bg-white/5 mb-4"
+                                    className="w-full h-[220px] object-contain rounded-xl bg-black/[0.03] mb-4"
                                   />
                                 )}
 

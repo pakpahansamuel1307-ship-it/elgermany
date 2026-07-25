@@ -40,9 +40,9 @@ export default function Pricing(){
 
         <div className="text-center mb-14 md:mb-16">
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-paper">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink">
             Paket
-            <span className="text-gold">{" "}Full Try Out</span>
+            <span className="text-crimson">{" "}Full Try Out</span>
           </h2>
 
           <p className="text-mist mt-5 text-base md:text-lg">
@@ -62,7 +62,7 @@ export default function Pricing(){
                 className={
                   isFeatured
                     ? "relative overflow-hidden bg-gradient-to-b from-gold to-crimson text-ink rounded-2xl p-8 md:scale-105 shadow-2xl hover:shadow-gold/30 transition-shadow duration-500"
-                    : "bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/[0.07] transition-colors duration-300"
+                    : "bg-surface border border-border rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow duration-300"
                 }
               >
 
@@ -95,7 +95,7 @@ export default function Pricing(){
                 <ul className={`mt-8 space-y-3.5 ${isFeatured ? "" : "text-mist"}`}>
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2.5 text-sm md:text-base">
-                      <span className={isFeatured ? "text-ink" : "text-gold"}>&#10003;</span>
+                      <span className={isFeatured ? "text-ink" : "text-crimson"}>&#10003;</span>
                       {feature}
                     </li>
                   ))}

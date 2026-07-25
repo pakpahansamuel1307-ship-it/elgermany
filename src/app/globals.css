@@ -1,25 +1,29 @@
 @import "tailwindcss";
 
 /*
-  EL Germany design tokens.
-  Same black / crimson / gold identity the site already uses (a nod to the
-  German flag), just consolidated into one source of truth instead of the
-  handful of near-duplicate hex values that were scattered across
-  components (#0F172A, #111827, #050816, yellow-400, red-500, gray-400...).
-  These generate matching bg-, text- and border- utilities automatically
-  (Tailwind v4 "@theme"), and are purely additive: nothing that already
-  uses the default Tailwind palette (dashboard, exam pages, admin) is
-  touched by this.
+  EL Germany design tokens - light theme.
+  gold and crimson are sampled directly from the real logo (public/logo.png:
+  the red measures rgb(226,3,21), the gold rgb(253,196,4)) and don't change
+  between light/dark since they're brand colors, not surface colors.
+  Token names are unchanged from the dark-theme version on purpose (ink,
+  paper, surface, mist, gold, crimson) so every file already built across
+  Homepage/Hoeren/Lesen/Schreiben/Sprechen keeps working - what changed is
+  which token is the page default (body now uses paper as background and
+  ink as text, the reverse of before) and each component's own background
+  and text color usage, which I went through file by file.
+  A new border token replaces the old border-white/N pattern, which
+  rendered invisibly on a light background.
 */
 @theme {
-  --color-ink: #0b1220;         /* page background */
-  --color-surface: #131c30;     /* card / panel surface */
-  --color-surface-deep: #060911;/* footer & deepest sections */
-  --color-gold: #f4c430;        /* primary accent */
-  --color-gold-soft: #ffe28a;   /* gold gradient tint */
-  --color-crimson: #e0293f;     /* secondary accent */
-  --color-mist: #99a2b8;        /* muted body text on dark */
-  --color-paper: #f7f8fb;       /* headings / high-emphasis text */
+  --color-paper: #faf9f6;        /* page background - warm off-white */
+  --color-surface: #ffffff;      /* card / panel surface */
+  --color-surface-deep: #f1efea; /* footer & deepest sections */
+  --color-border: #e7e4dd;       /* borders on light surfaces */
+  --color-gold: #fdc404;         /* primary accent - exact logo gold */
+  --color-gold-soft: #ffdd57;    /* gold hover/gradient tint */
+  --color-crimson: #e20315;      /* secondary accent - exact logo red */
+  --color-mist: #6b7280;         /* muted body text on light surfaces */
+  --color-ink: #14171f;          /* primary text, and the one deliberately-dark panel (none currently) */
 }
 
 html {
@@ -27,8 +31,8 @@ html {
 }
 
 body {
-  background: var(--color-ink);
-  color: var(--color-paper);
+  background: var(--color-paper);
+  color: var(--color-ink);
 }
 
 /* Respect reduced-motion preferences site-wide for any plain CSS animation. */

@@ -35,9 +35,9 @@ export default function FAQ(){
 
         <div className="text-center mb-14 md:mb-16">
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-paper">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink">
             Frequently Asked
-            <span className="text-gold">{" "}Questions</span>
+            <span className="text-crimson">{" "}Questions</span>
           </h2>
 
           <p className="text-mist mt-5 text-base md:text-lg">
@@ -54,7 +54,7 @@ export default function FAQ(){
             return (
               <div
                 key={faq.question}
-                className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden"
+                className="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm"
               >
 
                 <button
@@ -63,13 +63,13 @@ export default function FAQ(){
                   className="w-full flex items-center justify-between gap-4 p-6 md:p-7 text-left"
                 >
 
-                  <span className="text-base md:text-lg font-semibold text-paper">
+                  <span className="text-base md:text-lg font-semibold text-ink">
                     {faq.question}
                   </span>
 
                   <ChevronDown
                     className={`shrink-0 text-mist transition-transform duration-300 ${
-                      isOpen ? "rotate-180 text-gold" : ""
+                      isOpen ? "rotate-180 text-crimson" : ""
                     }`}
                     size={20}
                   />

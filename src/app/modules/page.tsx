@@ -1,65 +1,28 @@
 "use client"
 
-import Link from "next/link"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Loader2 } from "lucide-react"
 
-const levels = [
-  "a1",
-  "a2",
-  "b1",
-  "b2"
-]
+/* The separate-module purchase flow has been retired: everything now goes
+   through the Full Tryout flow (see /exam/full/[level]/[set]). This page
+   is kept as a redirect (instead of being deleted outright) so any old
+   bookmarked or shared link doesn't dead-end on a raw 404. */
 
-export default function
-ModulesPage(){
+export default function ModulesIndexRedirect(){
+
+  const router = useRouter()
+
+  useEffect(()=>{
+    router.replace("/tryout")
+  },[router])
 
   return (
-
-    <main className="min-h-screen bg-[#050816] text-white p-6 md:p-10">
-
-      <div className="max-w-7xl mx-auto">
-
-        <h1 className="text-5xl font-bold mb-4">
-
-          Modul Goethe
-
-        </h1>
-
-        <p className="text-gray-400 mb-12">
-
-          Select the module level you want to study.
-
-        </p>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-
-          {levels.map(
-            level=>(
-
-              <Link
-                key={level}
-
-                href={`/modules/${level}`}
-              >
-
-                <div className="bg-white/5 border border-white/10 rounded-[36px] p-10 text-center hover:scale-105 transition">
-
-                  <h2 className="text-4xl font-bold uppercase">
-
-                    {level}
-
-                  </h2>
-
-                </div>
-
-              </Link>
-
-            )
-          )}
-
-        </div>
-
+    <main className="min-h-screen bg-paper text-ink flex items-center justify-center">
+      <div className="flex items-center gap-3 text-mist">
+        <Loader2 className="animate-spin text-gold" size={24} />
+        Redirecting...
       </div>
-
     </main>
   )
 }
