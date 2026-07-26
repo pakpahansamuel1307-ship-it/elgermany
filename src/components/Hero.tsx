@@ -1,111 +1,130 @@
 "use client"
 
 import { motion } from "framer-motion"
-import {
-  GraduationCap,
-} from "lucide-react"
+import { Sparkles, ArrowRight, Play } from "lucide-react"
+
+const headline = ["Master German.", "Prove It."]
+
+const container = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.12 }
+  }
+}
+
+const line = {
+  hidden: { opacity: 0, y: 28 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const }
+  }
+}
 
 export default function Hero(){
 
   return (
 
-    <section className="relative z-10 px-6 md:px-16 pt-16 pb-28 md:pt-24 md:pb-36">
+    <section className="relative overflow-hidden px-6 md:px-16 pt-20 pb-24 md:pt-28 md:pb-32">
 
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-14 items-center">
+      {/* ambient gradient orbs */}
 
-        {/* LEFT */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="gradient-drift absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-gold/25 blur-[110px]" />
+        <div className="gradient-drift absolute top-1/3 -right-24 w-[460px] h-[460px] rounded-full bg-crimson/15 blur-[120px]" style={{ animationDelay:"-6s" }} />
+      </div>
+
+      <div className="relative max-w-6xl mx-auto text-center">
 
         <motion.div
-          initial={{ opacity:0, y:24 }}
+          initial={{ opacity:0, y:-10 }}
           animate={{ opacity:1, y:0 }}
           transition={{ duration:0.6, ease:"easeOut" }}
+          className="inline-flex items-center gap-2 bg-crimson/10 border border-crimson/25 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest text-crimson mb-8"
+        >
+          <Sparkles size={14} />
+          AI-Powered Goethe Exam Prep
+        </motion.div>
+
+        <motion.h1
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="text-5xl sm:text-6xl md:text-8xl font-bold leading-[1.02] tracking-tight text-ink"
+        >
+          {headline.map((text, i)=>(
+            <motion.span
+              key={text}
+              variants={line}
+              className={`block ${i === 1 ? "text-crimson" : ""}`}
+            >
+              {text}
+            </motion.span>
+          ))}
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity:0, y:20 }}
+          animate={{ opacity:1, y:0 }}
+          transition={{ duration:0.7, delay:0.5, ease:"easeOut" }}
+          className="text-mist text-lg md:text-xl mt-8 max-w-2xl mx-auto leading-relaxed"
+        >
+          Practice all four Goethe skills with AI that grades you instantly &mdash;
+          Lesen, H&ouml;ren, Schreiben, and Sprechen, built to feel like exam day.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity:0, y:20 }}
+          animate={{ opacity:1, y:0 }}
+          transition={{ duration:0.7, delay:0.65, ease:"easeOut" }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10"
         >
 
-          <div className="inline-flex items-center gap-2 bg-crimson/10 border border-crimson/25 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest text-crimson mb-6">
+          <a
+            href="/start"
+            className="group bg-gradient-to-r from-gold to-crimson text-ink px-8 py-4 rounded-2xl font-bold inline-flex items-center gap-2 shadow-lg shadow-crimson/10 hover:shadow-xl hover:shadow-crimson/20 hover:-translate-y-0.5 transition-all duration-300"
+          >
+            Start Your First Tryout
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
+          </a>
 
-            <GraduationCap size={14} />
-            Premium German Platform
-
-          </div>
-
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight text-ink">
-
-            German Language Preparation
-            <span className="text-crimson">
-              {" "}Modern
-            </span>
-            <br />
-            With AI
-
-          </h1>
-
-          <p className="text-mist text-base md:text-lg mt-6 leading-relaxed max-w-lg">
-
-            Modern German language practice platform with AI correction,
-            interactive speaking simulation, and premium video explanations.
-
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 mt-10">
-
-            <a
-              href="/start"
-              className="bg-gold hover:bg-gold-soft text-ink px-6 py-3.5 rounded-xl font-bold text-center transition-colors duration-200"
-            >
-              Start Try Out
-            </a>
-
-            <a
-              href="/demo"
-              className="border border-border hover:border-ink/30 px-6 py-3.5 rounded-xl text-ink font-bold text-center transition-colors duration-200"
-            >
-              View Demo
-            </a>
-
-          </div>
+          <a
+            href="#module-showcase"
+            className="group border border-border px-8 py-4 rounded-2xl text-ink font-bold inline-flex items-center gap-2 hover:border-ink/30 hover:-translate-y-0.5 transition-all duration-300"
+          >
+            <Play size={16} className="text-crimson" />
+            See It In Action
+          </a>
 
         </motion.div>
 
-        {/* RIGHT: hero photo */}
+        {/* PRODUCT SHOWCASE */}
 
         <motion.div
-          initial={{ opacity:0, scale:0.94 }}
-          animate={{
-            opacity:1,
-            scale:1,
-            y:[0,-8,0]
-          }}
-          transition={{
-            opacity:{ duration:0.6, ease:"easeOut" },
-            scale:{ duration:0.6, ease:"easeOut" },
-            y:{ duration:5, repeat:Infinity, ease:"easeInOut" }
-          }}
-          className="relative"
+          initial={{ opacity:0, y:50, scale:0.97 }}
+          animate={{ opacity:1, y:0, scale:1 }}
+          transition={{ duration:0.9, delay:0.8, ease:[0.16,1,0.3,1] as const }}
+          className="relative mt-20 max-w-4xl mx-auto"
         >
 
-          <div className="pointer-events-none absolute -top-10 -left-10 w-72 h-72 bg-crimson/10 blur-3xl rounded-full"></div>
+          <div className="rounded-[28px] md:rounded-[32px] border border-border bg-surface shadow-2xl shadow-ink/10 overflow-hidden">
 
-          <div className="pointer-events-none absolute bottom-0 right-0 w-72 h-72 bg-gold/10 blur-3xl rounded-full"></div>
+            {/* fake browser chrome */}
+            <div className="flex items-center gap-1.5 px-5 py-4 border-b border-border bg-paper">
+              <span className="w-3 h-3 rounded-full bg-crimson/40" />
+              <span className="w-3 h-3 rounded-full bg-gold/60" />
+              <span className="w-3 h-3 rounded-full bg-green-500/40" />
+            </div>
 
-          <div className="relative rounded-3xl overflow-hidden border border-border shadow-2xl">
-            <img
-              src="/hero-optimized.webp"
-              alt="Belajar bahasa Jerman bersama EL Germany"
-              className="w-full h-auto object-cover"
+            <video
+              className="w-full h-auto block"
+              src="/videos/hero-showcase.mp4"
+              poster="/videos/hero-showcase-poster.jpg"
+              autoPlay
+              muted
+              loop
+              playsInline
             />
-          </div>
-
-          {/* floating stat badge */}
-
-          <div className="absolute -bottom-4 -left-4 md:-bottom-8 md:-left-8 bg-gradient-to-r from-gold to-crimson rounded-2xl px-5 py-4 md:px-6 md:py-5 text-ink shadow-xl">
-
-            <h3 className="text-2xl font-bold leading-none">
-              10.000+
-            </h3>
-
-            <p className="text-xs font-semibold mt-1.5">
-              Exercises Completed
-            </p>
 
           </div>
 

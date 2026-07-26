@@ -40,4 +40,19 @@ body {
   html {
     scroll-behavior: auto;
   }
+  .gradient-drift {
+    animation: none !important;
+  }
+}
+
+/* Slow ambient drift for hero/section background gradient orbs. Purely
+   decorative, GPU-friendly (transform only), used sparingly. */
+@keyframes gradient-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(3%, -4%) scale(1.05); }
+  66% { transform: translate(-2%, 3%) scale(0.97); }
+}
+
+.gradient-drift {
+  animation: gradient-drift 18s ease-in-out infinite;
 }
