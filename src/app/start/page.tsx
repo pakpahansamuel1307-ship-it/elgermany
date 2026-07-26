@@ -66,14 +66,14 @@ export default function StartPage() {
 
             </p>
 
-            <a
-              href="/course"
+            <Link
+              href="/course/choose"
               className="bg-gradient-to-r from-gold to-crimson text-ink px-6 py-3 rounded-xl font-bold inline-block"
             >
 
               Start Learning
 
-            </a>
+            </Link>
 
           </div>
 

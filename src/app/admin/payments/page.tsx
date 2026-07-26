@@ -237,6 +237,46 @@ if(
   )
 }
 
+  // SUBSCRIPTION
+
+  if(payment.product_type === "subscription"){
+
+    const months = Number(payment.product_id.split("-")[1]) || 1
+
+    const { data:profileData } = await supabase
+      .from("profiles")
+      .select("subscription_active, subscription_expires_at")
+      .eq("id", payment.user_id)
+      .single()
+
+    const currentExpiry = profileData?.subscription_expires_at
+      ? new Date(profileData.subscription_expires_at)
+      : null
+
+    const stillActive = profileData?.subscription_active && currentExpiry && currentExpiry > new Date()
+
+    /* Renewing before expiry extends the remaining time instead of
+       overwriting it; a lapsed or first-time subscription starts counting
+       from today. */
+    const baseDate = stillActive ? currentExpiry! : new Date()
+
+    const newExpiry = new Date(baseDate)
+    newExpiry.setMonth(newExpiry.getMonth() + months)
+
+    const { error:subError } = await supabase
+      .from("profiles")
+      .update({
+        subscription_active: true,
+        subscription_expires_at: newExpiry.toISOString()
+      })
+      .eq("id", payment.user_id)
+
+    if(subError){
+      alert(subError.message)
+      return
+    }
+  }
+
   alert(
 "Approved & unlock berhasil"
   )

@@ -4,7 +4,8 @@ import {
   FileQuestion,
   CreditCard,
   BookOpen,
-  GraduationCap
+  GraduationCap,
+  Video
 } from "lucide-react"
 
 import {
@@ -76,6 +77,21 @@ AdminPage(){
 
       icon:
       GraduationCap
+    },
+
+    {
+
+      title:
+      "Video Course",
+
+      description:
+      "Kelola video langganan A1-B2",
+
+      href:
+      "/admin/course-videos",
+
+      icon:
+      Video
     }
 
   ]
