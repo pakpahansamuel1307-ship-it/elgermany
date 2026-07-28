@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
 
 import {
   LayoutDashboard,
@@ -21,6 +22,22 @@ type SidebarProps = {
     tab: string
   ) => void
 }
+
+const navItems = [
+  { key:"dashboard", label:"Dashboard", icon:LayoutDashboard },
+  { key:"tryout", label:"Tryout", icon:BookOpen },
+  { key:"leaderboard", label:"Leaderboard", icon:Trophy },
+  { key:"history", label:"History", icon:History },
+  { key:"profile", label:"Profile", icon:User },
+  { key:"course", label:"Course", icon:BookOpen },
+]
+
+const mobileNavItems = [
+  { key:"dashboard", label:"Dashboard", icon:LayoutDashboard },
+  { key:"tryout", label:"Tryout", icon:BookOpen },
+  { key:"history", label:"History", icon:History },
+  { key:"profile", label:"Profile", icon:User },
+]
 
 export default function Sidebar({
   activeTab,
@@ -91,7 +108,7 @@ export default function Sidebar({
     <>
   {/* DESKTOP SIDEBAR */}
 
-  <aside className="hidden md:flex flex-col justify-between w-[280px] border-r border-white/10 bg-white/5 backdrop-blur-xl p-8">
+  <aside className="hidden md:flex flex-col justify-between w-[280px] shrink-0 border-r border-white/10 bg-white/5 backdrop-blur-xl p-8">
 
       <div>
 
@@ -102,18 +119,18 @@ export default function Sidebar({
           <img
             src="/logo.png"
             alt="logo"
-            className="w-12 h-12"
+            className="w-12 h-12 object-contain"
           />
 
           <div>
 
-            <h1 className="font-bold text-xl">
+            <h1 className="font-bold text-xl text-paper">
 
               EL Germany
 
             </h1>
 
-            <p className="text-gray-400 text-sm">
+            <p className="text-white/40 text-sm">
 
               Premium Platform
 
@@ -132,11 +149,11 @@ export default function Sidebar({
     "/payment"
   }
 
-  className="w-full text-left mb-8 bg-gradient-to-br from-yellow-400/10 to-red-500/10 border border-yellow-400/20 rounded-[28px] p-5 backdrop-blur-xl hover:border-yellow-400/40 hover:scale-[1.01] transition"
+  className="w-full text-left mb-8 bg-gradient-to-br from-gold/10 to-crimson/10 border border-gold/20 rounded-[28px] p-5 backdrop-blur-xl hover:border-gold/40 hover:scale-[1.01] transition"
 
 >
 
-          <p className="text-xs text-gray-400 mb-2">
+          <p className="text-xs text-white/50 mb-2">
             Token Tryout
           </p>
 
@@ -146,10 +163,10 @@ export default function Sidebar({
 
               <Coins
                 size={22}
-                className="text-yellow-400"
+                className="text-gold"
               />
 
-              <h2 className="text-3xl font-bold text-yellow-400">
+              <h2 className="text-3xl font-bold text-gold">
                 {tokens}
               </h2>
 
@@ -161,116 +178,37 @@ export default function Sidebar({
 
         {/* MENU */}
 
-        <div className="space-y-3">
+        <div className="space-y-2">
 
-          <button
-            onClick={() =>
-              setActiveTab(
-                "dashboard"
-              )
-            }
-            className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition ${
-              activeTab ===
-              "dashboard"
-              ? "bg-gradient-to-r from-yellow-400 to-red-500 text-black font-semibold"
-              : "hover:bg-white/10"
-            }`}
-          >
-            <LayoutDashboard size={20} />
-            Dashboard
-          </button>
-
-          <button
-            onClick={() =>
-              setActiveTab(
-                "tryout"
-              )
-            }
-            className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition ${
-              activeTab ===
-              "tryout"
-              ? "bg-gradient-to-r from-yellow-400 to-red-500 text-black font-semibold"
-              : "hover:bg-white/10"
-            }`}
-          >
-            <BookOpen size={20} />
-            Tryout
-          </button>
-
-          <button
-            onClick={() =>
-              setActiveTab(
-                "leaderboard"
-              )
-            }
-            className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition ${
-              activeTab ===
-              "leaderboard"
-              ? "bg-gradient-to-r from-yellow-400 to-red-500 text-black font-semibold"
-              : "hover:bg-white/10"
-            }`}
-          >
-            <Trophy size={20} />
-            Leaderboard
-          </button>
-
-          <button
-            onClick={() =>
-              setActiveTab(
-                "history"
-              )
-            }
-            className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition ${
-              activeTab ===
-              "history"
-              ? "bg-gradient-to-r from-yellow-400 to-red-500 text-black font-semibold"
-              : "hover:bg-white/10"
-            }`}
-          >
-            <History size={20} />
-            History
-          </button>
-
-          <button
-            onClick={() =>
-              setActiveTab(
-                "profile"
-              )
-            }
-            className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition ${
-              activeTab ===
-              "profile"
-              ? "bg-gradient-to-r from-yellow-400 to-red-500 text-black font-semibold"
-              : "hover:bg-white/10"
-            }`}
-          >
-            <User size={20} />
-            Profile
-          </button>
-
-          <button
-            onClick={() =>
-              setActiveTab(
-                "course"
-              )
-            }
-            className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition ${
-              activeTab ===
-              "course"
-              ? "bg-gradient-to-r from-yellow-400 to-red-500 text-black font-semibold"
-              : "hover:bg-white/10"
-            }`}
-          >
-            <BookOpen size={20} />
-            Course
-          </button>
+          {navItems.map((item)=>{
+            const isActive = activeTab === item.key
+            return (
+              <button
+                key={item.key}
+                onClick={() => setActiveTab(item.key)}
+                className="relative w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-colors duration-200"
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="sidebar-active"
+                    transition={{ type:"spring", stiffness:400, damping:32 }}
+                    className="absolute inset-0 bg-gradient-to-r from-gold to-crimson rounded-2xl"
+                  />
+                )}
+                <span className={`relative flex items-center gap-4 ${isActive ? "text-ink font-semibold" : "text-white/60 hover:text-paper"}`}>
+                  <item.icon size={20} />
+                  {item.label}
+                </span>
+              </button>
+            )
+          })}
 
         </div>
 
       </div>
 
       <button
-        className="flex items-center gap-4 hover:bg-red-500/20 text-red-400 px-5 py-4 rounded-2xl transition"
+        className="flex items-center gap-4 hover:bg-crimson/15 text-crimson px-5 py-4 rounded-2xl transition-colors duration-200"
         onClick={
           handleLogout
         }
@@ -283,97 +221,25 @@ export default function Sidebar({
 
 {/* MOBILE NAVBAR */}
 
-<div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[#0B1020]/95 backdrop-blur-xl border-t border-white/10 px-2 py-2">
+<div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-ink/95 backdrop-blur-xl border-t border-white/10 px-2 py-2">
 
   <div className="flex items-center justify-around">
 
-    <button
-      onClick={()=>
-        setActiveTab(
-          "dashboard"
-        )
-      }
-      className={`flex flex-col items-center text-xs ${
-        activeTab ===
-        "dashboard"
-        ? "text-yellow-400"
-        : "text-gray-400"
-      }`}
-    >
-
-      <LayoutDashboard
-        size={22}
-      />
-
-      Dashboard
-
-    </button>
-
-    <button
-      onClick={()=>
-        setActiveTab(
-          "tryout"
-        )
-      }
-      className={`flex flex-col items-center text-xs ${
-        activeTab ===
-        "tryout"
-        ? "text-yellow-400"
-        : "text-gray-400"
-      }`}
-    >
-
-      <BookOpen
-        size={22}
-      />
-
-      Tryout
-
-    </button>
-
-    <button
-      onClick={()=>
-        setActiveTab(
-          "history"
-        )
-      }
-      className={`flex flex-col items-center text-xs ${
-        activeTab ===
-        "history"
-        ? "text-yellow-400"
-        : "text-gray-400"
-      }`}
-    >
-
-      <History
-        size={22}
-      />
-
-      History
-
-    </button>
-
-    <button
-      onClick={()=>
-        setActiveTab(
-          "profile"
-        )
-      }
-      className={`flex flex-col items-center text-xs ${
-        activeTab ===
-        "profile"
-        ? "text-yellow-400"
-        : "text-gray-400"
-      }`}
-    >
-
-      <User
-        size={22}
-      />
-
-      Profile
-
-    </button>
+    {mobileNavItems.map((item)=>{
+      const isActive = activeTab === item.key
+      return (
+        <button
+          key={item.key}
+          onClick={()=>setActiveTab(item.key)}
+          className={`flex flex-col items-center gap-1 text-xs px-3 py-1 transition-colors duration-200 ${
+            isActive ? "text-gold" : "text-white/40"
+          }`}
+        >
+          <item.icon size={22} />
+          {item.label}
+        </button>
+      )
+    })}
 
   </div>
 

@@ -12,18 +12,18 @@ export default function Home(){
 
   return (
 
-    <main className="relative min-h-screen bg-paper text-ink overflow-hidden">
+    <main className="relative min-h-screen bg-ink text-paper overflow-hidden">
 
       {/* Signature hairline: black / crimson / gold, the same order as the flag */}
-      <div className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-transparent via-crimson to-gold" />
+      <div className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-transparent via-crimson to-gold z-50" />
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-crimson/[0.06] rounded-full blur-3xl" />
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-crimson/25 rounded-full blur-[140px]" />
 
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gold/[0.08] rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-gold/25 rounded-full blur-[140px]" />
 
-        <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-gold/[0.04] rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-gold/10 rounded-full blur-[140px]" />
 
       </div>
 

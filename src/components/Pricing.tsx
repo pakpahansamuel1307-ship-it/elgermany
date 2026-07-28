@@ -40,12 +40,12 @@ export default function Pricing(){
 
         <div className="text-center mb-14 md:mb-16">
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-paper">
             Paket
-            <span className="text-crimson">{" "}Full Try Out</span>
+            <span className="bg-gradient-to-r from-gold to-crimson bg-clip-text text-transparent">{" "}Full Try Out</span>
           </h2>
 
-          <p className="text-mist mt-5 text-base md:text-lg">
+          <p className="text-white/50 mt-5 text-base md:text-lg">
             Choose the tryout package that suits your needs.
           </p>
 
@@ -62,7 +62,7 @@ export default function Pricing(){
                 className={
                   isFeatured
                     ? "relative overflow-hidden bg-gradient-to-b from-gold to-crimson text-ink rounded-2xl p-8 md:scale-105 shadow-2xl hover:shadow-gold/30 transition-shadow duration-500"
-                    : "bg-surface border border-border rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow duration-300"
+                    : "bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-8 hover:bg-white/[0.08] transition-colors duration-300"
                 }
               >
 
@@ -72,16 +72,16 @@ export default function Pricing(){
                   </div>
                 )}
 
-                <h3 className="text-2xl font-bold">
+                <h3 className={`text-2xl font-bold ${isFeatured ? "" : "text-paper"}`}>
                   {plan.name}
                 </h3>
 
-                <p className={`mt-3 ${isFeatured ? "text-ink/80" : "text-mist"}`}>
+                <p className={`mt-3 ${isFeatured ? "text-ink/80" : "text-white/50"}`}>
                   {plan.tagline}
                 </p>
 
                 {plan.sub && (
-                  <p className={`mt-1 ${isFeatured ? "text-ink/80" : "text-mist"}`}>
+                  <p className={`mt-1 ${isFeatured ? "text-ink/80" : "text-white/50"}`}>
                     {plan.sub}
                   </p>
                 )}
@@ -92,7 +92,7 @@ export default function Pricing(){
                   </span>
                 </div>
 
-                <ul className={`mt-8 space-y-3.5 ${isFeatured ? "" : "text-mist"}`}>
+                <ul className={`mt-8 space-y-3.5 ${isFeatured ? "" : "text-white/60"}`}>
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2.5 text-sm md:text-base">
                       <span className={isFeatured ? "text-ink" : "text-crimson"}>&#10003;</span>

@@ -116,7 +116,14 @@ useState(0)
 
   return (
 
-    <main className="min-h-screen bg-[#050816] text-white flex">
+    <main className="relative min-h-screen bg-ink text-paper flex overflow-hidden">
+
+      <div className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-transparent via-crimson to-gold z-50" />
+
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-crimson/10 rounded-full blur-[140px]" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gold/10 rounded-full blur-[140px]" />
+      </div>
 
       <Sidebar
         activeTab={
@@ -127,7 +134,7 @@ useState(0)
         }
       />
 
-      <div className="flex-1 p-4 md:p-10 pb-28 md:pb-10 overflow-hidden">
+      <div className="relative flex-1 p-4 md:p-10 pb-28 md:pb-10 overflow-hidden">
 
        <button
 
@@ -136,11 +143,11 @@ useState(0)
     "/payment"
   }
 
-  className="w-full text-left md:hidden mb-6 bg-gradient-to-br from-yellow-400/10 to-red-500/10 border border-yellow-400/20 rounded-[28px] p-5 backdrop-blur-xl hover:border-yellow-400/40 transition"
+  className="w-full text-left md:hidden mb-6 bg-gradient-to-br from-gold/10 to-crimson/10 border border-gold/20 rounded-[28px] p-5 backdrop-blur-xl hover:border-gold/40 transition"
 
 >
 
-  <p className="text-xs text-gray-400 mb-2">
+  <p className="text-xs text-white/50 mb-2">
 
     Token Tryout
 
@@ -150,10 +157,10 @@ useState(0)
 
     <Coins
       size={22}
-      className="text-yellow-400"
+      className="text-gold"
     />
 
-    <h2 className="text-3xl font-bold text-yellow-400">
+    <h2 className="text-3xl font-bold text-gold">
 
       {tokens}
 

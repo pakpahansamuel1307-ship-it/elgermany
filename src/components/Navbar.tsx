@@ -27,7 +27,7 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? "bg-paper/85 backdrop-blur-xl border-b border-border shadow-sm"
+          ? "bg-ink/80 backdrop-blur-xl border-b border-white/10"
           : "bg-transparent border-b border-transparent"
       }`}
     >
@@ -40,18 +40,18 @@ export default function Navbar() {
               alt="EL Germany"
               className="w-10 h-10 md:w-12 md:h-12 object-contain"
             />
-            <span className="text-xl md:text-2xl font-bold tracking-tight">
-              EL<span className="text-crimson">Germany</span>
+            <span className="text-xl md:text-2xl font-bold tracking-tight text-paper">
+              EL<span className="text-gold">Germany</span>
             </span>
           </Link>
 
           {/* DESKTOP MENU */}
-          <div className="hidden md:flex items-center gap-9 text-sm font-medium text-mist">
+          <div className="hidden md:flex items-center gap-9 text-sm font-medium text-white/60">
             {links.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="hover:text-crimson transition-colors duration-200"
+                className="hover:text-gold transition-colors duration-200"
               >
                 {link.label}
               </a>
@@ -62,7 +62,7 @@ export default function Navbar() {
             {/* DESKTOP BUTTON */}
             <a
               href="/login"
-              className="hidden sm:inline-flex bg-gold hover:bg-gold-soft text-ink px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors duration-200"
+              className="hidden sm:inline-flex bg-gradient-to-r from-gold to-crimson text-ink px-5 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity duration-200"
             >
               Login
             </a>
@@ -72,7 +72,7 @@ export default function Navbar() {
               onClick={() => setOpen(!open)}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
-              className="md:hidden flex items-center justify-center w-11 h-11 rounded-xl border border-border bg-surface text-ink"
+              className="md:hidden flex items-center justify-center w-11 h-11 rounded-xl border border-white/10 bg-white/5 text-paper"
             >
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -87,15 +87,15 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              className="md:hidden mt-4 bg-surface/95 border border-border backdrop-blur-xl rounded-2xl p-5 shadow-lg"
+              className="md:hidden mt-4 bg-ink/95 border border-white/10 backdrop-blur-xl rounded-2xl p-5 shadow-xl"
             >
-              <div className="flex flex-col gap-1 text-mist">
+              <div className="flex flex-col gap-1 text-white/60">
                 {links.map((link) => (
                   <a
                     key={link.label}
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className="px-3 py-3 rounded-xl hover:bg-paper hover:text-crimson transition-colors duration-200"
+                    className="px-3 py-3 rounded-xl hover:bg-white/5 hover:text-gold transition-colors duration-200"
                   >
                     {link.label}
                   </a>
@@ -104,7 +104,7 @@ export default function Navbar() {
                 <a
                   href="/login"
                   onClick={() => setOpen(false)}
-                  className="mt-2 bg-gold text-ink text-center py-3 rounded-xl font-bold"
+                  className="mt-2 bg-gradient-to-r from-gold to-crimson text-ink text-center py-3 rounded-xl font-bold"
                 >
                   Login
                 </a>

@@ -35,12 +35,12 @@ export default function FAQ(){
 
         <div className="text-center mb-14 md:mb-16">
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-paper">
             Frequently Asked
-            <span className="text-crimson">{" "}Questions</span>
+            <span className="bg-gradient-to-r from-gold to-crimson bg-clip-text text-transparent">{" "}Questions</span>
           </h2>
 
-          <p className="text-mist mt-5 text-base md:text-lg">
+          <p className="text-white/50 mt-5 text-base md:text-lg">
             Frequently Asked Questions
           </p>
 
@@ -54,7 +54,7 @@ export default function FAQ(){
             return (
               <div
                 key={faq.question}
-                className="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm"
+                className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl overflow-hidden"
               >
 
                 <button
@@ -63,13 +63,13 @@ export default function FAQ(){
                   className="w-full flex items-center justify-between gap-4 p-6 md:p-7 text-left"
                 >
 
-                  <span className="text-base md:text-lg font-semibold text-ink">
+                  <span className="text-base md:text-lg font-semibold text-paper">
                     {faq.question}
                   </span>
 
                   <ChevronDown
-                    className={`shrink-0 text-mist transition-transform duration-300 ${
-                      isOpen ? "rotate-180 text-crimson" : ""
+                    className={`shrink-0 text-white/40 transition-transform duration-300 ${
+                      isOpen ? "rotate-180 text-gold" : ""
                     }`}
                     size={20}
                   />
@@ -84,7 +84,7 @@ export default function FAQ(){
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.25, ease: "easeOut" }}
                     >
-                      <div className="px-6 md:px-7 pb-6 md:pb-7 text-mist leading-relaxed">
+                      <div className="px-6 md:px-7 pb-6 md:pb-7 text-white/50 leading-relaxed">
                         {faq.answer}
                       </div>
                     </motion.div>

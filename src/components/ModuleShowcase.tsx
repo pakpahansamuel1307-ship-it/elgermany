@@ -50,18 +50,18 @@ export default function ModuleShowcase(){
 
   return (
 
-    <section id="module-showcase" className="px-6 md:px-16 py-20 md:py-28">
+    <section id="module-showcase" className="relative px-6 md:px-16 py-20 md:py-32">
 
       <div className="max-w-6xl mx-auto">
 
         <div className="text-center mb-14 md:mb-16">
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-paper">
             Four Skills.
-            <span className="text-crimson">{" "}One AI Examiner.</span>
+            <span className="bg-gradient-to-r from-gold to-crimson bg-clip-text text-transparent">{" "}One AI Examiner.</span>
           </h2>
 
-          <p className="text-mist mt-5 text-base md:text-lg max-w-xl mx-auto">
+          <p className="text-white/50 mt-5 text-base md:text-lg max-w-xl mx-auto">
             Every Goethe module, rebuilt to feel like the real exam.
           </p>
 
@@ -74,18 +74,21 @@ export default function ModuleShowcase(){
           {modules.map((mod, index)=>{
             const isActive = index === active
             return (
-              <button
+              <motion.button
                 key={mod.key}
                 onClick={()=>setActive(index)}
-                className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold text-sm transition-all duration-300 ${
+                whileHover={{ scale:1.05 }}
+                whileTap={{ scale:0.97 }}
+                transition={{ type:"spring", stiffness:400, damping:17 }}
+                className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold text-sm transition-colors duration-300 ${
                   isActive
-                    ? "bg-gradient-to-r from-gold to-crimson text-ink shadow-lg shadow-crimson/10"
-                    : "bg-surface border border-border text-mist hover:text-ink hover:border-ink/20"
+                    ? "bg-gradient-to-r from-gold to-crimson text-ink shadow-lg shadow-crimson/20"
+                    : "bg-white/5 border border-white/10 text-white/60 hover:text-paper hover:border-white/20"
                 }`}
               >
                 <mod.icon size={16} />
                 {mod.label}
-              </button>
+              </motion.button>
             )
           })}
 
@@ -98,17 +101,17 @@ export default function ModuleShowcase(){
           <AnimatePresence mode="wait">
             <motion.div
               key={current.key}
-              initial={{ opacity:0, x:-20 }}
+              initial={{ opacity:0, x:-24 }}
               animate={{ opacity:1, x:0 }}
-              exit={{ opacity:0, x:20 }}
-              transition={{ duration:0.4, ease:"easeOut" }}
+              exit={{ opacity:0, x:24 }}
+              transition={{ duration:0.45, ease:[0.16,1,0.3,1] }}
             >
 
-              <h3 className="text-2xl md:text-3xl font-bold text-ink mb-4">
+              <h3 className="text-2xl md:text-4xl font-bold text-paper mb-4 tracking-tight">
                 {current.tagline}
               </h3>
 
-              <p className="text-mist text-base md:text-lg leading-relaxed">
+              <p className="text-white/60 text-base md:text-lg leading-relaxed">
                 {current.body}
               </p>
 
@@ -118,21 +121,24 @@ export default function ModuleShowcase(){
           <AnimatePresence mode="wait">
             <motion.div
               key={current.key + "-video"}
-              initial={{ opacity:0, scale:0.97 }}
+              initial={{ opacity:0, scale:0.95 }}
               animate={{ opacity:1, scale:1 }}
-              exit={{ opacity:0, scale:0.97 }}
-              transition={{ duration:0.4, ease:"easeOut" }}
-              className="rounded-[28px] border border-border bg-surface shadow-xl shadow-ink/5 overflow-hidden"
+              exit={{ opacity:0, scale:0.95 }}
+              transition={{ duration:0.45, ease:[0.16,1,0.3,1] }}
+              className="relative"
             >
-              <video
-                className="w-full h-auto block"
-                src={current.video}
-                poster={current.poster}
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
+              <div className="absolute -inset-4 bg-gradient-to-br from-gold/15 to-crimson/15 blur-2xl rounded-[36px]" />
+              <div className="relative rounded-[28px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
+                <video
+                  className="w-full h-auto block"
+                  src={current.video}
+                  poster={current.poster}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                />
+              </div>
             </motion.div>
           </AnimatePresence>
 

@@ -88,12 +88,12 @@ function AiFeedbackBlock({ rawFeedback }:{ rawFeedback:string }){
     isFullFeedback = parsed?.schreiben && parsed?.sprechen
   }catch{
     return (
-      <div className="mt-5 bg-paper border border-border rounded-2xl p-5">
-        <h4 className="font-bold mb-3 flex items-center gap-2 text-ink">
+      <div className="mt-5 bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-5">
+        <h4 className="font-bold mb-3 flex items-center gap-2 text-paper">
           <Sparkles size={16} className="text-crimson" />
           Feedback AI
         </h4>
-        <p className="text-mist whitespace-pre-wrap">{rawFeedback}</p>
+        <p className="text-white/50 whitespace-pre-wrap">{rawFeedback}</p>
       </div>
     )
   }
@@ -111,22 +111,22 @@ function AiFeedbackBlock({ rawFeedback }:{ rawFeedback:string }){
         : { feedback: parsed.sprechen }
 
     return (
-      <div className="mt-5 bg-paper border border-border rounded-2xl p-6 space-y-8">
+      <div className="mt-5 bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-6 space-y-8">
 
         <div>
           <h4 className="text-lg font-bold text-crimson mb-3 flex items-center gap-2">
             <Sparkles size={16} />
             Feedback Schreiben
           </h4>
-          <p className="text-ink/80 whitespace-pre-line leading-relaxed">{schreiben.feedback}</p>
+          <p className="text-paper/80 whitespace-pre-line leading-relaxed">{schreiben.feedback}</p>
         </div>
 
         <div>
-          <h4 className="text-lg font-bold text-amber-700 mb-3 flex items-center gap-2">
+          <h4 className="text-lg font-bold text-amber-400 mb-3 flex items-center gap-2">
             <Sparkles size={16} />
             Feedback Sprechen
           </h4>
-          <p className="text-ink/80 whitespace-pre-line leading-relaxed">{sprechen.feedback}</p>
+          <p className="text-paper/80 whitespace-pre-line leading-relaxed">{sprechen.feedback}</p>
         </div>
 
       </div>
@@ -134,9 +134,9 @@ function AiFeedbackBlock({ rawFeedback }:{ rawFeedback:string }){
   }
 
   return (
-    <div className="mt-5 bg-paper border border-border rounded-2xl p-6">
+    <div className="mt-5 bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-6">
 
-      <h4 className="font-bold text-lg mb-5 flex items-center gap-2 text-ink">
+      <h4 className="font-bold text-lg mb-5 flex items-center gap-2 text-paper">
         <Sparkles size={16} className="text-crimson" />
         AI Feedback
       </h4>
@@ -144,17 +144,17 @@ function AiFeedbackBlock({ rawFeedback }:{ rawFeedback:string }){
       {parsed.feedback && (
         <div className="mb-6">
           <h5 className="font-bold text-crimson mb-2 text-sm uppercase tracking-wide">Feedback</h5>
-          <p className="text-ink/80 leading-relaxed whitespace-pre-line">{parsed.feedback}</p>
+          <p className="text-paper/80 leading-relaxed whitespace-pre-line">{parsed.feedback}</p>
         </div>
       )}
 
       {parsed.strengths?.length > 0 && (
         <div className="mb-6">
-          <h5 className="font-bold text-green-700 mb-2 text-sm uppercase tracking-wide">Strengths</h5>
+          <h5 className="font-bold text-green-400 mb-2 text-sm uppercase tracking-wide">Strengths</h5>
           <ul className="space-y-1.5">
             {parsed.strengths.map((item:string, index:number)=>(
-              <li key={index} className="flex items-start gap-2 text-ink/80">
-                <CheckCircle2 size={15} className="text-green-600 shrink-0 mt-0.5" />
+              <li key={index} className="flex items-start gap-2 text-paper/80">
+                <CheckCircle2 size={15} className="text-green-400 shrink-0 mt-0.5" />
                 {item}
               </li>
             ))}
@@ -164,11 +164,11 @@ function AiFeedbackBlock({ rawFeedback }:{ rawFeedback:string }){
 
       {parsed.improvements?.length > 0 && (
         <div className="mb-6">
-          <h5 className="font-bold mb-2 text-sm uppercase tracking-wide text-amber-700">Improvements</h5>
+          <h5 className="font-bold mb-2 text-sm uppercase tracking-wide text-amber-400">Improvements</h5>
           <ul className="space-y-1.5">
             {parsed.improvements.map((item:string, index:number)=>(
-              <li key={index} className="flex items-start gap-2 text-ink/80">
-                <span className="shrink-0 mt-1 w-1.5 h-1.5 rounded-full bg-amber-500" />
+              <li key={index} className="flex items-start gap-2 text-paper/80">
+                <span className="shrink-0 mt-1 w-1.5 h-1.5 rounded-full bg-amber-400" />
                 {item}
               </li>
             ))}
@@ -181,7 +181,7 @@ function AiFeedbackBlock({ rawFeedback }:{ rawFeedback:string }){
           <h5 className="font-bold text-crimson mb-2 text-sm uppercase tracking-wide">Grammar Mistakes</h5>
           <ul className="space-y-1.5">
             {parsed.grammarMistakes.map((item:string, index:number)=>(
-              <li key={index} className="flex items-start gap-2 text-ink/80">
+              <li key={index} className="flex items-start gap-2 text-paper/80">
                 <XCircle size={15} className="text-crimson shrink-0 mt-0.5" />
                 {item}
               </li>
@@ -290,7 +290,7 @@ export default function TryoutSection(){
 
   if(loading){
     return (
-      <section className="flex flex-col items-center justify-center gap-3 py-24 text-mist">
+      <section className="flex flex-col items-center justify-center gap-3 py-24 text-white/50">
         <Loader2 className="animate-spin text-gold" size={26} />
         Loading...
       </section>
@@ -302,17 +302,17 @@ export default function TryoutSection(){
     <section>
 
       <div className="mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold text-ink flex items-center gap-3">
+        <h1 className="text-3xl md:text-4xl font-bold text-paper flex items-center gap-3">
           <BookOpen className="text-crimson" size={28} />
           Riwayat Try Out
         </h1>
-        <p className="text-mist mt-2">
+        <p className="text-white/50 mt-2">
           Review hasil dan pembahasan try out kamu.
         </p>
       </div>
 
       {attempts.length === 0 && (
-        <div className="bg-surface border border-border rounded-3xl p-10 text-center text-mist shadow-sm">
+        <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-10 text-center text-white/50">
           Belum ada riwayat try out.
         </div>
       )}
@@ -343,7 +343,7 @@ export default function TryoutSection(){
 
             <details
               key={item.id ?? index}
-              className="group bg-surface border border-border rounded-[32px] p-6 md:p-8 shadow-sm"
+              className="group bg-white/5 border border-white/10 backdrop-blur-xl rounded-[32px] p-6 md:p-8"
             >
 
               <summary className="cursor-pointer list-none">
@@ -357,10 +357,10 @@ export default function TryoutSection(){
                     </div>
 
                     <div>
-                      <h2 className="text-lg md:text-xl font-bold text-ink">
+                      <h2 className="text-lg md:text-xl font-bold text-paper">
                         {item.tryout_title}
                       </h2>
-                      <p className="text-mist text-sm mt-1">
+                      <p className="text-white/40 text-sm mt-1">
                         {new Date(item.created_at).toLocaleDateString("id-ID", {
                           day: "numeric", month: "long", year: "numeric"
                         })}
@@ -372,14 +372,14 @@ export default function TryoutSection(){
                   <div className="flex items-center gap-4 md:gap-6">
 
                     <div className="text-right">
-                      <p className="text-mist text-xs uppercase tracking-wide">Final Score</p>
+                      <p className="text-white/40 text-xs uppercase tracking-wide">Final Score</p>
                       <h2 className="text-3xl md:text-4xl font-bold text-crimson">
                         {item.score}
                       </h2>
                     </div>
 
                     {explanationCount > 0 ? (
-                      <div className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-ink bg-gold/20 px-3 py-2 rounded-full whitespace-nowrap">
+                      <div className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-ink bg-gold px-3 py-2 rounded-full whitespace-nowrap">
                         <FileText size={13} />
                         {explanationCount} Pembahasan
                       </div>
@@ -387,7 +387,7 @@ export default function TryoutSection(){
 
                     <ChevronDown
                       size={20}
-                      className="text-mist transition-transform duration-300 group-open:rotate-180 shrink-0"
+                      className="text-white/40 transition-transform duration-300 group-open:rotate-180 shrink-0"
                     />
 
                   </div>
@@ -396,7 +396,7 @@ export default function TryoutSection(){
 
               </summary>
 
-              <div className="mt-8 pt-8 border-t border-border space-y-8">
+              <div className="mt-8 pt-8 border-t border-white/10 space-y-8">
 
                 {item.ai_feedback && <AiFeedbackBlock rawFeedback={item.ai_feedback} />}
 
@@ -404,9 +404,9 @@ export default function TryoutSection(){
 
                   <div key={moduleType}>
 
-                    <h3 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-paper mb-4 flex items-center gap-2">
                       {item.module_type === "full" && (
-                        <span className="text-xs font-semibold text-mist bg-paper border border-border px-2.5 py-1 rounded-full">
+                        <span className="text-xs font-semibold text-white/50 bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
                           {moduleLabels[moduleType] || moduleType}
                         </span>
                       )}
@@ -426,28 +426,28 @@ export default function TryoutSection(){
 
                           <div
                             key={idx}
-                            className="bg-paper border border-border rounded-2xl p-5"
+                            className="bg-white/[0.03] border border-white/10 rounded-2xl p-5"
                           >
 
-                            <p className="font-semibold text-ink mb-4">
+                            <p className="font-semibold text-paper mb-4">
                               {answer.question_order || idx + 1}. {answer.question_text}
                             </p>
 
                             <div className="grid sm:grid-cols-2 gap-4">
 
                               <div>
-                                <p className="text-mist text-xs uppercase tracking-wide mb-1">Your Answer</p>
-                                <p className="text-ink flex items-center gap-1.5">
+                                <p className="text-white/40 text-xs uppercase tracking-wide mb-1">Your Answer</p>
+                                <p className="text-paper flex items-center gap-1.5">
                                   {answer.is_correct
-                                    ? <CheckCircle2 size={15} className="text-green-600 shrink-0" />
+                                    ? <CheckCircle2 size={15} className="text-green-400 shrink-0" />
                                     : <XCircle size={15} className="text-crimson shrink-0" />}
-                                  {answer.user_answer || <span className="text-mist italic">(kosong)</span>}
+                                  {answer.user_answer || <span className="text-white/40 italic">(kosong)</span>}
                                 </p>
                               </div>
 
                               <div>
-                                <p className="text-mist text-xs uppercase tracking-wide mb-1">Correct Answer</p>
-                                <p className="font-bold text-green-700">
+                                <p className="text-white/40 text-xs uppercase tracking-wide mb-1">Correct Answer</p>
+                                <p className="font-bold text-green-400">
                                   {answer.correct_answer}
                                 </p>
                               </div>
@@ -456,11 +456,11 @@ export default function TryoutSection(){
 
                             {matchedExplanation?.explanation_text && (
                               <div className="mt-4 bg-gold/10 border border-gold/25 rounded-xl p-4">
-                                <h4 className="font-bold mb-2 text-sm flex items-center gap-1.5 text-amber-700">
+                                <h4 className="font-bold mb-2 text-sm flex items-center gap-1.5 text-amber-400">
                                   <FileText size={14} />
                                   Pembahasan
                                 </h4>
-                                <p className="text-ink/80 whitespace-pre-wrap text-sm leading-relaxed">
+                                <p className="text-paper/80 whitespace-pre-wrap text-sm leading-relaxed">
                                   {matchedExplanation.explanation_text}
                                 </p>
                               </div>

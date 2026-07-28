@@ -6,6 +6,9 @@ from "react"
 import { motion }
 from "framer-motion"
 
+import { ClipboardList, Ticket, TrendingUp, Trophy }
+from "lucide-react"
+
 import { supabase }
 from "../lib/supabase"
 
@@ -259,6 +262,13 @@ DashboardStats(){
 
   },[])
 
+  const statMeta = [
+    { icon: ClipboardList, tint: "bg-gold/15 text-gold" },
+    { icon: Ticket, tint: "bg-crimson/15 text-crimson" },
+    { icon: Trophy, tint: "bg-green-500/15 text-green-400" },
+    { icon: TrendingUp, tint: "bg-blue-500/15 text-blue-400" },
+  ]
+
   return (
 
     <motion.div
@@ -285,28 +295,41 @@ DashboardStats(){
       (
         item,
         index
-      )=>(
+      )=>{
 
-        <div
+        const Icon = statMeta[index]?.icon
+
+        return (
+
+        <motion.div
           key={index}
-          className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-7"
+          initial={{ opacity:0, y:24 }}
+          whileInView={{ opacity:1, y:0 }}
+          transition={{ duration:0.5, delay: index * 0.08, ease:"easeOut" }}
+          viewport={{ once:true }}
+          whileHover={{ y:-4 }}
+          className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-7 hover:bg-white/[0.08] transition-colors duration-300"
         >
 
-          <p className="text-gray-400 mb-3">
+          <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${statMeta[index]?.tint}`}>
+            {Icon && <Icon size={20} />}
+          </div>
+
+          <p className="text-white/50 mb-2">
 
             {item.title}
 
           </p>
 
-          <h2 className="text-4xl font-bold">
+          <h2 className="text-4xl font-bold text-paper">
 
             {item.value}
 
           </h2>
 
-        </div>
+        </motion.div>
 
-      ))}
+      )})}
 
     </motion.div>
   )

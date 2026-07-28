@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { ArrowRight } from "lucide-react"
 
 export default function CTA(){
 
@@ -13,37 +14,39 @@ export default function CTA(){
         whileInView={{ opacity:1, y:0 }}
         transition={{ duration:0.6, ease:"easeOut" }}
         viewport={{ once:true, margin:"-80px" }}
-        className="max-w-6xl mx-auto relative overflow-hidden rounded-[32px] md:rounded-[40px] bg-gradient-to-r from-gold via-orange-400 to-crimson p-[1px]"
+        className="max-w-6xl mx-auto relative overflow-hidden rounded-[32px] md:rounded-[40px] bg-gradient-to-br from-gold via-gold-soft to-crimson px-8 md:px-10 py-16 md:py-24 text-center"
       >
 
-        <div className="bg-ink rounded-[31px] md:rounded-[39px] px-8 md:px-10 py-16 md:py-20 text-center relative overflow-hidden">
+        {/* subtle texture */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage: "radial-gradient(#000 1px, transparent 1px)",
+            backgroundSize: "24px 24px"
+          }}
+        />
 
-          {/* GLOW */}
+        <div className="relative z-10">
 
-          <div className="pointer-events-none absolute top-0 left-0 w-72 h-72 bg-gold/15 blur-3xl rounded-full"></div>
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight tracking-tight text-ink">
+            Start Goethe Preparation Now
+          </h2>
 
-          <div className="pointer-events-none absolute bottom-0 right-0 w-72 h-72 bg-crimson/15 blur-3xl rounded-full"></div>
+          <p className="text-ink/70 text-base md:text-lg mt-6 max-w-2xl mx-auto">
+            Upgrade your chances of passing the Goethe exam
+            with modern practice tests and premium AI correction.
+          </p>
 
-          <div className="relative z-10">
-
-            <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight tracking-tight text-paper">
-              Start Goethe Preparation
-              <span className="text-gold">{" "}Now</span>
-            </h2>
-
-            <p className="text-paper/75 text-base md:text-lg mt-6 max-w-2xl mx-auto">
-              Upgrade your chances of passing the Goethe exam
-              with modern practice tests and premium AI correction.
-            </p>
-
-            <a
-              href="/start"
-              className="mt-10 bg-gold text-ink px-8 py-3.5 rounded-xl font-bold hover:bg-gold-soft transition-colors duration-200 inline-block"
-            >
-              Start now
-            </a>
-
-          </div>
+          <motion.a
+            href="/start"
+            whileHover={{ scale:1.05, y:-3 }}
+            whileTap={{ scale:0.98 }}
+            transition={{ type:"spring", stiffness:400, damping:15 }}
+            className="mt-10 bg-ink text-paper px-8 py-4 rounded-2xl font-bold inline-flex items-center gap-2 shadow-xl"
+          >
+            Start now
+            <ArrowRight size={18} />
+          </motion.a>
 
         </div>
 

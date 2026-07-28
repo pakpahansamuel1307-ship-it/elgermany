@@ -41,10 +41,10 @@ export default function Stats(){
   },[])
 
   const stats = [
-    { value: `${completedTryouts}+`, label: "Try Out Completed", color: "text-amber-600" },
+    { value: `${completedTryouts}+`, label: "Try Out Completed", color: "text-gold" },
     { value: `${activeUsers}+`, label: "Active Users", color: "text-crimson" },
-    { value: "95%", label: "Satisfaction Level", color: "text-green-600" },
-    { value: "A1-B2", label: "All Level", color: "text-blue-600" },
+    { value: "95%", label: "Satisfaction Level", color: "text-green-400" },
+    { value: "A1-B2", label: "All Level", color: "text-blue-400" },
   ]
 
   return (
@@ -58,18 +58,18 @@ export default function Stats(){
           whileInView={{ opacity:1, y:0 }}
           transition={{ duration:0.6, ease:"easeOut" }}
           viewport={{ once:true, margin:"-80px" }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10"
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
         >
 
           {stats.map((stat) => (
 
-            <div key={stat.label} className="text-center">
+            <div key={stat.label} className="text-center bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl py-8 px-4">
 
               <h3 className={`text-3xl sm:text-4xl md:text-5xl font-bold ${stat.color}`}>
                 {stat.value}
               </h3>
 
-              <p className="text-mist mt-3 text-sm md:text-base">
+              <p className="text-white/50 mt-3 text-sm md:text-base">
                 {stat.label}
               </p>
 
