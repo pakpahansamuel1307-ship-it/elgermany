@@ -8,17 +8,17 @@ import { Ticket, Crown, CheckCircle2 } from "lucide-react"
 const tokenPlans = [
   {
     name:"1 Token Tryout",
-    price:"€ 3",
+    price:"20.000",
     tokens:1
   },
   {
     name:"5 Token Tryout",
-    price:"€ 13",
+    price:"90.000",
     tokens:5
   },
   {
     name:"10 Token Tryout",
-    price:"€ 27",
+    price:"180.000",
     tokens:10
   }
 ]
@@ -26,19 +26,19 @@ const tokenPlans = [
 const subscriptionPlans = [
   {
     name:"1 Bulan",
-    price:"€ 5",
+    price:"50.000",
     months:1,
     perks:["Semua level A1-B2", "Video baru setiap minggu"]
   },
   {
     name:"3 Bulan",
-    price:"€ 12",
+    price:"140.000",
     months:3,
     perks:["Semua level A1-B2", "Video baru setiap minggu", "Hemat dibanding per bulan"]
   },
   {
     name:"6 Bulan",
-    price:"€ 20",
+    price:"280.000",
     months:6,
     perks:["Semua level A1-B2", "Video baru setiap minggu", "Paling hemat"]
   }
